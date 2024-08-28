@@ -1,0 +1,55 @@
+programa R-info_Gonzalo
+areas
+  ciudad: AreaC(1, 1, 100, 100)
+robots
+  robot robot1
+  comenzar
+    repetir 49
+      derecha
+      repetir 99
+        si HayPapelEnLaBolsa & (~HayPapelEnLaEsquina & ~HayFlorEnLaEsquina)
+          depositarPapel
+        mover
+      si HayPapelEnLaBolsa & (~HayPapelEnLaEsquina & ~HayFlorEnLaEsquina)
+        depositarPapel
+      repetir 3
+        derecha
+      mover
+      repetir 3
+        derecha
+      repetir 99
+        si HayPapelEnLaBolsa & (~HayPapelEnLaEsquina & ~HayFlorEnLaEsquina)
+          depositarPapel
+        mover
+      si HayPapelEnLaBolsa & (~HayPapelEnLaEsquina & ~HayFlorEnLaEsquina)
+        depositarPapel
+      derecha
+      mover
+    derecha
+    repetir 99
+      si HayPapelEnLaBolsa & (~HayPapelEnLaEsquina & ~HayFlorEnLaEsquina)
+        depositarPapel
+      mover
+    si HayPapelEnLaBolsa & (~HayPapelEnLaEsquina & ~HayFlorEnLaEsquina)
+      depositarPapel
+    repetir 3
+      derecha
+    mover
+    si HayPapelEnLaBolsa & (~HayPapelEnLaEsquina & ~HayFlorEnLaEsquina)
+      depositarPapel
+    repetir 3
+      derecha
+    repetir 99
+      si HayPapelEnLaBolsa & (~HayPapelEnLaEsquina & ~HayFlorEnLaEsquina)
+        depositarPapel
+      mover
+    si HayPapelEnLaBolsa & (~HayPapelEnLaEsquina & ~HayFlorEnLaEsquina)   
+      depositarPapel
+    Informar(PosAv, PosCa)
+  fin
+variables
+  R-info: robot1
+comenzar
+  AsignarArea(R-info, ciudad)
+  Iniciar(R-info, 1, 1)
+fin

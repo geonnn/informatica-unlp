@@ -1,0 +1,67 @@
+programa Cap7Ej3
+procesos
+  proceso ContarFlores(ES f: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f := f + 1
+    repetir f
+      si(HayFlorEnLaBolsa)
+        depositarFlor
+  fin
+  proceso ContarPapeles(ES p: numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      p := p + 1
+    repetir p
+      si(HayPapelEnLaBolsa)
+        depositarPapel
+  fin
+  proceso Esquina(ES esqs: numero; ES ok: boolean)
+  variables
+    flores: numero
+    papeles: numero
+  comenzar
+    flores := 0
+    papeles := 0
+    ContarFlores(flores)
+    ContarPapeles(papeles)
+    si((papeles + 1) < flores)
+      mientras(((papeles + 1) < flores) & (HayPapelEnLaBolsa))
+        depositarPapel
+        papeles := papeles + 1
+    sino
+      mientras(((papeles + 1) > flores) & (HayFlorEnLaBolsa))
+        depositarFlor
+        flores := flores + 1
+    si((papeles + 1) <> flores)
+      ok := F
+    sino
+      esqs := esqs + 1
+  fin
+areas
+  ciudad: AreaC(1, 1, 100, 100)
+robots
+  robot robot1
+  variables
+    cantEsqs: numero
+    ok: boolean
+  comenzar
+    cantEsqs := 0
+    ok := V
+    Pos(9, 1)
+    Esquina(cantEsqs, ok)
+    mientras((ok = V) & (PosCa < 100))
+      mover
+      Esquina(cantEsqs, ok)
+    si(ok = F)
+      Pos(9, 1)
+    Informar(cantEsqs)
+  fin
+variables
+  R-info: robot1
+comenzar
+  AsignarArea(R-info, ciudad)
+  Iniciar(R-info, 1, 1)
+fin

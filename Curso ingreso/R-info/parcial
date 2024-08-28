@@ -1,0 +1,69 @@
+programa parcial
+procesos
+
+  {juntar y contar flores en el parámetro "fl"}
+  proceso JuntarFlores(ES fl: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      fl:= fl + 1
+  fin
+  
+  {juntar y contar papeles en el parámetro "pap"}
+  proceso JuntarPapeles(ES pap: numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      pap:= pap + 1
+  fin
+  
+  {recorrer calles verificando esq vacias y con fp requeridas}
+  proceso RecorrerCalle(ES vacias: numero; ES confp: numero)
+  variables
+    cantFl: numero
+    cantPap: numero
+  comenzar
+    cantFl:= 0
+    cantPap:= 0
+    si (~HayFlorEnLaEsquina & ~HayPapelEnLaEsquina)    {verificar si la esq. está vacía}
+      vacias:= vacias + 1
+    sino
+      JuntarFlores(cantFl)
+      JuntarPapeles(cantPap)
+    si((cantFl > 8) & (cantPap = 3))    {verificar si tiene más de 8 flores y exact. 3 papeles}
+      confp:= confp + 1
+    repetir 99
+      mover
+      cantFl:= 0                        {reiniciar las variables en cada esquina}
+      cantPap:= 0
+      si(~HayFlorEnLaEsquina & ~HayPapelEnLaEsquina)
+        vacias:= vacias + 1
+      sino
+        JuntarFlores(cantFl)
+        JuntarPapeles(cantPap)
+      si((cantFl > 8) & (cantPap = 3))
+        confp:= confp + 1
+  fin
+areas
+  ciudad: AreaC(1, 1, 100, 100)
+robots
+  robot robot1
+  variables
+    esqVacias: numero
+    esqConFP: numero
+  comenzar
+    esqVacias:= 0
+    esqConFP:= 0
+    derecha
+    repetir 49                              {recorrer calles impares}
+      RecorrerCalle(esqVacias, esqConFP)
+      Pos(1, PosCa + 2)
+    Informar(esqVacias)
+    Informar(esqConFP)
+  fin
+variables
+  R-info: robot1
+comenzar
+  AsignarArea(R-info, ciudad)
+  Iniciar(R-info, 1, 1)
+fin
