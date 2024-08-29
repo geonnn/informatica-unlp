@@ -14,7 +14,7 @@ type
 	end;
 	
 	listaPeliculas = ^nodo;
-	nodo = record;
+	nodo = record
 		dato: recPelicula;
 		sig: listaPeliculas;
 	end;
@@ -34,16 +34,16 @@ vecPjeMax = array[1..8] of recPje;
 
 procedure LeerPelicula(var p: recPelicula);
 begin
-	writeln('Ingrese codigo de pelicula: ')
-	readln(codPel);
-	if (codPel = -1) then
+	writeln('Ingrese codigo de pelicula: ');
+	readln(p.codPel);
+	if (p.codPel = -1) then
 		writeln('Carga finalizada.')
 	else
 		begin
 			writeln('Codigo de genero: ');
-			readln(codGen);
+			readln(p.codGen);
 			writeln('Puntaje promedio: ');
-			readln(pjeProm);
+			readln(p.pjeProm);
 		end;
 end;
 
@@ -57,7 +57,7 @@ begin
 	if (L = nil) then begin
 		L := nue;
 		ult := nue;
-	end;
+	end
 	else begin
 		ult^.sig := nue;
 		ult := nue;
@@ -68,8 +68,10 @@ procedure CargarLista(var vL: vecListas); // Carga las películas al final de la
 var
 	p: recPelicula;
 begin
-	LeerPelicula(p);
-	AgregarAtras(vL[p.codGen].L, vL[p.codGen].ult, p);
+	while (p.codPel <> -1) do begin
+		LeerPelicula(p);
+		AgregarAtras(vL[p.codGen].L, vL[p.codGen].ult, p);
+	end;
 end;
 
 procedure InicializarVectorListas(var vL: vecListas);
@@ -89,10 +91,47 @@ begin
 		vPM[i].pjePromMax := -1
 end;
 
+procedure PjeMaximo(codPel: integer; pjeProm: real; var codPelMax: integer; var pjePromMax: real);
+begin
+	if (pjeProm > pjePromMax) then begin
+		pjePromMax := pjeProm;
+		codPelMax := codPel;
+	end;
+end;
+
+procedure RecorrerLista(L: listaPeliculas; var codPelMax: integer; var pjePromMax: real);
+begin
+	while (L <> nil) do begin
+		PjeMaximo(L^.dato.codPel, L^.dato.pjeProm, codPelMax, pjePromMax);
+		L := L^.sig;
+	end;
+end;
+
+procedure CargarVPM(var vPM: vecPjeMax; i: integer; codPelMax: integer; pjePromMax: real);
+begin
+	vPM[i].codPel := codPelMax;
+	vPM[i].pjePromMax := pjePromMax;
+end;
+
+procedure RecorrerVectorListas(vL: vecListas; var vPM: vecPjeMax);
+var
+	i: integer;
+	codPelMax: integer;
+	pjePromMax: real;
+begin
+	pjePromMax := -1;
+	for i := 1 to 8 do begin
+		RecorrerLista(vL[i].L, codPelMax, pjePromMax);
+		CargarVPM(vPM, i, codPelMax, pjePromMax)
+	end;
+end;
+
 var
 	vL: vecListas;
+	vPM: vecPjeMax;
 begin
 	InicializarVectorListas(vL);
 	InicializarVectorPMax(vPM);
 	CargarLista(vL);
-end;
+	RecorrerVectorListas(vL, vPM);
+end.
