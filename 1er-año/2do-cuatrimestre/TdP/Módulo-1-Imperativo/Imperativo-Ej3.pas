@@ -6,10 +6,12 @@ c. Ordene los elementos del vector generado en b) por puntaje utilizando alguno 
 d. Muestre el código de película con mayor puntaje y el código de película con menor puntaje, del vector obtenido en el punto c).}
 
 program Ej3;
+const
+	C_GEN = 8;
 type
 	recPelicula = record
 		codPel: integer;
-		codGen: 1..8;
+		codGen: 1..C_GEN;
 		pjeProm: real;
 	end;
 	
@@ -29,8 +31,8 @@ type
 		pjePromMax: real;
 	end;
 
-vecListas = array[1..8] of recListas;
-vecPjeMax = array[1..8] of recPje;
+vecListas = array[1..C_GEN] of recListas;
+vecPjeMax = array[1..C_GEN] of recPje;
 
 procedure LeerPelicula(var p: recPelicula);
 begin
@@ -78,7 +80,7 @@ procedure InicializarVectorListas(var vL: vecListas);
 var
 	i: integer;
 begin
-	for i := 1 to 8 do
+	for i := 1 to C_GEN do
 		vL[i].L := nil
 	// no hace falta inicializar ult en nil porque se sobreescribe en cualquier caso.
 end;
@@ -87,7 +89,7 @@ procedure InicializarVectorPMax(var vPM: vecPjeMax);
 var
 	i: integer;
 begin
-	for i := 1 to 8 do
+	for i := 1 to C_GEN do
 		vPM[i].pjePromMax := -1
 end;
 
@@ -119,19 +121,91 @@ var
 	codPelMax: integer;
 	pjePromMax: real;
 begin
-	pjePromMax := -1;
-	for i := 1 to 8 do begin
+	for i := 1 to C_GEN do begin
+		pjePromMax := -1;
 		RecorrerLista(vL[i].L, codPelMax, pjePromMax);
 		CargarVPM(vPM, i, codPelMax, pjePromMax)
 	end;
 end;
 
+procedure Seleccion(var vPM: vecPjeMax);
+var
+	i, j, pos: integer;
+	item: recPje;
+begin
+	for i := 1 to (C_GEN - 1) do begin
+		pos := i;
+		for j := i + 1 to C_GEN do
+			if (vPM[j].pjePromMax < vPM[pos].pjePromMax) then
+				pos := j;
+		item := vPM[pos];
+		vPM[pos] := vPM[i];
+		vPM[i] := item;
+	end;
+end;
+
+procedure ImprimirVecPM(vPM: vecPjeMax);
+var
+	i: integer;
+begin
+	for i := 1 to C_GEN do begin
+		writeln('Genero: ', i);
+		writeln('Cod. peli: ', vPM[i].codPel);
+		writeln('Pje. prom. max: ', vPM[i].pjePromMax:0:2);
+		writeln('');
+	end;
+end;
+
+procedure Max(pjePromMax: real; codPel: integer; var pjePromMax_pp: real; var codPelMax: integer);
+begin
+	if (pjePromMax > pjePromMax_pp) then begin
+		pjePromMax_pp := pjePromMax;
+		codPelMax := codPel;
+	end;
+end;
+
+procedure Min(pjePromMax: real; codPel: integer; var pjePromMin_pp: real; var codPelMin: integer);
+begin
+	if (pjePromMax < pjePromMin_pp) then begin
+		pjePromMin_pp := pjePromMax;
+		codPelMin := codPel;
+	end;
+end;
+
+procedure MaxMin(vPM: vecPjeMax; var codPelMin, codPelMax: integer; var pjePromMin_pp, pjePromMax_pp: real);
+var
+	i: integer;
+begin
+	for i := 1 to C_GEN do begin
+		Max(vPM[i].pjePromMax, vPM[i].codPel, pjePromMax_pp, codPelMax);
+		Min(vPM[i].pjePromMax, vPM[i].codPel, pjePromMin_pp, codPelMin);
+	end;
+			 
+end;
+
 var
 	vL: vecListas;
 	vPM: vecPjeMax;
+	codPelMax, codPelMin: integer; 
+	pjePromMax_pp, pjePromMin_pp: real; 
 begin
+	pjePromMax_pp := -1;
+	pjePromMin_pp := 20; 
 	InicializarVectorListas(vL);
 	InicializarVectorPMax(vPM);
 	CargarLista(vL);
 	RecorrerVectorListas(vL, vPM);
+	
+	writeln('Pre ordenacion: ');
+	writeln('');
+	ImprimirVecPM(vPM);
+	Seleccion(vPM);
+	writeln('Post ordenacion: ');
+	writeln('');
+	ImprimirVecPM(vPM);
+
+	MaxMin(vPM, codPelMin, codPelMax, pjePromMin_pp, pjePromMax_pp);
+
+	writeln('Peli con mayor puntaje prom: ', codPelMax, ' | ', pjePromMax_pp:0:2,'.');
+	writeln('Peli con menor puntaje prom: ', codPelMin, ' | ', pjePromMin_pp:0:2,'.');
 end.
