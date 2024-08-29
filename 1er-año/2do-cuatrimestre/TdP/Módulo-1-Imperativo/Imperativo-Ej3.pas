@@ -19,19 +19,25 @@ type
 		sig: listaPeliculas;
 	end;
 	
-	recPunteros = record
+	recListas = record
 		L: listaPeliculas;
 		ult: listaPeliculas;
 	end;
 
-vecGeneros = array[1..8] of recPunteros;
+	recPje = record
+		codPel: integer;
+		pjePromMax: real;
+	end;
+
+vecListas = array[1..8] of recListas;
+vecPjeMax = array[1..8] of recPje;
 
 procedure LeerPelicula(var p: recPelicula);
 begin
-	writeln('Ingrese codigo de peli: ')
+	writeln('Ingrese codigo de pelicula: ')
 	readln(codPel);
 	if (codPel = -1) then
-		writeln('Carga finalizada.');
+		writeln('Carga finalizada.')
 	else
 		begin
 			writeln('Codigo de genero: ');
@@ -41,7 +47,7 @@ begin
 		end;
 end;
 
-procedure AgregarAtras(L: listaPeliculas; var ult: listaPeliculas; p: recPelicula);
+procedure AgregarAtras(var L, ult: listaPeliculas; p: recPelicula);
 var
 	nue: listaPeliculas;
 begin
@@ -58,24 +64,35 @@ begin
 	end;
 end;
 
-procedure CargarLista(v: vector);
+procedure CargarLista(var vL: vecListas); // Carga las películas al final de la lista en su respectiva posición en el vector según su género.
+var
+	p: recPelicula;
 begin
 	LeerPelicula(p);
-	AgregarAtras(v[p.codGen].L, v[p.codGen].ult, p);
+	AgregarAtras(vL[p.codGen].L, vL[p.codGen].ult, p);
 end;
 
-procedure InicializarVector(var v: vecGeneros);
+procedure InicializarVectorListas(var vL: vecListas);
 var
 	i: integer;
 begin
 	for i := 1 to 8 do
-		v[i].L := nil
+		vL[i].L := nil
+	// no hace falta inicializar ult en nil porque se sobreescribe en cualquier caso.
+end;
+
+procedure InicializarVectorPMax(var vPM: vecPjeMax);
+var
+	i: integer;
+begin
+	for i := 1 to 8 do
+		vPM[i].pjePromMax := -1
 end;
 
 var
-	L, ult: listaPeliculas;
-	v: vecGeneros;
+	vL: vecListas;
 begin
-	InicializarVector(v);
-	CargarLista (v);
+	InicializarVectorListas(vL);
+	InicializarVectorPMax(vPM);
+	CargarLista(vL);
 end;
