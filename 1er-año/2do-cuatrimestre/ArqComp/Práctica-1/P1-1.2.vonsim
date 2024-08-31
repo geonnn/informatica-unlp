@@ -1,0 +1,17 @@
+org 1000h
+C db 'a'
+RES db ?
+
+org 2000h
+mov al, C
+cmp al, 'A'
+js no
+cmp al, 'Z' + 1
+jns no
+mov RES, 0FFh
+jmp fin
+no:
+mov RES, 00h
+fin:
+int 0
+end
