@@ -85,8 +85,9 @@ end;
 procedure RecorrerLista(L: listaProductos; r3: boolean; var vR3: vecRub3; var vR3_dimL: integer);
 begin
     if (r3) then // si r3 es verdadero se carga el vector y se imprime, sino, sólo se imprime.
-        while (L <> nil) and (vR3_dimL < 30) do begin // El vector sólo puede cargar hasta 30 productos. 
-            CargarVecR3(L^.dato, vR3, vR3_dimL);
+        while (L <> nil) do begin // Entra al while y se verifica el vector con un if después. Poniendo la condición del if en el while cuando se llene el vector dejaría de imprimir los productos restantes del rubro 3.
+            if (vR3_dimL < 30) then // El vector sólo puede cargar hasta 30 productos. 
+                CargarVecR3(L^.dato, vR3, vR3_dimL);
             writeln(L^.dato.codProd);
             L := L^.sig;
         end
@@ -129,23 +130,19 @@ begin
     end;
 end;
 
-function Promedio(cant: integer; total: real):real;
-begin
-    Promedio := total / cant;
-end;
-
 procedure ImprimirVector(vR3: vecRub3; vR3_dimL: integer; var promRub3: real);
 var
     i: integer;
     total: real;
 begin
     total := 0;
-    writeln('Precios rubro 3:');
+    writeln('Productos rubro 3 ordenados por precio:');
     for i := 1 to vR3_dimL do begin
         writeln(i, '. ', 'Código ', vR3[i].codProd, ':   $', vR3[i].precio:0:2);
         total := total + vR3[i].precio;
     end;
-    promRub3 := Promedio(vR3_dimL, total);
+    writeln('total: ', total:0:2);
+    promRub3 := (total / vr3_diml);
 end;
 
 var
