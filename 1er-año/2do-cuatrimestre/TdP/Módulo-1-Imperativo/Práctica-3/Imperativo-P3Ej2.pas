@@ -365,7 +365,7 @@ begin
     writeln;
     writeln('///////////////////////////////////////////////////////////////////');
     writeln;
-    //LeerFecha(f);
+    LeerFecha(f);
     writeln('En ese día se vendieron: ', ProductosVendidosPorFecha(a1, f), ' productos.');
     writeln;
     ObtenerMaximoUnidadesVendidas(a2, codigo_max_unidades_vendidas);
