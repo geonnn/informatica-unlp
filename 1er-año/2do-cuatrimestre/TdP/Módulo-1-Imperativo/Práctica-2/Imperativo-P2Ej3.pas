@@ -24,7 +24,7 @@ begin
         v[dimL] := num;
         CargarVector(v, dimL + 1);
     end;
-    // CASO BASE: dimL = dimF + 1. No entra al if y no hace nada.
+    // CASO BASE: dimL = (dimF + 1). No entra al if y no hace nada.
 end;
 
 procedure ImprimirVector(v: vector; dimL: integer);
@@ -33,7 +33,7 @@ begin
         writeln(dimL, '. ', v[dimL]);
         ImprimirVector(v, dimL + 1);
     end;
-    // CASO BASE: dimL = dimF + 1. No entra al if y no hace nada.
+    // CASO BASE: dimL = (dimF + 1). No entra al if y no hace nada.
 end;
 
 procedure OrdenarVectorSeleccion(var v: vector; dimL: integer);
@@ -64,7 +64,7 @@ var
     v: vector;
 begin
     randomize;
-    dimL := 1;
+    dimL := 1; // ¿Está bien empezar dimL en 1?
     CargarVector(v, dimL);
     ImprimirVector(v, dimL);
     writeln;
