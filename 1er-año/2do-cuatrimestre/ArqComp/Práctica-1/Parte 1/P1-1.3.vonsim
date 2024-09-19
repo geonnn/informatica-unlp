@@ -1,0 +1,7 @@
+org 1000h
+C db "Z"
+
+org 2000h
+add C, 20h ; las letras minúsculas están 20h más adelante en la tabla ascii.
+int 0
+end

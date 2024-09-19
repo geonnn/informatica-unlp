@@ -1,0 +1,30 @@
+org 1000h
+ingrese db "Ingrese la contraseña: "
+permitido db "Acceso permitido."
+denegado db "Acceso denegado."
+restan db "Le restan "
+intentos db " intentos."
+clave db "sapo"
+usuario_clave db ?
+
+org 2000h
+mov bx, offset ingrese
+mov al, offset permitido - offset ingrese
+int 7
+
+mov cl, 0 ; para usar como contador, dejando al usuario ingresar los 4 caracteres y luego verificando cuántos fueron correctos para permitir o negar el acceso.
+mov ch, 0 ; contador de cuántos caracteres va ingresando.
+mov al, 1 ; 1 para imprimir los caracteres que ingresa el usuario.
+mov bx, offset usuario_clave
+loop_ingresar_contraseña:
+    int 6
+    int 7
+    inc ch
+    cmp , ; comparar caracter ingresado con caracter en clave.
+
+    inc bx
+    cmp ch, 4
+    jnz loop_ingresar_contraseña
+
+int 0
+end

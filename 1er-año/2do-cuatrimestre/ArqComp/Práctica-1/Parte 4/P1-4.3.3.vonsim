@@ -1,0 +1,14 @@
+org 1000h
+C db "Z"
+
+org 3000h
+A_MINUS:
+    add al, 20h ; las letras minúsculas están 20h más adelante en la tabla ascii.
+ret
+
+org 2000h
+mov al, C
+call A_MINUS
+mov C, al
+int 0
+end

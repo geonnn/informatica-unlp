@@ -1,0 +1,31 @@
+org 1000h
+mensaje db "Hola, buenas tardes."
+cant db ?
+car db "a"
+
+org 3000h
+CONTAR_CAR:
+    cmp byte ptr [bx], ah ; compara una letra del string con la "a", usando bx como puntero.
+    jnz seguir ; si no da 0 significa que [bx] =/= a, entonces salta la línea que suma a cant.
+    inc cl
+seguir:
+    inc bx ; pasa a la siguiente letra del string.
+    dec al ; disminuye las letras restantes.
+    jnz CONTAR_CAR ; se repite hasta que al = 0, es decir que no queden letras para analizar.
+add cl, 30h ; se agrega 30h para que salga el número en ascii para imprimir (para una única cifra.)
+mov al, 1 ; copia en al la longitud de lo que se va a imprimir.
+mov cant, cl
+mov bx, offset cant ; dirección de dónde empieza el string para imprimir
+int 7 ; imprime en pantalla. Toma long. de al e inicio de la cadena de bx.
+
+ret
+
+org 2000h
+    mov bx, offset mensaje ; se copia en bx la dirección inicial del string.
+    mov al, offset cant - offset mensaje ; se copia en al la long. del string.
+    mov ah, car
+    mov cl, 0
+    call CONTAR_CAR
+
+int 0
+end

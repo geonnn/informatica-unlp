@@ -1,0 +1,33 @@
+org 1000h
+letra db 'A'
+num db '0'
+inicio db 00h
+LF db 10
+
+org 2000h
+mov al, 1
+loop_letras:
+    mov bx, offset letra
+    int 7
+    inc letra
+    cmp byte ptr [bx], 'Z' + 1
+    jnz loop_letras
+
+loop_nums:
+    mov bx, offset num
+    int 7
+    inc num
+    cmp byte ptr [bx], '9' + 1
+    jnz loop_nums
+
+loop_todos_los_caracteres:
+    mov bx, offset inicio
+    int 7
+    mov bx, offset LF
+    int 7
+    inc inicio
+    cmp byte ptr [bx], 0FFh ; ascii extendido hasta 255. FFh = 255b.
+    jnz loop_todos_los_caracteres
+
+int 0
+end

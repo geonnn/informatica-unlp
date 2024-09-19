@@ -1,0 +1,22 @@
+org 1000h
+C db 'a'
+RES db ?
+
+org 3000h
+ES_MAYUS:
+    cmp al, 'A'
+    js no
+    cmp al, 'Z' + 1
+    jns no
+    mov ah, 0FFh
+    jmp fin
+    no:
+    mov ah, 0
+    fin:
+    ret
+org 2000h
+mov al, C
+call ES_MAYUS
+mov RES, ah
+int 0
+end

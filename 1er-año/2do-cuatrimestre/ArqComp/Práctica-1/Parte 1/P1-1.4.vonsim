@@ -1,0 +1,21 @@
+org 1000h
+mensaje db "HOLA, BuEnaS TArdEs."
+fin db ?
+
+org 2000h
+mov bx, offset mensaje
+mov al, offset fin - offset mensaje
+loop:
+    cmp byte ptr [bx], 'A'
+    js noEsMayus ; todo lo que esté antes de la A en la tabla se descarta.
+    cmp byte ptr [bx], 'Z' + 1
+    jns noEsMayus ; Z + 1 para incluir a la Z. Si da negativo está en el rango de mayúsculas.
+    ; en este punto se sabe que la letra es mayúscula.
+    add byte ptr [bx], 20h ; se pasa a minúscula.
+noEsMayus:
+    inc bx
+    dec al
+    jnz loop
+
+int 0
+end

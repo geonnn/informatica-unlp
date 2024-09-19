@@ -1,0 +1,68 @@
+org 1000h
+A db 8
+B db 5
+C db 4
+D db ?
+org 3000h
+CALC:
+mov bx, sp
+add bx, 6
+mov DL, [bx]
+sub bx, 2
+add DL, [bx]
+sub bx, 2
+sub DL, [bx]
+ret
+org 2000h
+mov AL, A
+push ax
+mov AL, B
+push ax
+mov AL, C
+push ax
+call CALC
+pop ax
+pop ax
+pop ax
+mov D, DL
+
+int 0
+end
+
+; por referencia:
+org 3000h
+CALC:
+mov bx, sp
+add bx, 6
+push bx
+mov bx, [bx]
+mov DL, [bx]
+pop bx
+sub bx, 2
+push bx
+mov bx, [bx]
+add DL, [bx]
+pop bx
+sub bx, 2
+push bx
+mov bx, [bx]
+sub DL, [bx]
+pop bx
+ret
+org 2000h
+mov ax, offset A
+push ax
+mov ax, offset B
+push ax
+mov ax, offset C
+push ax
+call CALC
+pop ax
+pop ax
+pop ax
+mov D, DL
+
+int 0
+end
+
+; DL = AL + AH - CL
