@@ -1,0 +1,38 @@
+; Pasando los parámetros por valor desde el programa principal a través de la pila, y devolviendo el resultado a través de un registro por valor.
+
+org 1000h
+A db 10
+B db 30
+RES dw ?
+
+org 3000h
+MUL:
+; recibe dos números a multiplicar, por la pila.
+; retorna la dirección del resultado por ax.
+  push cx ; guardo registro previo.
+  push dx ; guardo registro previo.
+  mov cx, 0
+  mov dh, 0
+  mov dl, al
+sumar:
+  add cx, dx
+  dec ah
+  jnz sumar
+  mov RES, cx
+  mov ax, offset RES
+  pop dx ; reestablezco registro previo.
+  pop cx ; reestablezco registro previo.
+ret
+
+org 2000h
+mov ah, 0
+mov al, A
+mov bh, 0
+mov bl, B
+push ax
+push bx
+call MUL
+pop bx
+pop ax
+int 0
+end

@@ -1,4 +1,4 @@
-; Pasando los parámetros por valor desde el programa principal a través de los registros AL y AH, y devolviendo el resultado a través del registro AX por valor.
+; Pasando los parámetros por valor desde el programa principal a través de registros, y devolviendo el resultado a través de un registro por referencia.
 
 org 1000h
 A db 10
@@ -8,17 +8,18 @@ RES dw ?
 org 3000h
 MUL:
 ; recibe dos números a multiplicar, cada uno por al y ah.
-; retorna el resultado por ax.
+; retorna la dirección del resultado por ax.
   push cx ; guardo registro previo.
   push dx ; guardo registro previo.
   mov cx, 0 ; cx en 0, acá voy guardando el resultado de las sumas.
-  mov dh, 0 
+  mov dh, 0
   mov dl, al ; número a sumar.
 sumar:
   add cx, dx
-  dec ah ; disminuyo la cantidad de veces que faltan sumar.
+  dec ah
   jnz sumar
-  mov ax, cx
+  mov RES, cx
+  mov ax, offset RES
   pop dx ; reestablezco registro previo.
   pop cx ; reestablezco registro previo.
 ret
@@ -27,6 +28,5 @@ org 2000h
 mov al, A
 mov ah, B
 call MUL
-mov RES, ax
 int 0
 end

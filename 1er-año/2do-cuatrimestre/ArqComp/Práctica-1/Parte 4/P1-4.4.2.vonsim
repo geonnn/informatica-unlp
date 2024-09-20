@@ -1,0 +1,32 @@
+; Pasando los parámetros por referencia desde el programa principal a través de registros, y devolviendo el resultado a través de un registro por valor.
+
+org 1000h
+A db 10
+B db 30
+RES dw ?
+
+org 3000h
+MUL:
+; recibe las direcciones de dos números a multiplicar, por ax y dx.
+; retorna el resultado por ax.
+  push bx ; guardo registro previo.
+  push cx ; guardo registro previo.
+  mov cx, 0 ; cx en 0, acá voy guardando el resultado de las sumas.
+sumar:
+  mov bx, ax ; copio en bx la dirección del primer número.
+  add cx, [bx] ; sumo el primer número en cx. -> ????????00001010 ¿cómo pongo esos bits "?" en 0? (los trae de la dirección 1001h, es el 30. )
+  mov bx, dx ; copio en bx la dirección del segundo número (la cantidad de veces a sumar el primero.)
+  dec byte ptr [bx] ; disminuyo la cantidad de veces que faltan sumar.
+  jnz sumar
+  mov ax, cx
+  pop cx ; reestablezco registro previo.
+  pop bx ; reestablezco registro previo.
+ret
+
+org 2000h
+mov ax, offset A
+mov dx, offset B
+call MUL
+mov RES, ax
+int 0
+end
