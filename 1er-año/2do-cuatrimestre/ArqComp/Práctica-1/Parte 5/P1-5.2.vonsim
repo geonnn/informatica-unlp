@@ -1,0 +1,110 @@
+org 1000h
+dvec dw 0
+vector db ?
+
+org 3000h
+LEER_NOTAS:
+  push ax
+  push bx
+  mov bx, offset vector
+  mov ax, 0 ; voy guardando la cantidad de notas.
+  LEER_NOTAS_LOOP:
+    int 6
+    cmp byte ptr [bx], '.'
+    jz LEER_NOTAS_FIN
+    sub byte ptr [bx], 30h ; convierto el número recibido en ascii.
+    inc bx
+    inc ax ; uso ax en caso de que sean más de 255 notas.
+    jmp LEER_NOTAS_LOOP
+  LEER_NOTAS_FIN:
+    mov dvec, ax ; guardo la dimensión del vector.
+    pop bx
+    pop ax
+ret
+
+org 3500h
+DIV:
+; recibe dos números positivos de 16 bits A y B.
+; retorna el cociente y el resto de A/B.
+; recibe A por AX.
+; recibe B por BX.
+; retorna resto por AX.
+; retorna cociente por BX.
+  push cx
+  mov cx, 0
+  DIV_LOOP:
+    sub ax, bx
+    jz DIV_FIN
+    cmp ax, bx
+    js DIV_FIN
+    inc cx
+    jmp DIV_LOOP
+  DIV_FIN:
+    ; en este punto ya quedó el resto guardado en ax.
+    inc cx ; si se salta porque el resto quedó en 0 o la comparación siguiente dio s = 1 falta sumar uno más al cociente.
+    mov bx, cx ; guardo cociente en bx
+    pop cx
+ret
+
+org 4000h
+MUL:
+; recibe dos números positivos de 16 bits A y B.
+; retorna el resultado de A*B.
+; recibe A por AX.
+; recibe B por BX.
+; retorna el resultado por AX.
+  push cx
+  mov cx, 0
+  MUL_LOOP:
+    add cx, ax
+    dec bx
+    jnz MUL_LOOP
+  mov ax, cx
+  pop cx
+ret
+
+org 4500h
+CANT_APROBADOS:
+; recibe un vector de números y su longitud.
+; recibe la longitud por AX.
+; recibe el vector por BX.
+; retorna en AX la cantidad de números iguales o mayores a 4.
+  push cx
+  mov cx, 0
+  APROBADOS_LOOP:
+    cmp byte ptr [bx], 4
+    js DESAPROBADO
+    inc cx
+    DESAPROBADO:
+    inc bx
+    dec ax
+    jnz APROBADOS_LOOP
+  mov ax, cx
+  pop cx
+ret
+
+org 5000h
+PORCENTAJE:
+; recibe la cantidad de notas aprobadas y la cantidad total de notas.
+; recibe cantidad de notas aprobadas por AX.
+; recibe cantidad total de notas por BX.
+; retorna en BX el porcentaje de aprobados.
+  push cx
+  mov cx, 0
+  push bx ; cantidad total de notas.
+  mov bx, 100 
+  call MUL ; notas aprobadas (AX) * 100. Retorna -> AX.
+  pop bx ; cantidad total de notas.
+  call DIV ; (notas aprobadas * 100) (AX) / cant total de notas (BX). Retorna resto -> AX. Cociente -> BX.
+  pop cx
+ret
+
+org 2000h
+  call LEER_NOTAS
+  mov ax, dvec
+  mov bx, offset vector
+  call CANT_APROBADOS ; retorna en AX.
+  mov bx, dvec
+  call PORCENTAJE
+int 0
+end

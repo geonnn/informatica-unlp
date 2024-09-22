@@ -1,0 +1,84 @@
+org 1000h
+ingresar db "Ingresá la palabra a adivinar:", 10
+comenzar db 12, "Comenzá a adivinar!", 10 ; 12 = limpia la pantalla. 10 = line feed.
+ganaste db 10, "Ganaste!"
+perdiste db 10, "Perdiste, el string era "
+clave_input db ?
+long_clave db 0
+clave db ?
+
+org 3000h
+ingresar_clave:
+  push ax
+  push bx
+  mov bx, offset clave
+loop_ingresar_clave:
+  int 6
+  mov al, 1 ; mostrar caracter.
+  int 7 ; mostrar caracter.
+  cmp byte ptr [bx], '.'
+  jz fin_ingr_clave
+  inc bx
+  inc long_clave
+  jmp loop_ingresar_clave
+fin_ingr_clave:
+  pop bx
+  pop ax
+ret
+
+org 3500h
+adivinar:
+  push ax
+  push bx
+  push cx
+  push dx
+  mov ch, 50 ; contador para los 50 intentos.
+  mov dx, offset clave ; voy guardando en dx la dirección del caracter a adivinar.
+  mov ah, long_clave
+  loop_adivinar:
+    mov bx, offset clave_input
+    int 6
+    mov cl, [bx] ; guardo en cl el caracter ingresado.
+    mov bx, dx ; copio la dirección del caracter a adivinar.
+    cmp byte ptr [bx], cl
+    jz acierto_adivinar
+    dec ch
+    jnz loop_adivinar
+    jmp resultado_adivinar
+  acierto_adivinar:
+    inc dx ; aumento dx y obtengo el caracter siguiente.
+    dec ah ; disminuyo lo que queda para adivinar.
+    jnz loop_adivinar
+  resultado_adivinar:
+    cmp ah, 0
+    jz imprimir_ganaste
+    mov bx, offset perdiste
+    mov al, offset clave_input - offset perdiste
+    int 7
+    mov bx, offset clave
+    mov al, long_clave
+    int 7
+    jmp fin_adivinar
+    imprimir_ganaste:
+      mov bx, offset ganaste
+      mov al, offset perdiste - offset ganaste
+      int 7
+    fin_adivinar:
+      pop dx
+      pop cx
+      pop bx
+      pop ax
+ret
+
+org 2000h
+mov bx, offset ingresar
+mov al, offset comenzar - offset ingresar
+int 7
+call ingresar_clave
+mov bx, offset comenzar
+mov al, offset ganaste - offset comenzar
+int 7
+call adivinar
+
+int 0
+end
