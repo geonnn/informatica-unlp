@@ -1,0 +1,87 @@
+org 1000h
+cantCaracteres db ?
+cantLetras db ?
+cantVocales db ?
+cantConsonantes db ?
+vocales db "aeiouAEIOU"
+cadena db ?
+
+org 3000h
+LEER_STRING:
+  push ax
+  mov al, 0
+  mov bx, offset cadena
+  LEER_STRING_LOOP:
+    int 6
+    cmp [bx], '.'
+    jz LEER_STRING_FIN
+    inc bx
+    inc ax
+    jmp LEER_STRING_LOOP
+  LEER_STRING_FIN:
+  mov cantCaracteres, al
+  pop ax  
+ret
+
+org 3500h
+ES_LETRA:
+; recibe un caracter por AL.
+; retorna en AH. 0FFh si es una letra 00h si no.
+  cmp al, 'A'
+  js LETRA_noEsMayus
+  cmp al, 'Z' + 1
+  jns LETRA_noEsMayus
+  mov ah, 0FFh
+  jmp LETRA_FIN
+  LETRA_noEsMayus:
+  cmp al, 'a'
+  js LETRA_noEsMinus
+  cmp al, 'z' + 1
+  jns LETRA_noEsMinus
+  mov ah, 0FFh
+  jmp LETRA_FIN
+  LETRA_noEsMinus:
+  mov ah, 00h
+  LETRA_FIN:
+ret
+
+org 4000h
+CONTIENE:
+; recibe un string 
+; recibe un caracter
+; retorna en AH. 0FFh si el string contiene el caracter. 00h caso contrario.
+
+
+org 4500h
+ES_VOCAL:
+; recibe un caracter por AL.
+; retorna en AH. 0FFh si es una vocal 00h si no.
+
+
+org 4500h
+CONTAR_VOC
+
+org 2000h
+call LEER_STRING
+mov bx, offset cadena
+mov ch, cantCaracteres
+mov cl, 0 ; cantLetras.
+mov dx, 0 ; dh = cantVocales, dl = cantConsonantes.
+LOOP_ANALIZAR_STRING:
+  mov al, [bx]
+  call ES_LETRA
+  cmp ah, 0FFh
+  jnz NO_ES_LETRA
+  inc cl
+  call ES_VOCAL
+  cmp ah, 0FFh
+  jnz NO_ES_VOCAL
+  inc dh
+  NO_ES_VOCAL:
+  inc dl ; si es letra y no es vocal, es consonante.
+  NO_ES_LETRA:
+  inc bx
+  dec ch
+  jnz LOOP_ANALIZAR_STRING
+int 0
+end
