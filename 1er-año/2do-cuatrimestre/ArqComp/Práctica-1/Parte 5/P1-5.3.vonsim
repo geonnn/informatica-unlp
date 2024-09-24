@@ -13,7 +13,7 @@ LEER_STRING:
   mov bx, offset cadena
   LEER_STRING_LOOP:
     int 6
-    cmp [bx], '.'
+    cmp byte ptr [bx], '.'
     jz LEER_STRING_FIN
     inc bx
     inc ax
@@ -47,19 +47,32 @@ ret
 
 org 4000h
 CONTIENE:
-; recibe un string 
-; recibe un caracter
+; recibe un string por BX.
+; recibe la longitud del string por AH.
+; recibe un caracter por AL.
 ; retorna en AH. 0FFh si el string contiene el caracter. 00h caso contrario.
-
+  cmp al, [bx]
+  jz CONTIENE_TRUE
+  inc bx
+  dec ah
+  jnz CONTIENE
+  mov ah, 00h
+  jmp CONTIENE_FIN
+  CONTIENE_TRUE:
+    mov ah, 0FFh
+  CONTIENE_FIN:
+ret
 
 org 4500h
 ES_VOCAL:
 ; recibe un caracter por AL.
 ; retorna en AH. 0FFh si es una vocal 00h si no.
-
-
-org 4500h
-CONTAR_VOC
+  push bx
+  mov bx, offset vocales
+  mov ah, 10
+  call CONTIENE
+  pop bx
+ret
 
 org 2000h
 call LEER_STRING
@@ -77,11 +90,15 @@ LOOP_ANALIZAR_STRING:
   cmp ah, 0FFh
   jnz NO_ES_VOCAL
   inc dh
+  jmp NO_ES_LETRA
   NO_ES_VOCAL:
   inc dl ; si es letra y no es vocal, es consonante.
   NO_ES_LETRA:
   inc bx
   dec ch
   jnz LOOP_ANALIZAR_STRING
+mov cantLetras, cl
+mov cantVocales, dh
+mov cantConsonantes, dl
 int 0
 end
