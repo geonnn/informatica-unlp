@@ -1,0 +1,43 @@
+DATA equ 40h
+STATE equ 41h
+
+org 1000h
+mensaje db "INGENIERIA E INFORMATICA"
+fin_mensaje db ?
+
+org 3000h
+poll_hand:
+  push ax
+  poll_loop:
+    in al, STATE
+    and al, 1
+    jnz poll_loop
+  pop ax
+ret
+
+org 3100h
+imprimir_caracter_hand:
+; recibe un caracter a imprimir por AL.
+  call poll_hand
+  out DATA, al
+ret
+
+org 3200h
+ini_hand:
+  in al, STATE
+  and al, 7fh ; 0111 1111 | Ixxx xxSB. modo consulta de estado. I = 0 consulta de estado. I = 1 interrupciones.
+  out STATE, al
+ret
+
+org 2000H
+call ini_hand
+mov bx, offset mensaje
+mov ah, offset fin_mensaje - offset mensaje
+imprimir_loop:
+  mov al, [bx]
+  call imprimir_caracter_hand
+  inc bx
+  dec ah
+  jnz imprimir_loop
+int 0
+end

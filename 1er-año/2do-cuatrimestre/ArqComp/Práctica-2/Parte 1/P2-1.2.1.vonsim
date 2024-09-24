@@ -1,0 +1,11 @@
+PB equ 31h
+CB equ 33h
+
+org 2000h
+mov al, 00h
+out CB, al
+mov al, 11000011b
+out PB, al
+
+int 0
+end

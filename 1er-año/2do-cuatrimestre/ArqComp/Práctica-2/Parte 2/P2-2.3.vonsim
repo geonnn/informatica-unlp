@@ -1,0 +1,19 @@
+PA EQU 30h
+CA EQU 32h
+
+org 3000h
+flanco_ascendente:
+  in al, PA
+  and al, 0FDh ; 1111 1101 | xxxx xx0B. Fuerza 0 en strobe y deja todo lo demás igual.
+  out PA, al
+  in al, PA
+  or al, 02h ; 0000 0010 | xxxx xx1B. Fuerza 1 en strobe y deja todo lo demás igual.
+  out PA, al
+ret
+
+org 2000H
+mov al, 0FDh ; 1111 1101 | xxxx xxSB
+out CA, al
+call flanco_ascendente
+int 0
+end

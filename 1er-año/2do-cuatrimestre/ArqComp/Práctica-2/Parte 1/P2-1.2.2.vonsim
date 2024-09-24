@@ -1,0 +1,28 @@
+PA equ 30h
+CA equ 32h
+
+org 1000h
+prendida db "Llave prendida"
+apagada db "Llave apagada"
+fin db ?
+
+org 2000h
+mov al, 0ffh
+out CA, al
+in al, PA
+and al, 80h ; 1000 0000
+cmp al, 0
+jz esta_apagada
+
+mov bx, offset prendida
+mov al, offset apagada - offset prendida
+jmp fin
+
+esta_apagada:
+    mov bx, offset apagada
+    mov al, offset fin - offset apagada
+
+fin:
+int 7
+int 0
+end

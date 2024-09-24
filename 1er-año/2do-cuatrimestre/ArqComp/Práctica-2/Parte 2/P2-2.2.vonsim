@@ -1,0 +1,36 @@
+PA EQU 30h
+CA EQU 32h
+ORG 1000h
+si db "Ocupada"
+no db "Libre"
+
+ORG 2000H
+mov al, 0FDh ; completar. 1111 1101. El bit pos 0 es busy (entrada = 1) y el bit pos 1 es strobe (salida = 0).
+out CA, al
+in al, PA
+and al, 1 ; completar. si da 0 está libre: 1 and (busy) = busy. busy: 0 = libre, 1 = ocupada.
+jnz ocupada
+mov bx, offset no ; completar
+mov al, 5
+int 7
+jmp fin
+ocupada: mov bx, offset si
+mov al, 7
+int 7 ; completar
+fin: int 0
+end
+
+; Modifique el código para que el programa no imprima “Ocupada”. En lugar de eso, el programa debe esperar a que el bit de busy sea 0 usando consulta de estado. Cuando eso suceda, imprimir “Libre” y terminar el programa.
+
+ORG 2000H
+mov al, 0FDh ; completar. 1111 1101. El bit pos 0 es busy (entrada) y el bit pos 1 es strobe (salida).
+out CA, al
+ocupada:
+  in al, PA
+  and al, 1 ; completar. si da 0 está libre: 1 and (busy) = busy. busy: 0 = libre, 1 = ocupada.
+  jnz ocupada
+mov bx, offset no ; completar
+mov al, 5
+int 7
+int 0
+end

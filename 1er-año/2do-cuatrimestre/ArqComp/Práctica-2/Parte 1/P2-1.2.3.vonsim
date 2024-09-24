@@ -1,0 +1,19 @@
+PA equ 30h
+PB equ 31h
+CA equ 32h
+CB equ 33h
+
+org 2000h
+mov al, 0ffh
+out CA, al
+mov al, 00h
+out CB, al
+
+loop:
+  in al, PA
+  out PB, al
+  jmp loop
+
+int 7
+int 0
+end

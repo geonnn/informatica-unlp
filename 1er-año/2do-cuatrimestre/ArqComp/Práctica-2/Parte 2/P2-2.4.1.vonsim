@@ -1,0 +1,51 @@
+PA EQU 30h
+PB equ 31h
+CA EQU 32h
+CB equ 33h
+
+org 3000h
+flanco_ascendente:
+  push ax
+  in al, PA
+  and al, 0FDh ; 1111 1101 | xxxx xx0B. Fuerza 0 en strobe y deja todo lo demás igual.
+  out PA, al
+  in al, PA
+  or al, 02h ; 0000 0010 | xxxx xx1B. Fuerza 1 en strobe y deja todo lo demás igual.
+  out PA, al
+  pop ax
+ret
+
+org 3500h
+ini_pio:
+  push ax
+  mov al, 0FDh
+  out CA, al
+  mov al, 00h
+  out CB, al
+  pop ax
+ret
+
+org 4000h
+poll:
+  push ax
+  poll_loop:
+    in al, PA
+    and al, 1
+    jnz poll_loop
+  pop ax
+ret
+
+org 4500h
+imprimir_caracter:
+; recibe un caracter a imprimir por AL.
+  call poll
+  out PB, al
+  call flanco_ascendente
+ret
+
+org 2000H
+call ini_pio
+mov al, 'A'
+call imprimir_caracter
+int 0
+end

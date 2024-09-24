@@ -1,0 +1,50 @@
+PB EQU 31h
+CB equ 33h ; completar
+
+ORG 2000H
+
+mov al, 00h ; completar. Configuro luces como salida.
+out CB, al
+mov al, 0Fh
+out PB, al
+int 0
+end
+; enciende las luces de los bits 0 a 3.
+;
+
+PA equ 30h ; completar
+CA EQU 32h
+
+ORG 1000h
+msj db "Apagadas"
+
+ORG 2000H
+mov al, 0FFh
+out CA, al ; completar
+in al, PA
+cmp al, 0
+jnz fin
+mov al, 8
+mov bx , offset msj
+int 7
+fin: int 0
+end
+; si todas las llaves están apagadas imprime msj en pantalla.
+;
+
+PA equ 30h ; completar
+PB EQU 31h
+CA EQU 32h
+CB equ 33h ; completar
+
+ORG 2000h
+mov al, 0FFh ; completar
+out CA, al ; completar
+mov al, 00h ; completar
+out CB, al
+in al, PA
+out PB, al
+int 0
+end
+; las luces copian las llaves.
+;
