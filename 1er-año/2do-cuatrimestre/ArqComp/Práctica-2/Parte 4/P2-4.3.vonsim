@@ -1,0 +1,32 @@
+PA equ 30h
+CA equ 32h
+patron equ 10000001b
+
+org 1000h
+activado db "activado"
+fin_act db ?
+
+org 3000h
+ini_pio:
+  push ax
+  mov al, 0FFh
+  out CA, al
+  pop ax
+ret
+
+org 2000h
+call ini_pio
+mov bx, offset activado
+loop:
+  in al, PA
+  cmp al, patron
+  jnz loop
+  mov al, offset fin_act - offset activado
+  int 7
+loop_es:
+  in al, PA
+  cmp al, patron
+  jz loop_es
+jmp loop
+int 0
+end

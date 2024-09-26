@@ -1,0 +1,53 @@
+PA equ 30h
+PB equ 31h
+CA equ 32h
+CB equ 33h
+
+org 1000h
+mensaje db ?
+
+
+org 3000h
+ini_pio:
+  push ax
+  mov al, 0FFh ; todo PA como entrada 1111 1111
+  out CA, al
+  mov al, 00h
+  out CB, al
+  pop ax
+ret
+
+org 3300h
+recibir_caracter:
+; envía la habilitación para recibir un caracter por el PIO y lo recibe en AL.
+  push ax
+  mov al, 0FFh
+  out PB, al
+  in al, PA
+  pop ax
+ret
+
+
+org 3400h
+recibir_mensaje:
+; recibe una dirección de memoria y guarda un mensaje que ingresa por el PIO.
+; offset para el string por BX.
+; se termina de recibir el mensaje cuando se recibe 0.
+  push ax
+  recibir_mensaje_loop:
+    call recibir_caracter
+    cmp al, 0
+    jz recibir_mensaje_fin
+    mov byte ptr [bx], al ; guardo el caracter
+    inc bx ; para guardar el caracter siguiente
+    jmp recibir_mensaje_loop
+  recibir_mensaje_fin:
+  pop ax
+ret
+
+org 2000h
+call ini_pio
+mov bx, offset mensaje
+call recibir_mensaje
+int 0
+end

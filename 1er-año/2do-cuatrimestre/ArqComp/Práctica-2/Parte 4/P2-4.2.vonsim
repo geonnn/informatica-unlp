@@ -1,0 +1,33 @@
+PA equ 30h
+PB equ 31h
+CA equ 32h
+CB equ 33h
+
+org 1000h
+ganaste db "GANASTE"
+clave db 10101100b
+
+org 3000h
+ini_pio:
+  push ax
+  mov al, 0FFh
+  out CA, al
+  mov al, 00h
+  out CB, al
+  pop ax
+ret
+
+org 2000h
+call ini_pio
+loop: 
+  in al, PA
+  xor al, clave
+  not al
+  out PB, al
+  cmp al, 0FFh
+  jnz loop
+mov bx, offset ganaste
+mov al, offset clave - offset ganaste
+int 7
+int 0
+end

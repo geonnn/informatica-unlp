@@ -1,0 +1,70 @@
+PB equ 31h
+CB equ 33h
+
+org 1000h
+num db 1
+
+org 3000h
+ini_pio:
+  push ax
+  mov al, 00h
+  out CB, al
+  pop ax
+ret
+
+org 3100h
+ROTAR_IZQ:
+; recibe un byte y mueve todos los bits un lugar a la izq.
+; recibe el byte por AL.
+  add al, al
+  adc al, 0
+ret
+
+org 3200h
+ROTARIZQ_N:
+; realiza N rotaciones a la izquierda.
+; recibe N por CL.
+  push cx
+  cmp cl, 0
+  jz ROTARIZQN_FIN ; verifico que N no sea 0 de entrada.
+  ROTARIZQN_LOOP:
+    call ROTAR_IZQ
+    dec cl
+    jnz ROTARIZQN_LOOP
+  ROTARIZQN_FIN:
+  pop cx
+ret
+
+org 3300h
+ROTARDER_N:
+; realiza N rotaciones a la derecha.
+; recibe N por CL.
+  push cx
+  cmp cl, 0
+  jz ROTARDERN_FIN ; verifico que N no sea 0 de entrada.
+  sub cl, 8
+  neg cl
+  call ROTARIZQ_N
+  ROTARDERN_FIN:
+  pop cx
+ret
+
+org 2000h
+call ini_pio
+mov al, 0
+out PB, al
+mov al, 1
+mov cl, 1
+LUCES_LOOP:
+  out PB, al
+  call ROTAR_IZQ
+  cmp al, 128
+  jnz LUCES_LOOP
+LUCER_DER_LOOP:
+  out PB, al
+  call ROTARDER_N
+  cmp al, 1
+  jnz LUCER_DER_LOOP
+  jmp LUCES_LOOP
+int 0
+end

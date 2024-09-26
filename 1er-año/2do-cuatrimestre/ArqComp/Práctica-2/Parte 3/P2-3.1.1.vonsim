@@ -1,0 +1,66 @@
+PA equ 30h
+PB equ 31h
+CA equ 32h
+CB equ 33h
+
+org 1000h
+mensaje_fprograma db "Fin de programa"
+mensaje_act db "Arquitectura de Computadoras: ACTIVADA", 10 ; 10 = salto de línea.
+fin_mensaje_act db ?
+
+org 3000h
+ini_pio:
+  push ax
+  mov al, 0FFh
+  out CA, al
+  mov al, 00h
+  out CB, al
+  pop ax
+ret
+
+org 3100h
+sub_A:
+  push ax
+  cmp al, 0 
+  jnz fin_subA
+  mov cl, 1 ; si lo que entra por PA = 0, la subr devuelve cl = 1, hay que finalizar el programa.
+  mov bx, offset mensaje_fprograma
+  mov al, offset mensaje_act - offset mensaje_fprograma
+  int 7
+fin_subA:
+pop ax
+ret
+
+org 3200h
+sub_B:
+  push ax
+  not al
+  out PB, al
+  pop ax
+ret
+
+org 3300h
+sub_C:
+  push ax
+  and al, 1 ; | xxxx xxxx AND 0000 0001. RESULTADO = 0000 000X. Si es 0 está apagada.
+  jz fin_C
+  mov bx, offset mensaje_act
+  mov al, offset fin_mensaje_act - offset mensaje_act
+  int 7
+  fin_C:
+  pop ax
+ret
+
+org 2000h
+call ini_pio
+loop:
+  in al, PA
+  call sub_A
+  cmp cl, 1
+  jz fin_programa
+  call sub_B
+  call sub_C
+  jmp loop
+fin_programa:
+int 0
+end
