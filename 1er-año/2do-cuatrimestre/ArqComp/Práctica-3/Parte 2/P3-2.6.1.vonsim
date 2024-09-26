@@ -1,0 +1,89 @@
+EOI equ 20H
+IMR equ 21H
+INT0 equ 24h
+INT1 equ 25h
+ID_F10 equ 10
+ID_TIMER equ 11
+CONT equ 10h
+COMP equ 11h
+
+org 40
+dw RUT_F10
+
+org 44
+dw RUT_TIMER
+
+org 3000h
+RUT_F10:
+  push ax
+  push bx
+  mov al, 0
+  out CONT, al
+  mov al, 0FCh
+  out IMR, al ; activo las interrupciones para el timer.
+  mov al, EOI
+  out EOI, al
+  pop bx
+  pop ax
+iret
+
+org 3100h
+RUT_TIMER:
+  push ax
+  push bx
+  mov bx, offset num
+  mov al, 1
+  int 7
+  mov bx, offset blank
+  mov al, 1
+  int 7
+  dec num
+  cmp num, 30h - 1
+  jnz seguir
+  mov al, 0FEh ; bloqueo todas las interrupciones menos la del f10.
+  out IMR, al
+  seguir:
+  mov al, 0
+  out CONT, al
+  mov al, EOI
+  out EOI, al
+  pop bx
+  pop ax
+iret
+
+org 3200h
+LEER_NUMERO:
+  mov bx, offset mensaje
+  mov al, offset num - offset mensaje
+  int 7
+  mov bx, offset num
+  REPITE: int 6
+  mov al, num
+  cmp al, 30h
+  js REPITE
+  cmp al, 39h
+  jns REPITE
+ret
+
+org 1000h
+mensaje db "Ingrese un número (del 1 al 9): ", 10
+num db ?
+blank db " "
+
+org 2000h
+call LEER_NUMERO
+cli
+mov al, 0FEh ; 1111 1110. Habilita f10. La rutina de interrupción f10 habilitará el timer.
+out IMR, al
+mov al, ID_F10
+out INT0, al
+mov al, ID_TIMER ; de todas formas configuro el timer.
+out INT1, al
+mov al, 1
+out COMP, al ; seteo el comparador en 1 para que el timer interrumpa cada 1 seg.
+sti
+loop:
+  cmp num, 30h - 1
+  jnz loop
+int 0
+end

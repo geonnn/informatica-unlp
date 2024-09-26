@@ -1,0 +1,27 @@
+EOI EQU 20H
+IMR EQU 21H
+INT0 equ 24h ; completar
+N_F10 EQU 15
+
+org 60; completar
+IP_F10 DW RUT_F10
+
+ORG 3000H
+RUT_F10: PUSH AX
+inc dx ; completar
+MOV AL, EOI
+out EOI, al ; completar
+POP AX
+IRET
+
+ORG 2000H
+CLI
+MOV AL, 0FEH ; 1111 1110. Habilita interrupciones de la tecla F10.
+out IMR, AL ; completar
+mov al, N_F10 ; completar
+OUT INT0, AL
+MOV DX, 0
+STI
+LAZO: JMP LAZO
+int 0
+end

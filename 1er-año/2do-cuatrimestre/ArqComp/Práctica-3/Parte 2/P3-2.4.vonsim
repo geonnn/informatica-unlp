@@ -1,0 +1,45 @@
+EOI equ 20h
+IMR equ 21h
+INT0 equ 24h
+ID_F10 equ 10
+
+org 40
+dw MENSAJE_F10
+
+org 1000h
+mensaje db "Vamos las interrupciones!"
+fin_mensaje db ?
+cant_ints db 0
+
+org 3000h
+MENSAJE_F10:
+  push ax
+  push bx
+  mov bx, offset mensaje
+  mov al, offset fin_mensaje - offset mensaje
+  int 7
+  inc cant_ints
+  cmp cant_ints, 5
+  jnz sigue
+  mov al, 0FFh
+  out IMR, al
+  sigue:
+  mov al, EOI
+  out EOI, al
+  pop bx
+  pop ax
+iret
+  
+
+org 2000h
+cli
+mov al, 0FEh
+out IMR, al
+mov al, ID_F10
+out INT0, al
+sti
+loop:
+  cmp cant_ints, 5
+  jnz loop
+int 0
+end

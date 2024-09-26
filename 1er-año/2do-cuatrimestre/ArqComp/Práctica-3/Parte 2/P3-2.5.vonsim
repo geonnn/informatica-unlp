@@ -1,0 +1,162 @@
+EOI equ 20h
+IMR equ 21h
+INT1 equ 25h
+ID_TIMER equ 15
+CONT equ 10h
+COMP equ 11h
+
+org 60
+dw RUT_TIMER
+
+org 1000h
+mensaje db "Vamos las interrupciones!"
+fin_mensaje db ?
+cant db 0
+
+org 3000h
+RUT_TIMER:
+  push ax
+  push bx
+  mov bx, offset mensaje
+  mov al, offset fin_mensaje - offset mensaje
+  int 7
+  inc cant
+  cmp cant, 5
+  jnz sigue
+  mov al, 0FFh
+  out IMR, al
+  sigue:
+  mov al, EOI
+  out EOI, al
+  mov al, 0
+  out CONT, al
+  pop bx
+  pop ax
+iret
+
+
+org 2000h
+cli
+mov al, 0FDh ; 1111 1101. Habilito las interrupciones del timer.
+out IMR, al
+mov al, ID_TIMER
+out INT1, al
+mov al, 2
+out COMP, al
+mov al, 0
+out CONT, al
+sti
+loop:
+  cmp cant, 5
+  jnz loop
+int 0
+end
+
+; C:
+
+EOI equ 20h
+IMR equ 21h
+INT1 equ 25h
+ID_TIMER equ 15
+CONT equ 10h
+COMP equ 11h
+
+org 60
+dw RUT_TIMER
+
+org 1000h
+mensaje db "Vamos las interrupciones!"
+fin_mensaje db ?
+imprimio db 0
+
+org 3000h
+RUT_TIMER:
+  push ax
+  push bx
+  mov bx, offset mensaje
+  mov al, offset fin_mensaje - offset mensaje
+  int 7
+  inc imprimio
+  mov al, 0FFh
+  out IMR, al
+  mov al, EOI
+  out EOI, al
+  pop bx
+  pop ax
+iret
+
+
+org 2000h
+cli
+mov al, 0FDh ; 1111 1101. Habilito las interrupciones del timer.
+out IMR, al
+mov al, ID_TIMER
+out INT1, al
+mov al, 10
+out COMP, al
+mov al, 0
+out CONT, al
+sti
+loop: 
+  cmp imprimio, 1
+  jnz loop
+int 0
+end
+
+; D:
+
+EOI equ 20h
+IMR equ 21h
+INT1 equ 25h
+ID_TIMER equ 15
+CONT equ 10h
+COMP equ 11h
+
+org 60
+dw RUT_TIMER
+
+org 1000h
+mensaje db "Vamos las interrupciones!"
+fin_mensaje db ?
+espera db 1
+
+org 3000h
+RUT_TIMER:
+  push ax
+  push bx
+  mov bx, offset mensaje
+  mov al, offset fin_mensaje - offset mensaje
+  int 7
+  inc espera
+  mov al, espera
+  out COMP, al
+  cmp al, 0
+  jnz sigue
+  mov al, 0FFh
+  out IMR, al
+  sigue:
+  mov al, 0
+  out CONT, al
+  mov al, EOI
+  out EOI, al
+  pop bx
+  pop ax
+iret
+
+
+org 2000h
+cli
+mov al, 0FDh ; 1111 1101. Habilito las interrupciones del timer.
+out IMR, al
+mov al, ID_TIMER
+out INT1, al
+mov al, 1
+out COMP, al
+mov al, 0
+out CONT, al
+sti
+loop:
+  cmp espera, 0
+  jnz loop
+int 0
+end
