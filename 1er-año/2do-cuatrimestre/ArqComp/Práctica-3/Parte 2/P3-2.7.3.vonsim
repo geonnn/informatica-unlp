@@ -1,0 +1,90 @@
+EOI equ 20h
+IMR equ 21h
+INT0 equ 24h
+INT2 equ 26h
+DATA equ 40h
+STATE equ 41h
+ID_F10 equ 11
+ID_HAND equ 10
+long_msj equ 10
+
+org 40
+dw RUT_HAND
+
+org 44
+dw RUT_F10
+
+org 3100h
+ini_hand:
+  in al, STATE
+  or al, 10000000b ; bit 7: 1 = interrupciones. 0 = consulta de estados.
+  out STATE, al
+ret
+
+org 3200h
+poll:
+  push ax
+  poll_loop:
+    in al, STATE
+    and al, 1
+    jnz poll_loop
+  pop ax
+ret
+
+org 3300h
+RUT_HAND:
+  push ax
+  mov al, [bx]
+  out DATA, al
+  inc bx
+  dec cl
+  jnz seguir
+  mov al, 0FFh
+  out IMR, al
+  seguir:
+  mov al, EOI
+  out EOI, al
+  pop ax
+iret
+
+org 3400h
+LEER_MSJ:
+  int 6
+  inc bx
+  dec al
+  jnz LEER_MSJ
+ret
+
+org 3500h
+RUT_F10:
+  push ax
+  mov al, 0FEh ; inhabilito interrupciones de handshake.
+  out IMR, al
+  mov al, EOI
+  out EOI, al
+  pop ax
+iret
+
+org 1000h
+mensaje db ?
+
+org 2000h
+mov bx, offset mensaje
+mov al, long_msj
+call LEER_MSJ
+mov bx, offset mensaje
+mov cl, long_msj
+cli
+mov al, 11111010b ; habilito interrupciones para handshake y F10.
+out IMR, al
+mov al, ID_HAND
+out INT2, al
+mov al, ID_F10
+out INT0, al
+call ini_hand
+sti
+loop:
+  cmp cl, 0
+  jnz loop
+int 0
+end
