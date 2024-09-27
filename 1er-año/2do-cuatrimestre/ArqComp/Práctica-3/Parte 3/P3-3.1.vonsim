@@ -1,0 +1,98 @@
+; PIC:
+EOI equ 20h
+IMR equ 21h
+INT0 equ 24h
+ID_F10 equ 10
+
+; PIO:
+PA equ 30h
+PB equ 31h
+CA equ 32h
+CB equ 33h
+
+org 40
+dw RUT_F10
+
+org 3000h
+RUT_F10:
+  push ax
+  mov al, 0FFh
+  out IMR, al
+  inc imprimir ; flag de imprimir en 1.
+  mov al, EOI
+  out EOI, al
+  pop ax
+iret
+
+org 3100h
+LEER_MSJ:
+  cli
+  mov al, ID_F10
+  out INT0, al
+  mov al, 0FEh
+  out IMR, al
+  sti
+  mov bx, offset mensaje
+  mov cl, 0
+  LEER_LOOP:
+    int 6
+    inc bx
+    inc cl
+    cmp imprimir, 1
+    jnz LEER_LOOP
+ret
+
+org 3200h
+ini_pio:
+  push ax
+  mov al, 01111101b ; Ixxx xxSB | I = 0, consulta de estados. | S = 0, salida strobe. | B = 1, entrada busy.
+  out CA, al
+  mov al, 00h
+  out CB, al
+  pop ax
+ret
+
+org 3300h
+poll:
+  push ax
+  poll_loop:
+    in al, PA
+    and al, 1
+    jnz poll_loop
+  pop ax
+ret
+
+org 3400h
+sub_strobe:
+  push ax
+  in al, PA
+  and al, 11111101b ; fuerzo 0 en la línea de strobe.
+  out PA, al
+  in al, PA
+  or al, 02h
+  out PA, al
+  pop ax
+ret
+
+org 3500h
+imprimir_mensaje:
+  call poll
+  mov al, [bx]
+  out PB, al
+  call sub_strobe
+  inc bx
+  dec cl
+  jnz imprimir_mensaje
+ret
+
+org 1000h
+imprimir db 0 ; flag de estado para la rut_f10
+mensaje db ?
+
+org 2000h
+call ini_pio
+call LEER_MSJ
+mov bx, offset mensaje
+call imprimir_mensaje
+int 0
+end

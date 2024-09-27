@@ -1,0 +1,121 @@
+; PIC
+EOI equ 20h
+IMR equ 21h
+INT0 equ 24h
+ID_F10 equ 10
+
+; PIO
+PA equ 30h
+PB equ 31h
+CA equ 32h
+CB equ 33h
+
+org 40
+dw RUT_F10
+
+org 3000h
+RUT_F10:
+  push ax
+  push bx
+
+  inc flag_f10
+  mov bx, offset texto_input
+  mov al, 10
+  input_loop:
+    int 6
+    inc bx
+    dec al
+    jnz input_loop
+
+  mov al, 0FFh
+  out IMR, al
+  mov al, EOI
+  out EOI, al
+  pop bx
+  pop ax
+iret
+
+org 3100h
+ini_pio:
+  push ax
+
+  mov al, 11111101b ; S = 0, strobe salida. | B = 1, busy entrada.
+  out CA, al
+  mov al, 00h
+  out CB, al
+
+  pop ax
+ret
+
+org 3200h
+poll:
+  push ax
+
+  poll_loop:
+    in al, PA
+    and al, 1
+    jnz poll_loop
+
+  pop ax
+ret
+
+org 3300h
+rut_strobe:
+  push ax
+
+  in al, PA
+  and al, 11111101b
+  out PA, al
+  in al, PA
+  or al, 2 ; 0000 0010.
+  out PA, al
+
+  pop ax
+ret
+
+org 3400h
+imprimir_mensaje:
+  push bx
+  mov bx, sp
+  push ax
+  
+  mov bx, [bx + 4] ; dir. del string.
+  mov ah, 10 ; long. del string
+  loop_imprimir:
+    call poll
+    mov al, [bx]
+    out PB, al
+    call rut_strobe
+    inc bx
+    dec ah
+    jnz loop_imprimir
+  
+  pop ax
+  pop bx
+ret
+
+org 1000h
+msj db "PRESIONE F10 PARA COMENZAR"
+flag_f10 db 0
+texto_input db ?
+
+org 2000h
+call ini_pio
+cli
+mov al, ID_F10
+out INT0, al
+mov al, 0FEh
+out IMR, al
+sti
+mov bx, offset msj
+mov al, offset flag_f10 - offset msj
+int 7
+comenzar_loop:
+  cmp flag_f10, 1
+  jnz comenzar_loop
+mov ax, offset texto_input
+push ax
+call imprimir_mensaje
+pop ax
+int 0
+end

@@ -1,0 +1,47 @@
+; PIC
+EOI equ 20h
+IMR equ 21h
+INT0 equ 24h
+ID_F10 equ 10
+
+; PIO:
+PA equ 30h
+PB equ 31h
+CA equ 32h
+CB equ 33h
+
+org 40
+dw RUT_F10
+
+org 3000h
+RUT_F10:
+  push ax
+  in al, PB
+  not al
+  out PB, al
+  mov al, EOI
+  out EOI, al
+  pop ax
+iret
+
+org 3100h
+ini_pio:
+  push ax
+  mov al, 00h
+  out CB, al
+  pop ax
+ret
+
+org 2000h
+call ini_pio
+cli
+mov al, ID_F10
+out INT0, al
+mov al, 0FEh
+out IMR, al
+sti
+mov al, 00h
+out PB, al ; estado inicial, apagadas.
+loop: jmp loop
+int 0
+end

@@ -1,0 +1,52 @@
+; PIC
+EOI equ 20h
+IMR equ 21h
+INT0 equ 24h
+ID_F10 equ 10
+
+org 40
+dw RUT_F10
+
+org 3000h
+RUT_F10:
+  push ax
+  push bx
+
+  inc fin
+  mov num, dl ; copia el número.
+  mov bx, offset num
+  mov al, 1
+  int 7
+  mov bx, offset linefeed
+  int 7
+  
+  mov al, 0FFh
+  out IMR, al
+  mov al, EOI
+  out EOI, al
+  pop bx
+  pop ax
+iret
+
+org 1000h
+num db ?
+linefeed db 10
+fin db 0
+
+org 2000h
+cli
+mov al, ID_F10
+out INT0, al
+mov al, 0FEh
+out IMR, al
+sti
+mov dl, 30h
+loop:
+  inc dl
+  cmp dl, 39h
+  jnz loop
+  mov dl, 30h
+  cmp fin, 1
+  jnz loop
+int 0
+end
