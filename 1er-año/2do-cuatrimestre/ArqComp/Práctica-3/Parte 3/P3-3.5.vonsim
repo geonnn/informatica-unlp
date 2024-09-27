@@ -1,0 +1,84 @@
+; PIC
+EOI equ 20h
+IMR equ 21h
+INT1 equ 25h
+ID_TIMER equ 10
+CONT equ 10h
+COMP equ 11h
+
+; PIO
+PA equ 30h
+PB equ 31h
+CA equ 32h
+CB equ 33h
+
+org 40
+dw RUT_TIMER
+
+org 3000h
+RUT_TIMER:
+  push ax
+  mov flag_timer, 0
+  mov al, 00h
+  out PB, al
+  mov al, 0FFh
+  out IMR, al
+  mov al, EOI
+  out EOI, al
+  pop ax
+iret
+
+org 3100h
+ini_pio:
+  push ax
+  mov al, 0FFh
+  out CA, al
+  mov al, 00h
+  out CB, al
+  pop ax
+ret
+
+org 3200h
+LUCES12:
+  push bx
+  mov bx, sp
+  mov bx, [bx + 4] ; dir. de las luces.
+  mov al, [bx] ; estado de las luces.
+  and al, 10000000b
+  jz APAGADA
+  mov flag_timer, 1
+  mov al, 0FFh
+  out PB, al
+
+  cli ; configuro el timer para que a las 12 segundos las apague.
+  mov al, ID_TIMER
+  out INT1, al
+  mov al, 12
+  out COMP, al
+  mov al, 0
+  out CONT, al
+  mov al, 11111101b
+  out IMR, al
+  sti
+  
+  APAGADA:
+  pop bx
+ret
+
+org 1000h
+luces db ?
+flag_timer db 0
+
+org 2000h
+call ini_pio
+in al, PA ; copio el estado de las llaves
+mov luces, al ; las guardo en una variable para pasar por referencia a través de la pila.
+mov ax, offset luces
+push ax
+call LUCES12
+pop ax
+loop:
+  cmp flag_timer, 1
+  jz loop
+int 0
+end

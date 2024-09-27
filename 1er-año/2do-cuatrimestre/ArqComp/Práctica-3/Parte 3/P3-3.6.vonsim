@@ -1,0 +1,95 @@
+; PIC
+EOI equ 20h
+IMR equ 21h
+INT0 equ 24h
+ID_F10 equ 10
+
+; HANDSHAKE
+DATA equ 40h
+STATE equ 41h
+
+org 40
+dw RUT_F10
+
+org 3000h
+RUT_F10:
+  push ax
+  inc flag_f10
+  mov al, 0FFh
+  out IMR, al
+  mov al, EOI
+  out EOI, al
+  pop ax
+iret
+
+org 3100h
+LEER_DIGITO:
+  push ax
+  push bx
+  mov bx, offset msj
+  mov al, offset num - offset msj
+  int 7
+  mov bx, offset num
+  LEER_DIGITO_LOOP:
+    int 6
+    cmp byte ptr [bx], 30h
+    js LEER_DIGITO_LOOP
+    cmp byte ptr [bx], 39h
+    jns LEER_DIGITO_LOOP
+  pop bx
+  pop ax
+ret
+
+org 3200h
+poll:
+  push ax
+  poll_loop:
+    in al, STATE
+    and al, 1
+    jnz poll_loop
+  pop ax
+ret
+
+org 3300h
+DESCENDER:
+  push bx
+  mov bx, sp
+  push ax
+  mov al, [bx + 4]
+  DESCENDER_LOOP:
+    call poll
+    out DATA, al
+    dec al
+    cmp al, 2Fh
+    jnz DESCENDER_LOOP
+  pop ax
+  pop bx
+ret
+
+org 1000h
+msj db "INGRESE UN NUMERO DEL 1 AL 9:", 10
+num db ?
+flag_f10 db 0
+
+org 2000h
+; config handshake.
+in al, STATE
+and al, 01111111b ; Ixxx xxSB | I = 0, consulta de estado.
+out STATE, al
+
+call LEER_DIGITO
+cli
+mov al, ID_F10
+out INT0, al
+mov al, 0FEh ; 1111 1110.
+out IMR, al
+sti
+loop:
+  cmp flag_f10, 1
+  jnz loop
+mov al, num
+push ax
+call DESCENDER
+pop ax
+int 0
+end
