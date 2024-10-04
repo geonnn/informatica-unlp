@@ -11,7 +11,7 @@ import PaqueteLectura.GeneradorAleatorio;
  */
 public class Ej04 {
     // Constantes:
-    private static final int PISOS = 9;
+    private static final int PISOS = 8;
     private static final int OFICINAS = 4;
     
     public static void main(String[] args) {
