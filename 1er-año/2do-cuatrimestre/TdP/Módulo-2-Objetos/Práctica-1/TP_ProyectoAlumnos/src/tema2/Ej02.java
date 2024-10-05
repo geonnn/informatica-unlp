@@ -15,6 +15,8 @@ public class Ej02 {
     
     public static void main(String[] args) {
         
+        GeneradorAleatorio.iniciar();
+        
         Persona[] vecPersonas = new Persona[DF];
         
         int i = 0;
@@ -29,7 +31,27 @@ public class Ej02 {
             edad = GeneradorAleatorio.generarInt(90);
             i++;
         }
+        int DL = i;
+        int pDNImin = 0, DNImin = Integer.MAX_VALUE;
+        int cantMayores65 = 0;
         
+        // Print del vector para verificar:
+        /*
+        for (i=0; i<DL; i++) {
+            System.out.println(vecPersonas[i].toString());
+        }
+        */
+        
+        for (i=0; i<DL; i++) {
+            if ((vecPersonas[i].getEdad()) > 65)
+                cantMayores65++;
+            if (vecPersonas[i].getDNI() < DNImin){
+                DNImin = vecPersonas[i].getDNI();
+                pDNImin = i;
+            }
+        }
+        System.out.println("Cantidad de personas mayores a 65 años: " + cantMayores65);
+        System.out.println("Persona con DNI más chico: " + vecPersonas[pDNImin].toString());
     }
     
 }
