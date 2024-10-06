@@ -8,9 +8,9 @@ import PaqueteLectura.GeneradorAleatorio;
 
 /**
  *
- * @author Gonzalo
+ * @author gonza
  */
-public class Ej03 {
+public class Ej04 {
     
     private static final int DIAS = 5;
     private static final int TURNOS = 8;
@@ -20,29 +20,37 @@ public class Ej03 {
         GeneradorAleatorio.iniciar();
         
         Persona[][] matrizCasting = new Persona[DIAS][TURNOS];
+        int[] vecDLTurnos = new int[DIAS];
         
-        int i, j, edad, DNI, DL = 0;
+        // Inicializo contadores de DLs.
+        for (int i=0; i<DIAS; i++)
+            vecDLTurnos[i] = 0;
+        
+        int edad, DNI, dia, DL = 0;
         String nombre;
         
-        i = 0;
-        nombre = GeneradorAleatorio.generarString(GeneradorAleatorio.generarInt(10) + 1);
+        nombre = GeneradorAleatorio.generarString(3);
         while (DL < (DIAS*TURNOS) && !(nombre.equals("ZZZ"))) {
-            j = 0;
-            while (DL < (DIAS*TURNOS) && !(nombre.equals("ZZZ")) && (j < TURNOS)) {
-                DNI = GeneradorAleatorio.generarInt(99999999 - 10000000 + 1) + 10000000;
-                edad = GeneradorAleatorio.generarInt(90);
-                matrizCasting[i][j] = new Persona(nombre, DNI, edad);
+            DNI = GeneradorAleatorio.generarInt(99999999 - 10000000 + 1) + 10000000;
+            edad = GeneradorAleatorio.generarInt(90);
+            dia = GeneradorAleatorio.generarInt(DIAS);
+            
+            // Si el vector de DL de ese día no llegó a la cantidad de turnos totales para ese día, se agrega una persona más en el turno sig.
+            if (vecDLTurnos[dia] < TURNOS) {
+                matrizCasting[dia][vecDLTurnos[dia]] = new Persona(nombre, DNI, edad);
                 DL++;
-                j++;
-                nombre = GeneradorAleatorio.generarString(GeneradorAleatorio.generarInt(10) + 1);
-                //nombre = "ZZZ";
+                vecDLTurnos[dia]++;
             }
-            i++;
+            else
+                System.out.println(nombre + ", no quedan turnos disponibles para el día " + (dia + 1) + ".");
+            
+            nombre = GeneradorAleatorio.generarString(3);
+            //nombre = "ZZZ";
         }
         
         System.out.println("DL: " + DL);
         
-        int k = 0;
+        int i, j, k = 0;
         while (k < DL) {
             i = 0;
             while ((k < DL) && (i < DIAS)) {
