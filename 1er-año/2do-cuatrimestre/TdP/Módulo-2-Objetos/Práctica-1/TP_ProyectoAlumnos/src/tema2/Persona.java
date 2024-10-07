@@ -5,6 +5,8 @@
  */
 package tema2;
 
+import PaqueteLectura.GeneradorAleatorio;
+
 
 public class Persona {
     private String nombre;
@@ -15,6 +17,14 @@ public class Persona {
         nombre = unNombre;
         DNI = unDNI;
         edad = unaEdad; 
+    }
+    
+    // Genera una persona random con el nombre ingresado.
+    public Persona(String unNombre) {
+        GeneradorAleatorio.iniciar();
+        setNombre(unNombre);
+        setDNI(GeneradorAleatorio.generarInt((99999999 - 10000000 + 1) + 10000000));
+        setEdad(GeneradorAleatorio.generarInt((72) + 18));
     }
     
     public Persona(){
@@ -34,15 +44,15 @@ public class Persona {
     }
 
     public void setDNI(int unDNI) {
-        DNI = unDNI;
+        this.DNI = unDNI;
     }
 
     public void setEdad(int unaEdad) {
-        edad = unaEdad;
+        this.edad = unaEdad;
     }
 
     public void setNombre(String unNombre) {
-        nombre = unNombre;
+        this.nombre = unNombre;
     }
     
     public String toString(){
@@ -50,8 +60,9 @@ public class Persona {
         aux = "Mi nombre es " + nombre + ", mi DNI es " + DNI + " y tengo " + edad + " años.";
         return aux;
     }
-    
-    
-    
-    
+    public String toStringDatos(){
+        String aux; 
+        aux = "Nombre: " + nombre + ", DNI: " + DNI + ", edad: " + edad + " años.";
+        return aux;
+    }
 }

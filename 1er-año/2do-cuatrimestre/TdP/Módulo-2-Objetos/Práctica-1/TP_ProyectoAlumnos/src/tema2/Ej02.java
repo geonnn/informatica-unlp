@@ -24,7 +24,7 @@ public class Ej02 {
         int DNI, edad;
         
         edad = GeneradorAleatorio.generarInt(90);
-        while (i < 15 && (edad != 0)) {
+        while (i < DF && (edad != 0)) {
             nombre = GeneradorAleatorio.generarString(GeneradorAleatorio.generarInt(10) + 1);
             DNI = GeneradorAleatorio.generarInt(99999999 - 10000000 + 1) + 10000000;
             vecPersonas[i] = new Persona(nombre, DNI, edad);

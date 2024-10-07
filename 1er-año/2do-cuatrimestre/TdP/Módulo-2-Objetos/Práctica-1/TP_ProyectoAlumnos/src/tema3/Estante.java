@@ -9,12 +9,20 @@ package tema3;
  * @author gonza
  */
 public class Estante {
-    private final int MAX_LIBROS = 20;
+    private int MAX_LIBROS;
     private Libro[] vecLibros = new Libro[MAX_LIBROS];
     private int dimL;
     
+    // Si se especifica el máximo se crea con ese máximo.
+    public Estante(int maxLibros) {
+        setDimL(0);
+        setMAX_LIBROS(maxLibros);
+    }
+    
+    // Si no se especifica se crea un estante con capacidad máxima 20.
     public Estante() {
-        dimL = 0;
+        setDimL(0);
+        setMAX_LIBROS(20);
     }
     
     public boolean estaLleno() {
@@ -41,4 +49,14 @@ public class Estante {
         System.out.println("No se encontró el libro con el título ingresado");
         return null;
     }
+
+    private void setDimL(int unaDimL) {
+        this.dimL = unaDimL;
+    }
+
+    private void setMAX_LIBROS(int unMaxLibros) {
+        this.MAX_LIBROS = unMaxLibros;
+    }
+    
+    
 }
