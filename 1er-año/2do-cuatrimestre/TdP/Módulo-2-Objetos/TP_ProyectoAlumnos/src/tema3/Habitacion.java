@@ -60,15 +60,15 @@ public class Habitacion {
     }
     
     public void aumentarCosto(double unMonto) {
-        this.costoPNoche += unMonto;
+        this.setCostoPNoche(this.getCostoPNoche() + unMonto);
     }
     
     public String toString() {
         String aux;
-        aux = "$" + String.format("%.2f", costoPNoche) + " por noche, ";
-        if (estaOcupada) {
+        aux = "$" + String.format("%.2f", this.getCostoPNoche()) + " por noche, ";
+        if (this.isOcupada()) {
             aux += "ocupada. | ";
-            aux += "Cliente: " + cliente.toStringDatos();
+            aux += "Cliente: " + this.getCliente().toStringDatos();
         }
         else
             aux += "libre.";
