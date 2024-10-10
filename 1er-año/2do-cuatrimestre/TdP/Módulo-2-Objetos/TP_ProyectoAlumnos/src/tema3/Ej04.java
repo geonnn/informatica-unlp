@@ -13,7 +13,7 @@ import tema2.Persona;
  */
 public class Ej04 {
     
-    private static String[] nombres = {"Gonzalo", "Antonia", "Juan", "Pedro", "María", "Mariana", "Martina", "Dave", "Kurt", "John", "Anthony", "Flea", "Chad", "Cory", "Joe", "Angus"};
+    private static final String[] nombres = {"Gonzalo", "Antonia", "Juan", "Pedro", "María", "Mariana", "Martina", "Dave", "Kurt", "John", "Anthony", "Flea", "Chad", "Cory", "Joe", "Angus"};
     
     public static void main(String[] args) {
         
