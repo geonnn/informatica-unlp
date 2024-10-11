@@ -11,29 +11,35 @@ public abstract class Figura {
     private String colorLinea;
    
     public Figura(String unCR, String unCL){
-        setColorRelleno(unCR);
-        setColorLinea(unCL);
+        this.setColorRelleno(unCR);
+        this.setColorLinea(unCL);
     }
     
     public String toString(){
         String aux = "Area: " + this.calcularArea() +
-                     " CR: "  + getColorRelleno() + 
-                      " CL: " + getColorLinea();             
+                    " Perímetro: " + this.calcularPerimetro() +
+                    " CR: "  + this.getColorRelleno() + 
+                    " CL: " + this.getColorLinea();             
              return aux;
        }
 
     
     public String getColorRelleno(){
-        return colorRelleno;       
+        return this.colorRelleno;       
     }
     public void setColorRelleno(String unColor){
-        colorRelleno = unColor;       
+        this.colorRelleno = unColor;       
     }
     public String getColorLinea(){
-        return colorLinea;       
+        return this.colorLinea;       
     }
     public void setColorLinea(String unColor){
-        colorLinea = unColor;       
+        this.colorLinea = unColor;       
+    }
+    
+    public void despintar() {
+        this.setColorLinea("negra");
+        this.setColorRelleno("blanco");
     }
     
     public abstract double calcularArea();
