@@ -26,6 +26,10 @@ public class ArrayInvestigadores extends Array {
         return this.investigadores;
     }
     
+    public Investigador getInvestigador(int i) {
+        return this.getVector()[i];
+    }
+    
     // Otros métodos.
     public boolean agregarInvestigador(Investigador unInvestigador) {
         return this.agregarElemento(unInvestigador);

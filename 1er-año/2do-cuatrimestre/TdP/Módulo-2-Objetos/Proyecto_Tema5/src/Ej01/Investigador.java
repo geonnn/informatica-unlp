@@ -52,6 +52,10 @@ public class Investigador {
         return this.especialidad;
     }
     
+    public ArraySubsidios getVecSubsidios() {
+        return this.vecSubsidios;
+    }
+    
     // Otros métodos.
     public void agregarSubsidio(Subsidio unSubsidio) {
         if (this.vecSubsidios.agregarSubsidio(unSubsidio))
