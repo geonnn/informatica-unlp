@@ -12,7 +12,7 @@ public class Ej02 {
     
     public static void main(String[] args) {
         
-        Jugador messi = new Jugador("Lionel Messi", 1000, 1, 100, 100);
+        Jugador messi = new Jugador("Lionel Messi", 10000, 1, 100, 100);
         Entrenador guardiola = new Entrenador("Pep Guardiola", 1000, 1, 10);
         
         System.out.println(messi.toString());

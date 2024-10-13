@@ -25,7 +25,7 @@ public class Entrenador extends Empleado {
     }
     
     public double calcularEfectividad() {
-        return ((double) this.getCampeonatos() / super.getAntiguedad());
+        return ((double) this.getCampeonatos() / this.getAntiguedad());
     }
     
     public double calcularSueldoIncentivo() {

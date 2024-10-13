@@ -41,7 +41,7 @@ public class Jugador extends Empleado {
     
     public double calcularSueldoIncentivo() {
         if (this.calcularEfectividad() > 0.5)
-            return super.getSueldoBasico();
+            return this.getSueldoBasico();
         else
             return 0;
     }

@@ -57,12 +57,12 @@ public class Persona {
     
     public String toString(){
         String aux; 
-        aux = "Mi nombre es " + nombre + ", mi DNI es " + DNI + " y tengo " + edad + " años.";
+        aux = "Mi nombre es " + this.getNombre() + ", mi DNI es " + this.getDNI() + " y tengo " + this.getEdad() + " años.";
         return aux;
     }
     public String toStringDatos(){
         String aux; 
-        aux = "Nombre: " + nombre + ", DNI: " + DNI + ", edad: " + edad + " años.";
+        aux = "Nombre: " + this.getNombre() + ", DNI: " + this.getDNI() + ", edad: " + this.getEdad() + " años.";
         return aux;
     }
 }

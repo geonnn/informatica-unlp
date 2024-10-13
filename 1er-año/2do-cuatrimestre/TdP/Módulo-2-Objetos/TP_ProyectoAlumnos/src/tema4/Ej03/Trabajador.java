@@ -25,7 +25,7 @@ public class Trabajador extends Persona {
     }
 
     public String toString() {
-        return super.toString() + " Soy " + tarea + ".";
+        return super.toString() + " Soy " + this.getTarea() + ".";
     }
     
 }
