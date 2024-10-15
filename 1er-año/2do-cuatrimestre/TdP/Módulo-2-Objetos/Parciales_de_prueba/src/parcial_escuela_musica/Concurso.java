@@ -51,7 +51,7 @@ public class Concurso {
     }
     
     public void asignarPuntaje(String nomAl, int punt) {
-        for (int i = 0; i < this.getCantGeneros(); i++)
+        //for (int i = 0; i < this.getCantGeneros(); i++)
             
     }
     
