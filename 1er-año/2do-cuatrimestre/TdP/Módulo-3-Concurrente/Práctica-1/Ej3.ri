@@ -1,0 +1,90 @@
+programa Ej3
+procesos
+  proceso izquierda
+  comenzar
+    repetir 3
+      derecha
+  fin
+
+  proceso juntarFlores(ES cantFlores: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      cantFlores := cantFlores + 1
+  fin
+
+  proceso juntarPapeles(ES cantPapeles: numero)
+  comenzar
+    mientras (HayPapelEnLaEsquina)
+      tomarPapel
+      cantPapeles := cantPapeles + 1
+  fin
+
+  proceso dejarFlores
+  comenzar
+    mientras (HayFlorEnLaBolsa)
+      depositarFlor
+  fin
+
+  proceso dejarPapeles
+  comenzar
+    mientras (HayPapelEnLaBolsa)
+      depositarPapel
+  fin
+
+  proceso procesarEsquina(ES cantFlores: numero; ES cantPapeles: numero)
+  comenzar
+    juntarFlores(cantFlores)
+    juntarPapeles(cantPapeles)
+    dejarFlores
+    dejarPapeles
+  fin
+
+  proceso Escalon(E cantPasos: numero; ES cantFlores: numero; ES cantPapeles: numero)
+  variables
+    cantFlores: numero
+    cantPapeles: numero
+  comenzar
+    cantFlores := 0
+    cantPapeles := 0
+    repetir cantPasos
+      procesarEsquina(cantFlores, cantPapeles)
+      mover
+    derecha
+    repetir cantPasos
+      procesarEsquina(cantFlores, cantPapeles)
+      mover
+    izquierda
+  fin
+    
+areas
+  ciudad: AreaC(12,6,32,24)
+robots
+  robot robot1
+  variables
+    cantPasos: numero
+    cantFlores: numero
+    cantPapeles: numero
+    escalonesMasPQueF: numero
+  comenzar
+    escalonesMasPQueF := 0
+    cantPasos := 1
+    repetir 4
+      Escalon(cantPasos, cantFlores, cantPapeles)
+      si (cantPapeles > cantFlores)
+        escalonesMasPQueF := escalonesMasPQueF + 1
+      cantPasos := cantPasos + 1
+    Informar(escalonesMasPQueF)
+  fin
+variables
+  Rojo: robot1
+  Azul: robot1
+  Rosa: robot1
+comenzar
+  AsignarArea(Rojo,ciudad)
+  AsignarArea(Azul,ciudad)
+  AsignarArea(Rosa,ciudad)
+  Iniciar(Rojo,12,14)
+  Iniciar(Azul,17,10)
+  Iniciar(Rosa,22,6)
+fin

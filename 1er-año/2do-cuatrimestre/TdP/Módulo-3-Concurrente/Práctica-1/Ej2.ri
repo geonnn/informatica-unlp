@@ -1,0 +1,74 @@
+programa Ej2
+
+procesos
+
+  proceso juntarPapeles
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+  fin
+
+  proceso recorrerLado
+  comenzar
+    repetir 19
+      juntarPapeles
+      mover
+    juntarPapeles
+  fin
+
+  proceso darseVuelta
+  comenzar
+    repetir 2
+      derecha
+  fin
+
+  proceso izquierda
+  comenzar
+    repetir 3
+      derecha
+  fin
+
+areas
+  r1: AreaP(10,10,10,29)
+  r2: AreaP(10,30,29,30)
+  r3: AreaP(30,11,30,30)
+  r4: AreaP(11,10,30,10)
+robots
+  robot robot1
+  comenzar
+    recorrerLado
+  fin
+
+  robot robot2
+  comenzar
+    derecha
+    recorrerLado
+  fin
+
+  robot robot3
+  comenzar
+    darseVuelta
+    recorrerLado
+  fin
+
+  robot robot4
+  comenzar
+    izquierda
+    recorrerLado
+  fin
+
+variables
+  Rojo: robot1
+  Azul: robot2
+  Rosa: robot3
+  Verde: robot4
+comenzar
+  AsignarArea(Rojo,r1)
+  AsignarArea(Azul,r2)
+  AsignarArea(Rosa,r3)
+  AsignarArea(Verde,r4)
+  Iniciar(Rojo,10,10)
+  Iniciar(Azul,10,30)
+  Iniciar(Rosa,30,30)
+  Iniciar(Verde,30,10)
+fin

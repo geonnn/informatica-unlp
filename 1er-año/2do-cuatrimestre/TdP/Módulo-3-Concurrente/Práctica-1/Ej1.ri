@@ -1,0 +1,57 @@
+programa Ej1
+procesos 
+  proceso juntarFlores(ES cantFlores: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      cantFlores := cantFlores + 1
+  fin
+  proceso dejarFlores
+  comenzar
+    mientras(HayFlorEnLaBolsa)
+      depositarFlor
+  fin
+
+  proceso procesarEsquina(ES cantFlores: numero; ES cantEsqVacias: numero)
+  comenzar
+    si(HayFlorEnLaEsquina)
+      juntarFlores(cantFlores)
+    sino
+      cantEsqVacias := cantEsqVacias + 1
+  fin
+
+  proceso recorrerAvenida
+  variables
+    cantFlores: numero
+    cantEsqVacias: numero
+  comenzar
+    cantFlores := 0
+    cantEsqVacias := 0
+    repetir 99
+      procesarEsquina(cantFlores, cantEsqVacias)
+      mover
+    procesarEsquina(cantFlores, cantEsqVacias)
+    dejarFlores
+    Informar(cantFlores)
+    Informar(cantEsqVacias)
+  fin
+
+areas
+  ciudad: AreaC(1,1,100,100)
+robots
+  robot robot1
+  comenzar
+    recorrerAvenida
+  fin
+variables
+  Rojo: robot1
+  Azul: robot1
+  Rosa: robot1
+comenzar
+  AsignarArea(Rojo,ciudad)
+  AsignarArea(Azul,ciudad)
+  AsignarArea(Rosa,ciudad)
+  Iniciar(Rojo,1,1)
+  Iniciar(Azul,3,1)
+  Iniciar(Rosa,5,1)
+fin
