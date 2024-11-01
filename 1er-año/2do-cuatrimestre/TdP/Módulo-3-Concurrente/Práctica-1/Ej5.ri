@@ -1,0 +1,104 @@
+programa Ej5
+procesos
+  proceso juntarFlores
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+  fin
+
+  proceso juntarPapeles
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+  fin
+
+  proceso dejarFlores
+  comenzar
+    mientras(HayFlorEnLaBolsa)
+      depositarFlor
+  fin
+
+  proceso dejarPapeles
+  comenzar
+    mientras(HayPapelEnLaBolsa)
+      depositarPapel
+  fin
+
+  proceso recorrerCalle(E N: numero)
+  comenzar
+    repetir N
+      juntarFlores
+      mover
+    dejarFlores
+  fin
+
+  proceso recorrerAv(E N: numero)
+  comenzar
+    repetir N
+      juntarPapeles
+      mover
+    dejarPapeles
+  fin
+areas
+  a1: AreaP(1,75,15,80)
+  a2: AreaP(75,81,80,100)
+  a3: AreaP(71,10,100,15)
+  a4: AreaP(10,1,15,10)
+robots
+  robot robotImpar
+  variables
+    n: numero
+    flagR1: boolean
+  comenzar
+    derecha
+    flagR1 := (PosAv = 1)
+    si(flagR1)
+      n := 14
+      recorrerCalle(n)
+    sino
+      n := 29
+      recorrerCalle(n)
+    Pos(PosAv - n, PosCa - 5)
+    si(flagR1)
+      n := 14
+      recorrerCalle(n)
+    sino
+      n := 29
+      recorrerCalle(n)
+  fin
+
+  robot robotPar
+  variables
+    n: numero
+    flagR2: boolean
+  comenzar
+    flagR2 := (PosCa = 81)
+    si(flagR2)
+      n := 19
+      recorrerAv(n)
+    sino
+      n := 9
+      recorrerAv(n)
+    Pos(PosAv + 5, PosCa - n)
+    si(flagR2)
+      n := 19
+      recorrerAv(n)
+    sino
+      n := 9
+      recorrerAv(n)
+  fin
+variables
+  Rojo: robotImpar
+  Azul: robotPar
+  Rosa: robotImpar
+  Verde: robotPar
+comenzar
+  AsignarArea(Rojo,a1)
+  AsignarArea(Azul,a2)
+  AsignarArea(Rosa,a3)
+  AsignarArea(Verde,a4)
+  Iniciar(Rojo,1,80)
+  Iniciar(Azul,75,81)
+  Iniciar(Rosa,71,15)
+  Iniciar(Verde,10,1)
+fin

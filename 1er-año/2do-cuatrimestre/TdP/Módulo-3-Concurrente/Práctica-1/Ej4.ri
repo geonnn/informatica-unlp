@@ -52,21 +52,18 @@ areas
 robots
   robot robot1
   comenzar
-    recorrerAreaFlores
-    Pos(51,1)
-    recorrerAreaFlores
+    si (PosAv = 1)
+      recorrerAreaFlores
+      Pos(51,1)
+      recorrerAreaFlores
+    sino
+      recorrerAreaPapeles
+      Pos(76,1)
+      recorrerAreaPapeles
   fin
-  
-  robot robot2
-  comenzar
-    recorrerAreaPapeles
-    Pos(76,1)
-    recorrerAreaPapeles
-  fin
-
 variables
   Rojo: robot1
-  Azul: robot2
+  Azul: robot1
 comenzar
   AsignarArea(Rojo,a1)
   AsignarArea(Rojo,a3)
