@@ -1,1 +1,1 @@
-D:\matias\drive\FACULTAD\PRIMER_AÑO\ARQ DE C\sim-winmips64\ejercicios\practica 5\p5e3.s
+C:\Users\gonza\Documents\Repos\informatica-unlp\1er-año\2do-cuatrimestre\AC\Práctica-4\Parte 1\Ej7c.s
