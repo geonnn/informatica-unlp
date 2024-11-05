@@ -1,0 +1,91 @@
+programa Ej2
+procesos
+
+  proceso juntarFlores (ES cantFlores: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      cantFlores := cantFlores + 1
+  fin
+
+  proceso juntarPapeles (ES cantPapeles: numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      cantPapeles := cantPapeles + 1
+  fin
+
+  proceso izquierda
+  comenzar
+    repetir 3
+      derecha
+  fin
+
+  proceso juntarFP(ES cantFlores: numero; ES cantPapeles: numero)
+  comenzar
+    juntarFlores(cantFlores)
+    juntarPapeles(cantPapeles)
+  fin
+
+  proceso escalon(ES cantFlores: numero; ES cantPapeles: numero)
+  variables
+    alto: numero
+  comenzar
+    cantFlores := 0
+    cantPapeles := 0
+    Random(alto, 1, 5)
+    repetir alto
+      juntarFP(cantFlores, cantPapeles)
+      mover
+    derecha
+    juntarFP(cantFlores, cantPapeles)
+    mover
+    izquierda
+  fin
+
+areas
+  aJ: AreaP(1,1,1,1)
+  a1: AreaP(2,1,6,21)
+  a2: AreaP(7,1,11,21)
+  a3: AreaP(12,1,16,21)
+robots
+  robot jefe
+  variables
+    cantEscMasF: numero
+    cantRecibida: numero
+  comenzar
+    cantEscMasF := 0
+    repetir 3
+      RecibirMensaje(cantRecibida, *)
+      cantEscMasF := cantEscMasF + cantRecibida
+    Informar(cantEscMasF)
+  fin
+
+  robot robot1
+  variables
+    cantFlores: numero
+    cantPapeles: numero
+    cantEscMasF: numero
+  comenzar
+    cantEscMasF := 0
+    repetir 4
+      escalon(cantFlores, cantPapeles)
+      si (cantFlores > cantPapeles)
+        cantEscMasF := cantEscMasF + 1
+    EnviarMensaje(cantEscMasF, Jefe)
+  fin
+variables
+  R1: robot1
+  R2: robot1
+  R3: robot1
+  Jefe: jefe
+comenzar
+  AsignarArea(Jefe,aJ)
+  AsignarArea(R1,a1)
+  AsignarArea(R2,a2)
+  AsignarArea(R3,a3)
+  Iniciar(Jefe, 1, 1)
+  Iniciar(R1, 2, 1)
+  Iniciar(R2, 7, 1)
+  Iniciar(R3, 12, 1)
+fin
