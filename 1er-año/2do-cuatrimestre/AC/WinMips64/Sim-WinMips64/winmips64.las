@@ -1,1 +1,0 @@
-C:\Users\gonza\Documents\Repos\informatica-unlp\1er-año\2do-cuatrimestre\AC\Práctica-4\Parte 1\Ej9d.s
