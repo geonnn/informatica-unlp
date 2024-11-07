@@ -1,0 +1,109 @@
+programa Ej1
+procesos
+
+  proceso juntarFlores
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+  fin
+
+  proceso juntarPapeles
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+  fin
+
+  proceso dejarFlores
+  comenzar
+    mientras(HayFlorEnLaBolsa)
+      depositarFlor
+  fin
+    
+  proceso dejarPapeles
+  comenzar
+    mientras(HayPapelEnLaBolsa)
+      depositarPapel
+  fin
+
+areas
+  aFloreros: AreaPC(1,1,5,10)
+  aF1: AreaP(6,10,6,10)
+  aF2: AreaP(7,10,7,10)
+
+  aPapeleros: AreaPC(6,1,10,9)
+  aP1: AreaP(8,10,8,10)
+  aP2: AreaP(9,10,9,10)
+
+  esqFinal: AreaC(10,10,10,10)
+robots
+  robot robotFlorero
+  variables
+    avIni, calleIni, av, calle: numero
+    cantFlores: numero
+  comenzar
+    avIni := PosAv
+    calleIni := PosCa
+    repetir 5
+      Random(av, 1, 5)
+      Random(calle, 1, 10)
+      BloquearEsquina(av, calle)
+      Pos(av, calle)
+      juntarFlores
+      Pos(avIni, calleIni)
+      LiberarEsquina(av, calle)
+    BloquearEsquina(10, 10)
+    Pos(10, 10)
+    dejarFlores
+    Pos(avIni, calleIni)
+    LiberarEsquina(10, 10)
+  fin
+
+  robot robotPapelero
+  variables
+    avIni, calleIni, av, calle: numero
+    cantFlores: numero
+  comenzar
+    avIni := PosAv
+    calleIni := PosCa
+    repetir 3
+      Random(av, 6, 10)
+      Random(calle, 1, 9)
+      BloquearEsquina(av, calle)
+      Pos(av, calle)
+      juntarPapeles
+      Pos(avIni, calleIni)
+      LiberarEsquina(av, calle)
+    BloquearEsquina(10, 10)
+    Pos(10, 10)
+    dejarPapeles
+    Pos(avIni, calleIni)
+    LiberarEsquina(10, 10)
+  fin
+
+variables
+  F1: robotFlorero
+  F2: robotFlorero
+  P1: robotPapelero
+  P2: robotPapelero
+comenzar
+  AsignarArea(F1,aFloreros)
+  AsignarArea(F1,aF1)
+  AsignarArea(F1,esqFinal)
+
+  AsignarArea(F2,aFloreros)
+  AsignarArea(F2,aF2)
+  AsignarArea(F2,esqFinal)
+
+  AsignarArea(P1,aPapeleros)
+  AsignarArea(P1,aP1)
+  AsignarArea(P1,esqFinal)
+
+  AsignarArea(P2,aPapeleros)
+  AsignarArea(P2,aP2)
+  AsignarArea(P2,esqFinal)
+
+  Iniciar(F1,6,10)
+  Iniciar(F2,7,10)
+  Iniciar(P1,8,10)
+  Iniciar(P2,9,10)
+fin
