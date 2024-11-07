@@ -1,4 +1,4 @@
-programa Ej2
+programa Ej3
 procesos
 
   proceso juntarFlores (ES cantFlores: numero)
@@ -21,72 +21,93 @@ procesos
       derecha
   fin
 
-  proceso juntarFP(ES cantFlores: numero; ES cantPapeles: numero)
+  proceso recorrerCalleFl(ES cantFlores: numero)
   comenzar
+    repetir 9
+      juntarFlores(cantFlores)
+      mover
     juntarFlores(cantFlores)
+  fin
+
+  proceso recorrerCallePap(ES cantPapeles: numero)
+  comenzar
+    repetir 9
+      juntarPapeles(cantPapeles)
+      mover
     juntarPapeles(cantPapeles)
   fin
 
-  proceso escalon(ES cantFlores: numero; ES cantPapeles: numero)
-  variables
-    alto: numero
-  comenzar
-    cantFlores := 0
-    cantPapeles := 0
-    Random(alto, 1, 5)
-    repetir alto
-      juntarFP(cantFlores, cantPapeles)
-      mover
-    derecha
-    juntarFP(cantFlores, cantPapeles)
-    mover
-    izquierda
-  fin
-
 areas
-  aJ: AreaP(1,1,1,1)
-  a1: AreaP(2,1,6,21)
-  a2: AreaP(7,1,11,21)
-  a3: AreaP(12,1,16,21)
+  aA: AreaPC(1,1,100,1)
+  aB: AreaPC(1,5,100,5)
 robots
-  robot jefe
+  robot robotA1
   variables
-    cantEscMasF: numero
-    cantRecibida: numero
+    cantPapeles: numero
   comenzar
-    cantEscMasF := 0
-    repetir 3
-      RecibirMensaje(cantRecibida, *)
-      cantEscMasF := cantEscMasF + cantRecibida
-    Informar(cantEscMasF)
+    derecha
+    cantPapeles := 0
+    repetir 2
+      si ~(PosAv = 1)
+        Pos(PosAv + 11, 1)
+        RecibirMensaje(cantPapeles, A2)
+      recorrerCallePap(cantPapeles)
+      EnviarMensaje(cantPapeles, A2)
   fin
 
-  robot robot1
+  robot robotA2
+  variables
+    cantPapeles: numero
+  comenzar
+    derecha
+    repetir 2
+      si ~(PosAv = 11)
+        Pos(PosAv + 11, 1)
+      RecibirMensaje(cantPapeles, A1)
+      recorrerCallePap(cantPapeles)
+      EnviarMensaje(cantPapeles, A1)
+    Informar(cantPapeles)
+  fin
+
+  robot robotB1
   variables
     cantFlores: numero
-    cantPapeles: numero
-    cantEscMasF: numero
   comenzar
-    cantEscMasF := 0
-    repetir 4
-      escalon(cantFlores, cantPapeles)
-      si (cantFlores > cantPapeles)
-        cantEscMasF := cantEscMasF + 1
-    EnviarMensaje(cantEscMasF, Jefe)
+    derecha
+    cantFlores := 0
+    repetir 2
+      si ~(PosAv = 1)
+        Pos(PosAv + 11, 5)
+        RecibirMensaje(cantFlores, B2)
+      recorrerCalleFl(cantFlores)
+      EnviarMensaje(cantFlores, B2)
+  fin
+
+  robot robotB2
+  variables
+    cantFlores: numero
+  comenzar
+    derecha
+    repetir 2
+      si ~(PosAv = 11)
+        Pos(PosAv + 11, 5)
+      RecibirMensaje(cantFlores, B1)
+      recorrerCalleFl(cantFlores)
+      EnviarMensaje(cantFlores, B1)
+    Informar(cantFlores)
   fin
 variables
-  A1: equipoA
-  A2: equipoA
-  B1: equipoB
-  B2: equipoB
-  Jefe: jefe
+  A1: robotA1
+  A2: robotA2
+  B1: robotB1
+  B2: robotB2
 comenzar
-  AsignarArea(Jefe,aJ)
-  AsignarArea(R1,a1)
-  AsignarArea(R2,a2)
-  AsignarArea(R3,a3)
+  AsignarArea(A1,aA)
+  AsignarArea(B1,aB)
+  AsignarArea(A2,aA)
+  AsignarArea(B2,aB)
   Iniciar(A1, 1, 1)
-  Iniciar(B1, 2, 1)
-  Iniciar(R2, 7, 1)
-  Iniciar(R3, 12, 1)
+  Iniciar(B1, 1, 5)
+  Iniciar(A2, 11, 1)
+  Iniciar(B2, 11, 5)
 fin
