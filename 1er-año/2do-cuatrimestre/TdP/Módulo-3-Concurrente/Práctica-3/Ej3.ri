@@ -1,0 +1,112 @@
+programa Ej3
+procesos
+  
+  proceso juntarFlor(ES cantFlores: numero; ES noHayFlores: boolean)
+  comenzar
+    si(HayFlorEnLaEsquina)
+      tomarFlor
+      cantFlores := cantFlores + 1
+    sino
+      noHayFlores := V
+  fin
+
+  proceso actualizarMaximo(E flores: numero; E robotID: numero; ES floresMax: numero; ES robotIDMax: numero)
+  comenzar
+    si (flores > floresMax)
+      floresMax := flores
+      robotIDMax := robotID
+  fin
+
+areas
+  aRec: AreaPC(2,2,10,10)
+  aJ: AreaP(1,1,1,1)
+  aR1: AreaP(2,1,2,1)
+  aR2: AreaP(3,1,3,1)
+  aR3: AreaP(4,1,4,1)
+  aR4: AreaP(5,1,5,1)
+robots
+  
+  robot robotRec
+  variables
+    cantFlores, av, calle, avIni, calleIni, id: numero
+    noHayFlores: boolean
+  comenzar
+    noHayFlores := F
+    cantFlores := 0
+    avIni := PosAv
+    calleIni := PosCa
+    RecibirMensaje(id, RJefe)
+    RecibirMensaje(av, RJefe)
+    RecibirMensaje(calle, RJefe)
+
+    mientras (noHayFlores = F)
+      BloquearEsquina(av, calle)
+      Pos(av, calle)
+      juntarFlor(cantFlores, noHayFlores)
+      Pos(avIni, calleIni)
+      LiberarEsquina(av, calle)
+    
+    EnviarMensaje(id, RJefe)
+    EnviarMensaje(cantFlores, RJefe)
+  fin
+
+  robot robotJefe
+  variables
+    av, calle, robotID, flores, floresMax, robotIDMax: numero
+  comenzar
+    floresMax := -1
+    Random(av, 2, 10)
+    Random(calle, 2, 10)
+    EnviarMensaje(1, R1)
+    EnviarMensaje(2, R2)
+    EnviarMensaje(3, R3)
+    EnviarMensaje(4, R4)
+    
+    EnviarMensaje(av, R1)
+    EnviarMensaje(av, R2)
+    EnviarMensaje(av, R3)
+    EnviarMensaje(av, R4)
+    EnviarMensaje(calle, R1)
+    EnviarMensaje(calle, R2)
+    EnviarMensaje(calle, R3)
+    EnviarMensaje(calle, R4)
+
+    repetir 4
+      RecibirMensaje(robotID, *)
+      si(robotID = 1)
+        RecibirMensaje(flores, R1)
+      sino
+        si(robotID = 2)
+          RecibirMensaje(flores, R2)
+        sino
+          si(robotID = 3)
+            RecibirMensaje(flores, R3)
+          sino
+            RecibirMensaje(flores, R4)
+      actualizarMaximo(flores, robotID, floresMax, robotIDMax)
+    
+    Informar(robotIDMax)
+  fin
+
+variables
+  R1: robotRec
+  R2: robotRec
+  R3: robotRec
+  R4: robotRec
+  RJefe: robotJefe
+comenzar
+  AsignarArea(R1, aRec)
+  AsignarArea(R1, aR1)
+  AsignarArea(R2, aRec)
+  AsignarArea(R2, aR2)
+  AsignarArea(R3, aRec)
+  AsignarArea(R3, aR3)
+  AsignarArea(R4, aRec)
+  AsignarArea(R4, aR4)
+  AsignarArea(RJefe, aJ)
+  Iniciar(R1,2,1)
+  Iniciar(R2,3,1)
+  Iniciar(R3,4,1)
+  Iniciar(R4,5,1)
+  Iniciar(RJefe,1,1)
+fin

@@ -1,0 +1,137 @@
+programa Ej2
+procesos
+
+  proceso izquierda
+  comenzar
+    repetir 3
+      derecha
+  fin
+
+  proceso darseVuelta
+  comenzar
+    repetir 2
+      derecha
+  fin
+
+  proceso juntarFlores(ES cantFlores: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      cantFlores := cantFlores + 1
+  fin
+
+  proceso juntarPapeles(ES cantPapeles: numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      cantPapeles := cantPapeles + 1
+  fin
+
+  proceso escalonFl(E N: numero; ES cantFlores: numero)
+  comenzar
+    juntarFlores(cantFlores)
+    repetir N
+      mover
+    derecha
+    juntarFlores(cantFlores)
+    repetir N
+      mover
+    izquierda
+  fin
+
+  proceso escalonPap(E N: numero; ES cantPapeles: numero)
+  comenzar
+    juntarPapeles(cantPapeles)
+    repetir N
+      mover
+    izquierda
+    juntarPapeles(cantPapeles)
+    repetir N
+      mover
+    derecha
+  fin
+
+areas
+  a1: AreaC(1,1,31,30)
+robots
+
+  robot robot1
+  variables
+    cantFlores, N: numero
+  comenzar
+    N := 5
+    repetir 4
+      escalonFl(N, cantFlores)
+      N := N - 1
+    juntarFlores(cantFlores)
+    mover
+    derecha
+    BloquearEsquina(16, 16)
+    mover
+    juntarFlores(cantFlores)
+    darseVuelta
+    mover
+    LiberarEsquina(16, 16)
+    EnviarMensaje(1, Jefe)
+    N := 2
+    repetir 4
+      escalonFl(N, cantFlores)
+      N := N + 1
+    juntarFlores(cantFlores)
+    EnviarMensaje(V, Jefe)
+  fin
+
+  robot robot2
+  variables
+    cantPapeles, N: numero
+  comenzar
+    N := 5
+    repetir 4
+      escalonPap(N, cantPapeles)
+      N := N - 1
+    juntarPapeles(cantPapeles)
+    mover
+    izquierda
+    BloquearEsquina(16, 16)
+    mover
+    juntarPapeles(cantPapeles)
+    darseVuelta
+    mover
+    LiberarEsquina(16, 16)
+    EnviarMensaje(2, Jefe)
+    N := 2
+    repetir 4
+      escalonPap(N, cantPapeles)
+      N := N + 1
+    juntarPapeles(cantPapeles)
+    EnviarMensaje(V, Jefe)
+  fin
+
+  robot robotJefe
+  variables
+    robotN, descartar: numero
+    finCarrera: boolean
+  comenzar
+    RecibirMensaje(robotN, *)
+    {Recibo el msje del primero que haya llegado al medio y descarto el otro.}
+    si (robotN = 1)
+      RecibirMensaje(descartar, R2)
+    sino
+      RecibirMensaje(descartar, R1)
+    RecibirMensaje(finCarrera, R1)
+    RecibirMensaje(finCarrera, R2)
+    Informar(robotN)
+  fin
+
+variables
+  R1: robot1
+  R2: robot2
+  Jefe: robotJefe
+comenzar
+  AsignarArea(R1, a1)
+  AsignarArea(R2, a1)
+  AsignarArea(Jefe, a1)
+  Iniciar(R1,1,1)
+  Iniciar(R2,31,1)
+  Iniciar(Jefe,15,1)
+fin
