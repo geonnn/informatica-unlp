@@ -45,30 +45,23 @@ robots
       Random(robotN, 1, 4)
       si (robotN = 1)
         EnviarMensaje(V, R1)
-        EnviarMensaje(F, R2)
-        EnviarMensaje(F, R3)
-        EnviarMensaje(F, R4)
         RecibirMensaje(finAcceso, R1)
       sino
         si (robotN = 2)
-          EnviarMensaje(F, R1)
           EnviarMensaje(V, R2)
-          EnviarMensaje(F, R3)
-          EnviarMensaje(F, R4)
           RecibirMensaje(finAcceso, R2)
         sino
           si (robotN = 3)
-            EnviarMensaje(F, R1)
-            EnviarMensaje(F, R2)
             EnviarMensaje(V, R3)
-            EnviarMensaje(F, R4)
             RecibirMensaje(finAcceso, R3)
           sino
-            EnviarMensaje(F, R1)
-            EnviarMensaje(F, R2)
-            EnviarMensaje(F, R3)
             EnviarMensaje(V, R4)
             RecibirMensaje(finAcceso, R4)
+
+    EnviarMensaje(F, R1)
+    EnviarMensaje(F, R2)
+    EnviarMensaje(F, R3)
+    EnviarMensaje(F, R4)
 
     repetir 4
       RecibirMensaje(robotN, *)
@@ -112,7 +105,7 @@ robots
   robot robotRec
   variables
     cantFlores, cantPapeles, totalFP: numero
-    quienSoy, av, calle, avIni, calleIni: numero
+    id, av, calle, avIni, calleIni: numero
     acceso, termino, gane: boolean
   comenzar
     cantFlores := 0
@@ -120,8 +113,8 @@ robots
     avIni := PosAv
     calleIni := PosCa
     termino := F
-    RecibirMensaje(quienSoy, Fiscalizador)
-    repetir 10
+    RecibirMensaje(id, Fiscalizador)
+    mientras (termino = F)
       RecibirMensaje(acceso, Fiscalizador)
       si (acceso = V)
         Random(av, 25, 75)
@@ -132,8 +125,10 @@ robots
         Pos(avIni, calleIni)
         { LiberarEsquina(av, calle) }
         EnviarMensaje(V, Fiscalizador)
+      sino
+        termino := V
     totalFP := cantFlores + cantPapeles
-    EnviarMensaje(quienSoy, Fiscalizador)
+    EnviarMensaje(id, Fiscalizador)
     EnviarMensaje(totalFP, Fiscalizador)
     RecibirMensaje(gane, Fiscalizador)
     si (gane)

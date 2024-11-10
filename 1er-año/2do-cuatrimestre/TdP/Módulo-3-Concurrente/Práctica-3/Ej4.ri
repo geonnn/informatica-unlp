@@ -1,0 +1,102 @@
+programa Ej3
+procesos
+  
+  proceso juntarFlor(ES noHayFlores: boolean)
+  comenzar
+    si(HayFlorEnLaEsquina)
+      tomarFlor
+    sino
+      noHayFlores := V
+  fin
+
+  proceso juntarFlores
+  comenzar
+    mientras (HayFlorEnLaEsquina)
+      tomarFlor
+  fin
+
+areas
+  esq11: AreaC(11,11,11,11)
+  aRec: AreaPC(10,10,10,10)
+  aJ: AreaP(1,1,1,1)
+  aR1: AreaP(9,9,9,9)
+  aR2: AreaP(9,10,9,10)
+  aR3: AreaP(9,11,9,11)
+  aR4: AreaP(9,12,9,12)
+robots
+  
+  robot robotRec
+  variables
+    avIni, calleIni, id: numero
+    noHayFlores: boolean
+  comenzar
+    noHayFlores := F
+    avIni := PosAv
+    calleIni := PosCa
+    RecibirMensaje(id, RJefe)
+
+    mientras (noHayFlores = F)
+      BloquearEsquina(10, 10)
+      Pos(10, 10)
+      juntarFlor(noHayFlores)
+      Pos(avIni, calleIni)
+      LiberarEsquina(10, 10)
+      BloquearEsquina(11, 11)
+      Pos(11, 11)
+      si (HayFlorEnLaBolsa)
+        depositarFlor
+      Pos(avIni, calleIni)
+      LiberarEsquina(11, 11)
+    
+    EnviarMensaje(id, RJefe)
+  fin
+
+  robot robotJefe
+  variables
+    robotID, ult: numero
+  comenzar
+    EnviarMensaje(1, R1)
+    EnviarMensaje(2, R2)
+    EnviarMensaje(3, R3)
+    EnviarMensaje(4, R4)
+    
+    repetir 4
+      RecibirMensaje(robotID, *)
+    
+    Informar(robotID) {va a ser el último}
+    Pos(11,11)
+    juntarFlores
+  fin
+
+variables
+  R1: robotRec
+  R2: robotRec
+  R3: robotRec
+  R4: robotRec
+  RJefe: robotJefe
+comenzar
+  AsignarArea(R1, aRec)
+  AsignarArea(R1, aR1)
+  AsignarArea(R1, esq11)
+
+  AsignarArea(R2, aRec)
+  AsignarArea(R2, aR2)
+  AsignarArea(R2, esq11)
+
+  AsignarArea(R3, aRec)
+  AsignarArea(R3, aR3)
+  AsignarArea(R3, esq11)
+
+  AsignarArea(R4, aRec)
+  AsignarArea(R4, aR4)
+  AsignarArea(R4, esq11)
+
+  AsignarArea(RJefe, aJ)
+  AsignarArea(RJefe, esq11)
+
+  Iniciar(R1,9,9)
+  Iniciar(R2,9,10)
+  Iniciar(R3,9,11)
+  Iniciar(R4,9,12)
+  Iniciar(RJefe,1,1)
+fin

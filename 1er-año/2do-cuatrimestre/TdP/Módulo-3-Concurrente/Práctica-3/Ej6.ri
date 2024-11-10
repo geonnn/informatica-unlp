@@ -1,0 +1,132 @@
+programa Ej6
+procesos
+
+  proceso juntarFlores
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+  fin
+
+  proceso juntarPapeles
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+  fin
+
+  proceso recorrerPapeles(E N: numero)
+  comenzar
+    repetir N
+      juntarPapeles
+      mover
+    juntarPapeles
+  fin
+
+  proceso recorrerFP(E N: numero)
+  comenzar
+    repetir N
+      juntarFlores
+      juntarPapeles
+      mover
+    juntarFlores
+    juntarPapeles
+  fin
+
+  proceso recorrerFlores(E N: numero)
+  comenzar
+    repetir N
+      juntarFlores
+      mover
+    juntarFlores
+  fin
+
+  proceso recorrerFloresBloqAv(E N: numero)
+  variables
+    av, calle: numero
+  comenzar
+    repetir N
+      si (PosAv > 4)
+        av := PosAv - 1
+        calle := PosCa
+        LiberarEsquina(av, calle)
+      juntarFlores
+      si (PosAv > 3)
+        av := PosAv + 1
+        calle := PosCa
+        BloquearEsquina(av, calle)
+      mover
+    juntarFlores
+  fin
+
+  proceso recorrerFloresBloqCaBajando(E N: numero)
+  variables
+    av, calle: numero
+  comenzar
+    repetir N
+      si (PosCa > 4)
+        av := PosAv
+        calle := PosCa
+        LiberarEsquina(av, calle)
+      juntarFlores
+      si (PosAv > 3)
+        av := PosAv + 1
+        calle := PosCa
+        BloquearEsquina(av, calle)
+      mover
+    juntarFlores
+  fin
+
+areas
+  aRec: AreaPC(2,2,15,15)
+  aF: AreaC(1,1,1,1)
+robots
+
+  robot robot1
+  variables
+    esqs: numero
+  comenzar
+    esqs := 5
+    recorrerFlores(esqs)
+    derecha
+    recorrerFloresBloqAv(esqs)
+    derecha
+    recorrerFloresBloqCaBajando(esqs)
+    derecha
+    recorrerFlores(esqs)
+  fin
+
+  robot robot2
+  comenzar
+    repetir 4
+      recorrerFP(9)
+      derecha
+  fin
+
+  robot robot3
+  comenzar
+    repetir 4
+      recorrerPapeles(6)
+      derecha
+  fin
+
+  robot robotFisc
+  variables
+    id: numero
+  comenzar
+    id := 1
+  fin
+
+variables
+  R1: robot1
+  R2: robot2
+  R3: robot3
+  RF: robotFisc
+comenzar
+  AsignarArea(R1, aRec)
+  AsignarArea(R2, aRec)
+  AsignarArea(R3, aRec)
+  AsignarArea(RF, aF)
+  Iniciar(R1,2,2)
+  Iniciar(R2,5,5)
+  Iniciar(R3,9,9)
+  Iniciar(RF,1,1)
+fin
