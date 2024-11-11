@@ -1,0 +1,122 @@
+programa Ej1
+procesos
+  
+  proceso juntarFlores
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+  fin
+
+areas
+  a1: AreaPC(1,1,1,100)
+  a2: AreaPC(2,1,2,100)
+  a3: AreaPC(3,1,3,100)
+  aS: AreaP(100,100,100,100)
+
+robots
+
+  robot cliente
+  variables
+    av, calle, flores, id: numero
+    ok: boolean
+  comenzar
+    RecibirMensaje(id, RS)
+    
+    mientras(PosCa < 100)
+      
+      Random(flores, 1, 4)
+      av := PosAv
+      calle := PosCa + 1
+
+      EnviarMensaje(id, RS)
+      EnviarMensaje(flores, RS)
+      EnviarMensaje(av, RS)
+      EnviarMensaje(calle, RS)
+
+      RecibirMensaje(ok, RS)
+
+      mover
+      juntarFlores
+      depositarFlor
+      mientras((PosCa < 100) & (HayFlorEnLaBolsa))
+        mover
+        depositarFlor
+    
+    EnviarMensaje(id, RS)
+    EnviarMensaje(0, RS)
+  fin
+
+  robot servidor
+  variables
+    terminaron, av, calle, flores, id: numero
+    finLoop: boolean
+  comenzar
+    EnviarMensaje(1, R1)
+    EnviarMensaje(2, R2)
+    EnviarMensaje(3, R3)
+    terminaron := 0
+    finLoop := F
+
+    mientras(finLoop = F)
+
+      RecibirMensaje(id, *)
+      si(id = 1)
+        RecibirMensaje(flores, R1)
+      sino
+        si(id = 2)
+          RecibirMensaje(flores, R2)
+        sino
+          RecibirMensaje(flores, R3)
+
+      si ~(flores = 0)
+
+        si(id = 1)
+          RecibirMensaje(av, R1)
+          RecibirMensaje(calle, R1)
+        sino
+          si(id = 2)
+            RecibirMensaje(av, R2)
+            RecibirMensaje(calle, R2)
+          sino
+            RecibirMensaje(av, R3)
+            RecibirMensaje(calle, R3)
+
+        Pos(av, calle)
+        repetir flores
+          depositarFlor
+        Pos(100, 100)
+
+        si(id = 1)
+          EnviarMensaje(V, R1)
+        sino
+          si(id = 2)
+            EnviarMensaje(V, R2)
+          sino
+            EnviarMensaje(V, R3)
+
+      sino
+        terminaron := terminaron + 1
+        si(terminaron = 3)
+          finLoop := V
+  fin
+
+variables
+  R1: cliente
+  R2: cliente
+  R3: cliente
+  RS: servidor
+comenzar
+  AsignarArea(R1, a1)
+  AsignarArea(R2, a2)
+  AsignarArea(R3, a3)
+
+  AsignarArea(RS, a1)
+  AsignarArea(RS, a2)
+  AsignarArea(RS, a3)
+  AsignarArea(RS, aS)
+
+  Iniciar(R1,1,1)
+  Iniciar(R2,2,1)
+  Iniciar(R3,3,1)
+  Iniciar(RS,100,100)
+fin

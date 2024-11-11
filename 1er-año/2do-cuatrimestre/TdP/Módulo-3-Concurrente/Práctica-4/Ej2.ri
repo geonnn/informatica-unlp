@@ -1,0 +1,100 @@
+programa Ej2
+procesos
+
+  proceso dejarPapeles
+  comenzar
+    mientras(HayPapelEnLaBolsa)
+      depositarPapel
+  fin
+  
+  proceso juntarPapelesCons(E n: numero; ES fallos: numero)
+  variables
+    cantPapeles: numero
+  comenzar
+    cantPapeles := 0
+    mientras((HayPapelEnLaEsquina) & (cantPapeles < n))
+      tomarPapel
+      cantPapeles := cantPapeles + 1
+      fallos := 0 {se requieren 8 fallos seguidos para cortar, así que si uno sale bien, se reinicia el contador de fallos.}
+    si ~(cantPapeles = n)
+      dejarPapeles
+      fallos := fallos + 1 {suma un fallo.}
+  fin
+
+  proceso juntarPapeles(ES cantPapeles: numero)
+  variables
+    av, calle: numero
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      cantPapeles := cantPapeles + 1
+      si(cantPapeles = 5)
+        av := PosAv
+        calle := PosCa
+        BloquearEsquina(50,50)
+        Pos(50,50)
+        dejarPapeles
+        Pos(av,calle)
+        LiberarEsquina(50,50)
+        cantPapeles := 0
+  fin
+
+areas
+  aP1: AreaP(5,1,5,100)
+  aP2: AreaP(10,1,10,100)
+  esq50y50: AreaC(50,50,50,50)
+  aC1: AreaP(11,1,11,1)
+  aC2: AreaP(12,1,12,1)
+robots
+
+  robot productor
+  variables
+    cantPapeles: numero
+  comenzar
+
+    mientras(PosCa < 100)
+      juntarPapeles(cantPapeles)
+      mover
+    juntarPapeles(cantPapeles)
+  fin
+
+  robot consumidor
+  variables
+    fallos, av, calle, n: numero
+    finLoop: boolean
+  comenzar
+    fallos := 0
+    av := PosAv
+    calle := PosCa
+
+    mientras ~(fallos = 8)
+      Random(n, 2, 5)
+      BloquearEsquina(50,50)
+      Pos(50,50)
+      juntarPapelesCons(n, fallos)
+      Pos(av, calle)
+      LiberarEsquina(50,50)
+      dejarPapeles
+  fin
+
+variables
+  P1: productor
+  P2: productor
+  C1: consumidor
+  C2: consumidor
+comenzar
+  AsignarArea(P1, aP1)
+  AsignarArea(P1, esq50y50)
+  AsignarArea(P2, aP2)
+  AsignarArea(P2, esq50y50)
+  
+  AsignarArea(C1, aC1)
+  AsignarArea(C1, esq50y50)
+  AsignarArea(C2, aC2)
+  AsignarArea(C2, esq50y50)
+
+  Iniciar(P1,5,1)
+  Iniciar(P2,10,1)
+  Iniciar(C1,11,1)
+  Iniciar(C2,12,1)
+fin
