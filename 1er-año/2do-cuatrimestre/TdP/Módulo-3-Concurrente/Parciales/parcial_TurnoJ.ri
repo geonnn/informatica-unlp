@@ -1,0 +1,175 @@
+programa parcial
+procesos
+
+  proceso llevarFlor(E avIni: numero; E calleIni: numero)
+  comenzar
+    BloquearEsquina(99,99)
+    Pos(99,99)
+    depositarFlor
+    Pos(avIni, calleIni)
+    LiberarEsquina(99,99)
+  fin
+  
+  proceso llevarPapel(E avIni: numero; E calleIni: numero)
+  comenzar
+    BloquearEsquina(98,98)
+    Pos(98,98)
+    depositarPapel
+    Pos(avIni, calleIni)
+    LiberarEsquina(98,98)
+  fin
+  
+  proceso juntarFlores
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+  fin
+  
+  proceso juntarPapeles
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+  fin
+  
+  proceso juntarPapFiscal(ES cantPapeles: numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      cantPapeles := cantPapeles + 1
+  fin
+  
+  proceso juntarFlFiscal(ES cantFlores: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      cantFlores := cantFlores + 1
+  fin
+  
+  proceso dejarPapeles
+  comenzar
+    mientras(HayPapelEnLaBolsa)
+      depositarPapel
+  fin
+
+  proceso dejarFlores
+  comenzar
+    mientras(HayFlorEnLaBolsa)
+      depositarFlor
+  fin
+  
+  proceso escalonFlores
+  comenzar
+    repetir 3
+      juntarFlores
+      mover
+    derecha
+    repetir 2
+      juntarFlores
+      mover
+    {la últ. esquina que habría que juntar acá es del próx. escalón.}
+    repetir 3
+      derecha
+  fin
+  
+  proceso escalonPapeles
+  comenzar
+    repetir 3
+      juntarPapeles
+      mover
+    derecha
+    repetir 2
+      juntarPapeles
+      mover
+    {la últ. esquina que habría que juntar acá es del próx. escalón.}
+    repetir 3
+      derecha
+  fin
+areas
+  aR1: AreaP(2,1,9,10)
+  aR2: AreaP(32,1,39,10)
+  aR3: AreaP(62,1,69,10)
+  aRF: AreaP(1,1,1,1)
+  aDepos: AreaC(98,98,99,99)
+robots
+  robot robot1
+  variables
+    tarea, avIni, calleIni: numero
+  comenzar
+    repetir 3
+      RecibirMensaje(tarea, RFisc)
+      si(tarea = 0)
+        escalonFlores
+      sino
+        escalonPapeles
+    avIni := PosAv
+    calleIni := PosCa
+    
+    mientras((HayFlorEnLaBolsa)&(HayPapelEnLaBolsa))
+      llevarFlor(avIni, calleIni)
+      llevarPapel(avIni, calleIni)
+      
+    si(HayFlorEnLaBolsa)
+      mientras(HayFlorEnLaBolsa)
+        llevarFlor(avIni, calleIni)
+    sino
+      mientras(HayPapelEnLaBolsa)
+        llevarPapel(avIni, calleIni)
+    EnviarMensaje(V, RFisc)
+  fin
+  
+  robot robotFiscal
+  variables
+    tarea, cantPapeles, cantFlores: numero
+    terminaron: boolean
+  comenzar
+    cantPapeles := 0
+    cantFlores := 0
+    repetir 3
+      Random(tarea, 0, 1)
+      EnviarMensaje(tarea, R1)
+      Random(tarea, 0, 1)
+      EnviarMensaje(tarea, R2)
+      Random(tarea, 0, 1)
+      EnviarMensaje(tarea, R3)
+      {una tirada de random para cada robot, aunque la consigna no especifica si es así, porque también podría ser una por etapa y todos los robots hacen lo mismo en cada etapa.}
+    repetir 3
+      RecibirMensaje(terminaron, *)
+    
+    Pos(99,99)
+    juntarFlFiscal(cantFlores)
+    Pos(98,98)
+    juntarPapFiscal(cantPapeles)
+    
+    {sería ideal juntar el segundo elemento hasta igualar la cantidad del primero y verificar si hay más del segundo para juntar, evitando juntar de más innecesariamente, y en ese caso se deja el segundo elemento y se lleva el primero. Si no hubiera más del segundo elemento para juntar es un empate y habría que analizar qué ocurre en ese caso.}
+    
+    si(cantPapeles > cantFlores)
+      dejarPapeles
+    sino
+      Pos(99,99)
+      dejarFlores
+    Pos(1,1)
+  fin
+  
+variables
+  R1: robot1
+  R2: robot1
+  R3: robot1
+  RFisc: robotFiscal
+comenzar
+  AsignarArea(R1, aR1)
+  AsignarArea(R1, aDepos)
+  
+  AsignarArea(R2, aR2)
+  AsignarArea(R2, aDepos)
+  
+  AsignarArea(R3, aR3)
+  AsignarArea(R3, aDepos)
+  
+  AsignarArea(RFisc, aRF)
+  AsignarArea(RFisc, aDepos)
+  
+  Iniciar(R1, 2,1)
+  Iniciar(R2, 32,1)
+  Iniciar(R3, 62,1)
+  Iniciar(RFisc, 1,1)
+fin
