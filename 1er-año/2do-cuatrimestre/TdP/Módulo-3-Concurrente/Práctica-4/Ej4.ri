@@ -1,0 +1,100 @@
+programa Ej4
+procesos
+  proceso juntarFlores
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+  fin
+
+  proceso juntarPapeles
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+  fin
+  
+  proceso vaciarBolsa
+  comenzar
+    mientras(HayFlorEnLaBolsa)
+      depositarFlor
+    mientras(HayPapelEnLaBolsa)
+      depositarPapel
+  fin
+
+  proceso realizarTarea(E tarea: numero)
+  comenzar
+    si(tarea = 1)
+      juntarFlores
+    sino
+      si(tarea = 2)
+        juntarPapeles
+      sino
+        vaciarBolsa
+  fin
+
+areas
+  aR1: AreaP(2,1,2,1)
+  aR2: AreaP(3,1,3,1)
+  ciudad: AreaPC(2,2,100,100)
+  aRJ: AreaP(1, 1, 1, 1)
+robots
+  robot robot1
+  variables
+    avIni, calleIni, av, calle, tarea: numero
+    finalizar: boolean
+  comenzar
+    avIni := PosAv
+    calleIni := PosCa
+    mientras(finalizar = F)
+      RecibirMensaje(tarea, RJefe)
+      si (tarea = 4)
+        finalizar := V
+      sino
+        RecibirMensaje(av, RJefe)
+        RecibirMensaje(calle, RJefe)
+        Pos(av, calle)
+        realizarTarea(tarea)
+        Pos(avIni, calleIni)
+        EnviarMensaje(V, RJefe)
+        {no hace falta bloquear/liberar esquinas pq el jefe no manda otra tarea hasta que no se termina la anterior.}
+  fin
+
+  robot robotJefe
+  variables
+    av, calle, tarea, id: numero
+    ok: boolean
+  comenzar
+    repetir 10
+      Random(tarea, 1, 3)
+      Random(id, 1, 2)
+      Random(av, 2, 100)
+      Random(calle, 2, 100)
+      si(id = 1)
+        EnviarMensaje(tarea, R1)
+        EnviarMensaje(av, R1)
+        EnviarMensaje(calle, R1)
+        RecibirMensaje(ok, R1)
+      sino
+        EnviarMensaje(tarea, R2)
+        EnviarMensaje(av, R2)
+        EnviarMensaje(calle, R2)
+        RecibirMensaje(ok, R2)
+    EnviarMensaje(4, R1)
+    EnviarMensaje(4, R2)
+  fin
+variables
+  R1: robot1
+  R2: robot1
+  RJefe: robotJefe
+comenzar
+  AsignarArea(R1,ciudad)
+  AsignarArea(R1,aR1)
+
+  AsignarArea(R2,ciudad)
+  AsignarArea(R2,aR2)
+
+  AsignarArea(RJefe,aRJ)
+
+  Iniciar(R1,2,1)
+  Iniciar(R2,3,1)
+  Iniciar(RJefe,1,1)
+fin
