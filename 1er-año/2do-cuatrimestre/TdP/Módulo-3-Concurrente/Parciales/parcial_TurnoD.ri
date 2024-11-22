@@ -1,0 +1,145 @@
+programa parcial_TurnoD
+procesos
+
+  proceso dejarFlor(ES cantFlores: numero)
+  comenzar
+    si~(HayFlorEnLaEsquina)
+      si(HayFlorEnLaBolsa)
+        depositarFlor
+        cantFlores := cantFlores + 1
+  fin
+  
+  proceso dejarPapel(ES cantPapeles: numero)
+  comenzar
+    si~(HayPapelEnLaEsquina)
+      si(HayPapelEnLaBolsa)
+        depositarPapel
+        cantPapeles := cantPapeles + 1
+  fin
+  
+  proceso recorrerCalle(E N: numero; ES cantPapeles: numero)
+  comenzar
+    repetir N
+      dejarPapel(cantPapeles)
+      mover
+    dejarPapel(cantPapeles)
+  fin
+
+  proceso recorrerAvenida(E N: numero; ES cantFlores: numero)
+  comenzar
+    repetir N
+      dejarFlor(cantFlores)
+      mover
+    dejarFlor(cantFlores)
+  fin
+areas
+  aRP1: AreaP(36, 8, 100, 8)
+  aRP2: AreaP(36, 15, 100, 15)
+  ciudad: AreaC(1, 1, 35, 100)
+robots
+  robot robotPap
+  variables
+    id, cantPapeles, avIni, calleIni, avRnd, av, calle, N: numero
+    gane: boolean
+  comenzar
+    avIni := PosAv {podría evitarse esta variable y usar directamente la av. 1 como input para el pos, pero así es más genérico y reutilizable.}
+    calleIni := PosCa
+    cantPapeles := 0
+    RecibirMensaje(id, RFisc)
+    RecibirMensaje(avRnd, RFisc)
+    N := (avRnd - 2) {se para en la av anterior a la que salga random en el robot florero}
+    derecha
+    recorrerCalle(N, cantPapeles)
+    av := PosAv + 1
+    BloquearEsquina(av, calleIni)
+    mover
+    dejarPapel(cantPapeles)
+    mover
+    LiberarEsquina(av, calleIni)
+    N := (100 - PosAv)
+    recorrerCalle(N, cantPapeles)
+    
+    EnviarMensaje(id, RFisc)
+    EnviarMensaje(cantPapeles, RFisc)
+    RecibirMensaje(gane, RFisc)
+    si(gane)
+      Pos(avIni, calleIni)
+  fin
+  
+  robot robotFl
+  variables
+    id, cantFlores, av, calle, avIni, calleIni: numero
+    gane: boolean
+  comenzar
+    avIni := PosAv
+    calleIni := PosCa
+    cantFlores := 0
+    id := 3 {es el único robot florero así que puede asignarse su id a sí mismo.}
+    RecibirMensaje(av, RFisc)
+    Pos(av, 1)
+    repetir 2
+      recorrerAvenida(6, cantFlores)
+      calle := PosCa + 1
+      BloquearEsquina(av, calle) {en la primer iteración bloquea calle 8, en la segunda la 15.}
+      mover
+      dejarFlor(cantFlores)
+      mover
+      LiberarEsquina(av, calle)
+    recorrerAvenida(83, cantFlores) {100 - 16 = 83 iteraciones restantes.}
+    
+    EnviarMensaje(id, RFisc)
+    EnviarMensaje(cantFlores, RFisc)
+    RecibirMensaje(gane, RFisc)
+    si(gane)
+      Pos(avIni, calleIni)
+  fin
+  
+  robot robotFisc
+  variables
+    id, av, cantElementos: numero
+  comenzar
+    EnviarMensaje(1, RP1)
+    EnviarMensaje(2, RP2)
+    Random(av, 2, 35)
+    EnviarMensaje(av, RP1)
+    EnviarMensaje(av, RP2)
+    EnviarMensaje(av, RF)
+    RecibirMensaje(id, *)
+    si(id = 1)
+      RecibirMensaje(cantElementos, RP1)
+      EnviarMensaje(V, RP1)
+      EnviarMensaje(F, RP2)
+      EnviarMensaje(F, RF)
+    sino
+      si(id = 2)
+        RecibirMensaje(cantElementos, RP2)
+        EnviarMensaje(V, RP2)
+        EnviarMensaje(F, RP1)
+        EnviarMensaje(F, RF)
+      sino
+        RecibirMensaje(cantElementos, RF)
+        EnviarMensaje(V, RF)
+        EnviarMensaje(F, RP1)
+        EnviarMensaje(F, RP2)
+    Informar(cantElementos)
+  fin
+  
+variables
+  RP1: robotPap
+  RP2: robotPap
+  RF: robotFl
+  RFisc: robotFisc
+comenzar
+  AsignarArea(RP1, ciudad)
+  AsignarArea(RP1, aRP1)
+  
+  AsignarArea(RP2, ciudad)
+  AsignarArea(RP2, aRP2)
+  
+  AsignarArea(RF, ciudad)
+  AsignarArea(RFisc, ciudad)
+  Iniciar(RP1, 1,8)
+  Iniciar(RP2, 1,15)
+  Iniciar(RF, 1,2)
+  Iniciar(RFisc, 1,1)
+fin
