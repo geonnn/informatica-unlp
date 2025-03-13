@@ -140,3 +140,78 @@ while (st[i] != ' ') {
 Console.WriteLine(simetricas);
 Console.ReadKey();
 ```
+---
+10) Escribir un programa que imprima en la consola todos los múltiplos de 17 o de 29 comprendidos entre 1 y 1000.
+```C#
+for (int i = 1; i <= 1000; i++) {
+    if (i % 17 == 0 || i % 29 == 0)
+        Console.WriteLine(i); 
+}
+```
+---
+11) Comprobar el funcionamiento del siguiente fragmento de código, analizar el resultado y contestar las preguntas.
+```C#
+Console.WriteLine("10/3 = " + 10 / 3);
+Console.WriteLine("10.0/3 = " + 10.0 / 3);
+Console.WriteLine("10/3.0 = " + 10 / 3.0);
+int a = 10, b = 3;
+Console.WriteLine("Si a y b son variables enteras, si a=10 y b=3");
+Console.WriteLine("entonces a/b = " + a / b);
+double c = 3;
+Console.WriteLine("Si c es una variable double, c=3");
+Console.WriteLine("entonces a/c = " + a / c);
+```
+a) ¿Qué se puede concluir respecto del operador de división “/” ?
+> Trabajando con enteros devuelve sólo el cociente (sin redondear) sin la parte decimal.
+> Si uno de los operandos es un double el resultado será de tipo double también.
+
+b) ¿Cómo funciona el operador + entre un string y un dato numérico?
+> Concatena.
+---
+12) Escribir un programa que imprima todos los divisores de un número entero ingresado desde la consola. Para obtener el entero desde un string st utilizar int.Parse(st).
+```C#
+Console.WriteLine("Ingrese un número:");
+int x = int.Parse(Console.ReadLine());
+Console.WriteLine("Sus divisores son:");
+for (int i = 1; i <= x; i++) {
+    if (x % i == 0)
+        Console.WriteLine(i);
+}
+```
+---
+13) Si a y b son variables enteras, identificar el problema (y la forma de resolverlo) de la siguiente expresión. Tip: observar qué pasa cuando b = 0.
+`if ((b != 0) & (a/b > 5)) Console.WriteLine(a/b);`
+
+> Si b = 0, da un error al intentar dividir a por 0. Se soluciona usando el operador && en vez de &. Con el operador && al ser falsa la primera condición la segunda ya no se evalúa porque no modificaría el resultado.
+---
+14) Utilizar el operador ternario condicional para establecer el contenido de una variable entera con el menor valor de otras dos variables enteras.
+```C#
+int a, b, x;
+a = 7; b = 10;
+x = (a <= b) ? a : b;
+System.Console.WriteLine(x);
+```
+---
+15) ¿Cuál es el problema del código siguiente y cómo se soluciona?
+```C#
+int i = 0;
+for (int i = 1; i <= 10;) {
+	Console.WriteLine(i++);
+}
+```
+> La variable i está declarada dos veces. Sacar la primera línea es una solución. Depende de si se quiere imprimir el 0 o no si sacar la primera línea o la declaración de i en el bloque for. También podría declararse `int i = 0` en el for.
+---
+16) Analizar el siguiente código. ¿Cuál es la salida por consola?
+```C#
+int i = 1;
+if (--i == 0) {
+Console.WriteLine("cero");
+}
+if (i++ == 0) {
+Console.WriteLine("cero");
+}
+Console.WriteLine(i);
+```
+> cero
+> cero
+> 1
