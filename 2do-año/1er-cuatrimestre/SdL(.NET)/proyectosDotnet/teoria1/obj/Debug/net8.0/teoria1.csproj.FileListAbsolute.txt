@@ -1,0 +1,15 @@
+E:\Repos\informatica-unlp\2do-año\1er-cuatrimestre\SdL(.NET)\proyectosDotnet\teoria1\bin\Debug\net8.0\teoria1.exe
+E:\Repos\informatica-unlp\2do-año\1er-cuatrimestre\SdL(.NET)\proyectosDotnet\teoria1\bin\Debug\net8.0\teoria1.deps.json
+E:\Repos\informatica-unlp\2do-año\1er-cuatrimestre\SdL(.NET)\proyectosDotnet\teoria1\bin\Debug\net8.0\teoria1.runtimeconfig.json
+E:\Repos\informatica-unlp\2do-año\1er-cuatrimestre\SdL(.NET)\proyectosDotnet\teoria1\bin\Debug\net8.0\teoria1.dll
+E:\Repos\informatica-unlp\2do-año\1er-cuatrimestre\SdL(.NET)\proyectosDotnet\teoria1\bin\Debug\net8.0\teoria1.pdb
+E:\Repos\informatica-unlp\2do-año\1er-cuatrimestre\SdL(.NET)\proyectosDotnet\teoria1\obj\Debug\net8.0\teoria1.GeneratedMSBuildEditorConfig.editorconfig
+E:\Repos\informatica-unlp\2do-año\1er-cuatrimestre\SdL(.NET)\proyectosDotnet\teoria1\obj\Debug\net8.0\teoria1.AssemblyInfoInputs.cache
+E:\Repos\informatica-unlp\2do-año\1er-cuatrimestre\SdL(.NET)\proyectosDotnet\teoria1\obj\Debug\net8.0\teoria1.AssemblyInfo.cs
+E:\Repos\informatica-unlp\2do-año\1er-cuatrimestre\SdL(.NET)\proyectosDotnet\teoria1\obj\Debug\net8.0\teoria1.csproj.CoreCompileInputs.cache
+E:\Repos\informatica-unlp\2do-año\1er-cuatrimestre\SdL(.NET)\proyectosDotnet\teoria1\obj\Debug\net8.0\teoria1.sourcelink.json
+E:\Repos\informatica-unlp\2do-año\1er-cuatrimestre\SdL(.NET)\proyectosDotnet\teoria1\obj\Debug\net8.0\teoria1.dll
+E:\Repos\informatica-unlp\2do-año\1er-cuatrimestre\SdL(.NET)\proyectosDotnet\teoria1\obj\Debug\net8.0\refint\teoria1.dll
+E:\Repos\informatica-unlp\2do-año\1er-cuatrimestre\SdL(.NET)\proyectosDotnet\teoria1\obj\Debug\net8.0\teoria1.pdb
+E:\Repos\informatica-unlp\2do-año\1er-cuatrimestre\SdL(.NET)\proyectosDotnet\teoria1\obj\Debug\net8.0\teoria1.genruntimeconfig.cache
+E:\Repos\informatica-unlp\2do-año\1er-cuatrimestre\SdL(.NET)\proyectosDotnet\teoria1\obj\Debug\net8.0\ref\teoria1.dll
