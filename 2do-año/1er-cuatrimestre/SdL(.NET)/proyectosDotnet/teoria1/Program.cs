@@ -1,12 +1,12 @@
-﻿Console.WriteLine("Ingrese un texto: ");
-string texto = Console.ReadLine();
-
-foreach (Meses mes in Enum.GetValues(typeof(Meses))) {
-    if (texto.Equals(mes.ToString())) {
-        Console.WriteLine("El texto ingresado es un mes del año.");
+﻿void Imprimir(params object[] v) {
+    foreach (object obj in v)
+    {
+        Console.Write(obj + " ");
     }
+    Console.Write("\n");
 }
 
-enum Meses {
-    enero, febrero, marzo, abril, mayo, junio, julio, agosto, septiembre, octubre, noviembre, diciembre
-}
+Imprimir(1, "casa", 'A', 3.4, DayOfWeek.Saturday);
+Imprimir(1, 2, "tres");
+Imprimir();
+Imprimir("-------------");

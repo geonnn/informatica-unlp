@@ -41,6 +41,7 @@ float f = d;
 o = i;
 i = o + 1;
 ```
+
 ```C#
 object o = "Hola Mundo!";
 string? st = o as string;
@@ -191,3 +192,170 @@ enum Meses {
 }
 ```
 ---
+13) ¿Cuál es la salida por consola si no se pasan argumentos por la línea de comandos?
+```C#
+Console.WriteLine(args == null);
+Console.WriteLine(args.Length);
+```
+> False
+> 0
+---
+14) ¿Qué hace la instrucción? ¿Asigna a la variable vector el valor null?
+```C#
+int[]? vector = new int[0]
+```
+> No, inicializa un vector de enteros vacío.
+---
+15) Determinar qué hace el siguiente programa y explicar qué sucede si no se pasan parámetros cuando se invoca desde la línea de comandos.
+```C#
+Console.WriteLine("¡Hola {0}!", args[0]);
+```
+> Imprime el primer parámetro pasado por la consola, es decir el de la posición 0 en el arreglo args. Si no se pasa ningún parámetro tira el siguiente error:
+```
+Unhandled exception. System.IndexOutOfRangeException: Index was outside the bounds of the array.
+```
+---
+16) Escribir un programa que reciba una lista de nombres como parámetro por la línea de comandos e imprima por consola un saludo personalizado para cada uno de ellos. 
+	a) Utilizando la sentencia for
+	b) Utilizando la sentencia foreach
+**a)**
+```C#
+for (int i = 0; i < args.Length; i++)
+{
+    Console.WriteLine($"¡Hola {args[i]}!");
+}
+```
+**b)**
+```C#
+foreach (string nom in args)
+{
+    Console.WriteLine($"¡Hola {nom}!");
+}
+```
+---
+17) Implementar un programa que muestre todos los números primos entre 1 y un número natural dado (pasado al programa como argumento por la línea de comandos). Definir el método bool EsPrimo(int n) que devuelve true sólo si n es primo. Esta función debe comprobar si n es divisible por algún número entero entre 2 y la raíz cuadrada de n. (Nota: Math.Sqrt(d) devuelve la raíz cuadrada de d)
+```C#
+bool EsPrimo(int n) {
+    if (n <= 1) return false;
+    if (n == 2) return true;
+    for (int i = 2; i <= Math.Sqrt(n); i++) {
+        if (n % i == 0) return false;
+    }
+    return true;
+}
+
+int? n = int.TryParse(args[0], out int result) ? result : null;
+if (n != null) {
+    int x = (int)n;
+    for (int i = 1; i <= x; i++) {
+        if (EsPrimo(i)) {
+            Console.WriteLine($"El número {i} es primo.");
+        }
+    }
+}
+else Console.WriteLine("El parámetro ingresado debe ser un número entero.");
+```
+---
+18) Escribir una función (método int Fac(int n)) que calcule el factorial de un número n pasado al programa como parámetro por la línea de comando.
+	a) Definiendo una función no recursiva
+	b) Definiendo una función recursiva
+	c) idem a b) pero con expression-bodied methods (Tip: utilizar el operador condicional ternario)
+```C#
+// a)
+int Fac(int n) {
+    for (int i = n-1; i >= 2; i--) {
+        n *= i;
+    }
+    return n;
+}
+
+// b)
+int FacRecurs(int n) {
+    if (n <= 2) return n;
+    return n * FacRecurs(n - 1);
+}
+
+// c)
+int FacEBM(int n) => (n <= 2) ? n : n * FacEBM(n-1);
+
+int? n = int.TryParse(args[0], out int result) ? result : null;
+if (n != null) {
+    int x = (int)n;
+    Console.WriteLine(Fac(x));
+    Console.WriteLine(FacRecurs(x));
+    Console.WriteLine(FacEBM(x));
+}
+else Console.WriteLine("El parámetro ingresado debe ser un número entero.");
+```
+---
+19) Idem. al ejercicio 18.a) y 18.b) pero devolviendo el resultado en un parámetro de salida void Fac(int n, out int f)
+```C#
+// a)
+void Fac(int n, out int f) {
+    f = n;
+    for (n = n-1; n >= 2; n--) {
+        f *= n;
+    }
+}
+
+// b)
+void FacRecurs(int n, out int f) {
+    if (n > 2)
+    {
+        FacRecurs(n - 1, out f);
+        f *= n;
+    }
+    else f = n;
+}
+
+int? n = int.TryParse(args[0], out int result) ? result : null;
+if (n != null) {
+    int y, z;
+    int x = (int)n;
+    Fac(x, out y);
+    FacRecurs(x, out z);
+    Console.WriteLine(y);
+    Console.WriteLine(z);
+}
+else Console.WriteLine("El parámetro ingresado debe ser un número entero.");
+```
+---
+20) Codificar el método Swap que recibe 2 parámetros enteros e intercambia sus valores. El cambio debe apreciarse en el método invocador.
+```C#
+void Swap(ref int x, ref int y) {
+    (x, y) = (y, x);
+}
+
+int x = 10; int y = 20;
+System.Console.WriteLine($"x: {x} | y: {y}");
+Swap(ref x, ref y);
+System.Console.WriteLine($"x: {x} | y: {y}");
+```
+---
+21) Codificar el método Imprimir para que el siguiente código produzca la salida por consola que se observa. Considerar que el usuario del método Imprimir podría querer más adelante imprimir otros datos, posiblemente de otros tipos pasando una cantidad distinta de parámetros cada vez que invoque el método. Tip: usar params
+```C#
+Imprimir(1, "casa", 'A', 3.4, DayOfWeek.Saturday);
+Imprimir(1, 2, "tres");
+Imprimir();
+Imprimir("-------------");
+
+// 1 casa A 3,4 Saturday
+// 1 2 tres
+//
+// -------------
+```
+
+```C#
+void Imprimir(params object[] v) {
+    foreach (object obj in v)
+    {
+        Console.Write(obj + " ");
+    }
+    Console.Write("\n");
+}
+
+Imprimir(1, "casa", 'A', 3.4, DayOfWeek.Saturday);
+Imprimir(1, 2, "tres");
+Imprimir();
+Imprimir("-------------");
+```
