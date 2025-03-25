@@ -1,4 +1,7 @@
 program ej3;
+
+uses Crt;
+
 type
     recEmpleado = record
         idEmp: integer;
@@ -10,9 +13,15 @@ type
 
     archivo = file of recEmpleado;
 
+function Separador(st: string): string;
+begin
+    Separador := (#10'---------- ' + st + ' ----------'#10);
+end;
+
 procedure LeerEmpleado(var e: recEmpleado);
 begin
-    writeln('Ingrese apellido del empleado: ');
+    writeln;
+    writeln('Ingrese apellido del empleado (fin para terminar): ');
     readln(e.ap);
     if (e.ap = 'fin') then
         writeln('Carga de empleados finalizada.')
@@ -33,40 +42,48 @@ begin
     writeln('Apellido: ', e.ap, ' | Nombre: ', e.nom, ' | Edad: ', e.edad, ' | DNI: ', e.dni, ' | ID: ', e.idEmp);
 end;
 
-procedure CrearArchivo;
-var
-    nomArch: string;
-    archivo_logico: archivo;
-    e: recEmpleado;
+procedure TextoMenu;
 begin
-    writeln('Ingrese la ruta del archivo: ');
-    readln(nomArch);
-    assign(archivo_logico, nomArch);
-    rewrite(archivo_logico);
-    writeln(' ');
+    writeln(Separador('Menú de opciones'));
+    writeln('1. Crear archivo de empleados.');
+    writeln('2. Operar con archivo existente.');
+    writeln('0. Finalizar el programa.'); writeln;
+    writeln('Seleccione una opción: ');
+end;
 
-    LeerEmpleado(e);
-    while (e.ap <> 'fin') do begin
-        write(archivo_logico, e);
-        LeerEmpleado(e);
-    end;
-    close(archivo_logico);
+procedure TextoMenuLeer;
+begin
+    writeln('1. Listar empleados por nombre o apellido.');
+    writeln('2. Listar todos los empleados.');
+    writeln('3. Listar empleados mayores a 70 años.');
+    writeln('4. Agregar empleados.');
+    writeln('0. Salir.');
+    writeln;
+    writeln('Seleccione una opción: ');
+end;
+
+procedure VolverMenu;
+begin
+    writeln;
+    writeln;
+    writeln('Presione una tecla para volver al menú...');
+    ReadKey;
 end;
 
 procedure ListarNomAp(var arch: archivo);
 var
     e: recEmpleado;
-    nomAp: string[40];
+    nomAp: string;
 begin
     writeln('Ingrese un nombre o un apellido: ');
     readln(nomAp);
-    writeln('');
+    writeln;
     while not EOF(arch) do begin
         read(arch, e);
         if (e.ap = nomAp) or (e.nom = nomAp) then
             ImprimirEmpleado(e);
     end;
-    writeln('');
+    writeln;
 end;
 
 procedure ListarTodos(var arch: archivo);
@@ -77,7 +94,7 @@ begin
         read(arch, e);
         ImprimirEmpleado(e);
     end;
-    writeln('');
+    writeln;
 end;
 
 procedure ListarM70(var arch: archivo);
@@ -89,31 +106,62 @@ begin
         if (e.edad > 70) then
             ImprimirEmpleado(e);
     end;
-    writeln('');
+    writeln;
 end;
 
-function Separador(st: string): string;
+procedure AgregarEmpleado(var arch: archivo); // No funciona todavía.
+
+    function IDExiste(id: integer; var arch: archivo): boolean;
+    var
+        archAux: archivo;
+        e: recEmpleado;
+        nom: string;
+    begin
+        nom := 'empleados';
+        assign(archAux, nom);
+        reset(archAux);
+        while not EOF(archAux) and (id <> e.idEmp) do
+            read(archAux, e);
+        if (id = e.idEmp) then
+            IDExiste := false
+        else
+            IDExiste := true;
+    end;
+
+var
+    e: recEmpleado;
 begin
-    Separador := (#10'---------- ' + st + ' ----------'#10);
+    reset(arch);
+    seek(arch, FileSize(arch));
+    leerEmpleado(e);
+    while (e.ap <> 'fin') do begin
+        if not(IDExiste(e.idEmp, arch)) then
+            write(arch, e);
+        leerEmpleado(e);
+    end;
+    close(arch);
 end;
 
-procedure TextoMenu;
+procedure CrearArchivo;
+var
+    nomArch: string;
+    archivo_logico: archivo;
+    e: recEmpleado;
 begin
-    writeln(Separador('Menú de opciones'));
-    writeln('1. Crear archivo de empleados.');
-    writeln('2. Leer archivo existente.');
-    writeln('3. Finalizar el programa.'); writeln('');
-    writeln('Seleccione una opción: ');
-end;
+    writeln(Separador('Crear archivo'));
+    writeln('Ingrese la ruta del archivo: ');
+    readln(nomArch);
+    assign(archivo_logico, nomArch);
+    rewrite(archivo_logico);
+    writeln;
 
-procedure TextoMenuLeer;
-begin
-    writeln('1. Listar empleados por nombre o apellido.');
-    writeln('2. Listar todos los empleados.');
-    writeln('3. Listar empleados mayores a 70 años.');
-    writeln('4. Salir.');
-    writeln('');
-    writeln('Seleccione una opción: ');
+    LeerEmpleado(e);
+    while (e.ap <> 'fin') do begin
+        write(archivo_logico, e);
+        LeerEmpleado(e);
+    end;
+    close(archivo_logico);
+    VolverMenu;
 end;
 
 procedure LeerArchivo;
@@ -122,53 +170,40 @@ var
     archivo_logico: archivo;
     n: integer;
 begin
+    writeln(Separador('Leer archivo'));
     writeln('Ingrese la ruta del archivo: ');
     readln(nomArch);
     assign(archivo_logico, nomArch);
-    writeln(' ');
+    writeln;
 
     TextoMenuLeer;
-    read(n);
-    writeln('');
-    while (n <> 4) do begin
-        while (n < 1) or (n > 4) do begin
-            writeln('Ingrese una opción válida: ');
-            readln(n);
-        end;
-        reset(archivo_logico); // Se hace el reset acá para reiniciar el puntero antes de cada proceso de lectura del archivo.
-        case (n) of
-            1: ListarNomAp(archivo_logico);
-            2: ListarTodos(archivo_logico);
-            3: ListarM70(archivo_logico);
-        end;
-        TextoMenuLeer;
-        readln(n);
-        writeln('');
+    readln(n);
+    writeln;
+    reset(archivo_logico); // Se hace el reset acá para reiniciar el puntero antes de cada proceso de lectura del archivo.
+    case (n) of
+        1: ListarNomAp(archivo_logico);
+        2: ListarTodos(archivo_logico);
+        3: ListarM70(archivo_logico);
+        4: AgregarEmpleado(archivo_logico);
+        else writeln('Ingrese una opción válida: ');
     end;
     close(archivo_logico);
+    VolverMenu;
 end;
 
 var
     m: integer;
 begin
     
-    TextoMenu;
-    readln(m);
-    while (m <> 3) do begin
-        while (m < 1) or (m > 3) do begin
-            writeln('Ingrese una opción válida: ');
-            readln(m);
-        end;
-        if (m = 1) then begin
-            writeln(Separador('Crear archivo'));
-            CrearArchivo;
-        end
-        else begin // (m = 2)
-            writeln(Separador('Leer archivo'));
-            LeerArchivo;
-        end;
+    repeat
+        ClrScr;
         TextoMenu;
-        readln(m)
-    end;
-    writeln(Separador('Programa finalizado'));
+        readln(m);
+        case (m) of
+            1: CrearArchivo;
+            2: LeerArchivo;
+            0: writeln(Separador('Programa finalizado'));
+            else writeln('Ingrese una opción válida: ');
+        end;
+    until (m = 0);
 end.
