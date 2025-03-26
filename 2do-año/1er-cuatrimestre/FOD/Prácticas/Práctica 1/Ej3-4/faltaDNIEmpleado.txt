@@ -1,0 +1,1 @@
+Apellido: 50 | Nombre: 50 | Edad: 78 | DNI: 0 | ID: 50

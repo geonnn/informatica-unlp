@@ -47,6 +47,7 @@ begin
     writeln(Separador('Menú de opciones'));
     writeln('1. Crear archivo de empleados.');
     writeln('2. Operar con archivo existente.');
+    writeln('3. Modificar archivo a operar.');
     writeln('0. Finalizar el programa.'); writeln;
     writeln('Seleccione una opción: ');
 end;
@@ -57,6 +58,9 @@ begin
     writeln('2. Listar todos los empleados.');
     writeln('3. Listar empleados mayores a 70 años.');
     writeln('4. Agregar empleados.');
+    writeln('5. Modificar edad de un empleado.');
+    writeln('6. Exportar todos los empleados a un archivo de texto.');
+    writeln('7. Exportar empleados que no tengan DNI cargado.');
     writeln('0. Salir.');
     writeln;
     writeln('Seleccione una opción: ');
@@ -109,73 +113,118 @@ begin
     writeln;
 end;
 
-procedure AgregarEmpleado(var arch: archivo); // No funciona todavía.
+procedure AgregarEmpleado(var arch: archivo);
 
     function IDExiste(id: integer; var arch: archivo): boolean;
     var
-        archAux: archivo;
         e: recEmpleado;
-        nom: string;
     begin
-        nom := 'empleados';
-        assign(archAux, nom);
-        reset(archAux);
-        while not EOF(archAux) and (id <> e.idEmp) do
-            read(archAux, e);
+        reset(arch);
+        while (not EOF(arch)) and (id <> e.idEmp) do
+            read(arch, e);
         if (id = e.idEmp) then
-            IDExiste := false
+            IDExiste := true
         else
-            IDExiste := true;
+            IDExiste := false;
     end;
 
 var
     e: recEmpleado;
 begin
-    reset(arch);
-    seek(arch, FileSize(arch));
     leerEmpleado(e);
     while (e.ap <> 'fin') do begin
-        if not(IDExiste(e.idEmp, arch)) then
+        if not(IDExiste(e.idEmp, arch)) then begin
             write(arch, e);
+            writeln;
+            writeln('Empleado agregado exitosamente');
+        end
+        else begin
+            writeln;
+            writeln('El empleado con la id ingresada ya existe.');
+        end;
         leerEmpleado(e);
     end;
-    close(arch);
 end;
 
-procedure CrearArchivo;
+procedure ModificarEdad(var arch: archivo);
 var
-    nomArch: string;
-    archivo_logico: archivo;
+    id: integer;
+    e: recEmpleado;
+    edad: integer;
+begin
+    reset(arch);
+    writeln('Ingrese id de un empleado para modificar su edad: ');
+    readln(id);
+    read(arch, e);
+    while not (EOF(arch)) and (id <> e.idEmp) do
+        read(arch, e);
+    if (id = e.idEmp) then begin
+        writeln('Ingrese la edad a asignarle al empleado: ');
+        readln(edad);
+        e.edad := edad;
+        seek(arch, FilePos(arch)-1);
+        write(arch, e);
+    end
+    else
+        writeln('No se encontró el empleado con id ', id, '.');
+end;
+
+procedure ExportarTodos(var arch: archivo);
+var
+    archivoTexto: Text;
+    e, eAux: recEmpleado;
+begin
+    assign(archivoTexto, 'todos_empleados.txt');
+    rewrite(archivoTexto);
+    while not EOF(arch) do begin
+        read(arch, e);
+        with eAux do
+            writeln(archivoTexto, 'Apellido: ', e.ap, ' | Nombre: ', e.nom, ' | Edad: ', e.edad, ' | DNI: ', e.dni, ' | ID: ', e.idEmp);
+    end;
+    writeln('Archivo creado exitosamente.');
+    close(archivoTexto);
+end;
+
+procedure ExportarSinDNI(var arch: archivo);
+var
+    archivoTexto: Text;
+    e, eAux: recEmpleado;
+begin
+    assign(archivoTexto, 'faltaDNIEmpleado.txt');
+    rewrite(archivoTexto);
+    while not EOF(arch) do begin
+        read(arch, e);
+        with eAux do
+            if (e.dni = 00) then
+                writeln(archivoTexto, 'Apellido: ', e.ap, ' | Nombre: ', e.nom, ' | Edad: ', e.edad, ' | DNI: ', e.dni, ' | ID: ', e.idEmp);
+    end;
+    writeln('Archivo creado exitosamente.');
+    close(archivoTexto);
+end;
+
+procedure CrearArchivo(var arch: archivo);
+var
     e: recEmpleado;
 begin
     writeln(Separador('Crear archivo'));
-    writeln('Ingrese la ruta del archivo: ');
-    readln(nomArch);
-    assign(archivo_logico, nomArch);
-    rewrite(archivo_logico);
+    rewrite(arch);
     writeln;
 
     LeerEmpleado(e);
     while (e.ap <> 'fin') do begin
-        write(archivo_logico, e);
+        write(arch, e);
         LeerEmpleado(e);
     end;
-    close(archivo_logico);
+    close(arch);
     VolverMenu;
 end;
 
-procedure LeerArchivo;
+procedure LeerArchivo(var archivo_logico: archivo);
 var
-    nomArch: string;
-    archivo_logico: archivo;
     n: integer;
 begin
     writeln(Separador('Leer archivo'));
-    writeln('Ingrese la ruta del archivo: ');
-    readln(nomArch);
-    assign(archivo_logico, nomArch);
     writeln;
-
     TextoMenuLeer;
     readln(n);
     writeln;
@@ -185,23 +234,38 @@ begin
         2: ListarTodos(archivo_logico);
         3: ListarM70(archivo_logico);
         4: AgregarEmpleado(archivo_logico);
+        5: ModificarEdad(archivo_logico);
+        6: ExportarTodos(archivo_logico);
+        7: ExportarSinDNI(archivo_logico);
+        0: ;
         else writeln('Ingrese una opción válida: ');
     end;
     close(archivo_logico);
     VolverMenu;
 end;
 
+procedure AsignarArchivo(var arch: archivo);
+var
+    nomArch: string;
+begin
+    writeln('Ingrese la ruta del archivo: ');
+    readln(nomArch);
+    assign(arch, nomArch);
+end;
+
 var
     m: integer;
+    archivo_logico: archivo;
 begin
-    
+    AsignarArchivo(archivo_logico);
     repeat
         ClrScr;
         TextoMenu;
         readln(m);
         case (m) of
-            1: CrearArchivo;
-            2: LeerArchivo;
+            1: CrearArchivo(archivo_logico);
+            2: LeerArchivo(archivo_logico);
+            3: AsignarArchivo(archivo_logico);
             0: writeln(Separador('Programa finalizado'));
             else writeln('Ingrese una opción válida: ');
         end;
