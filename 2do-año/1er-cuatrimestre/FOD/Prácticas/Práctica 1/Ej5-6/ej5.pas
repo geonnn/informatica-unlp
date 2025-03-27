@@ -37,21 +37,10 @@ begin
             ' | Nombre: ', c.nom);
 end;
 
-procedure EscribirCelular(c: recCelular);
-var
-    arch: Text;
-begin
-    assign(arch, 'celulares.txt');
-    write(arch, 'Código: ', c.cod, ' | Precio: $', c.precio, ' | Marca: ', c.marca);
-    write(arch, 'Stock disp.: ', c.stDisp, ' | Stock mín.: ', c.stMin, ' | Desc.: ', c.desc);
-    write(arch, 'Nombre: ', c.nom);
-end;
-
 function Separador(st: string): string;
 begin
     Separador := (#10'---------- ' + st + ' ----------'#10);
 end;
-
 
 procedure LeerCelular(var c: recCelular);
 begin
@@ -151,6 +140,40 @@ begin
     end;
 end;
 
+procedure Exportar(var arch: archivo);
+var
+    c: recCelular;
+    arch_texto: Text;
+begin
+    assign(arch_texto, 'celulares.txt');
+    rewrite(arch_texto);
+    while not EOF(arch) do begin
+        read(arch, c);
+        write(arch_texto, 'Código: ', c.cod, ' | Precio: $', c.precio, ' | Marca: ', c.marca);
+        write(arch_texto, 'Stock disp.: ', c.stDisp, ' | Stock mín.: ', c.stMin, ' | Desc.: ', c.desc);
+        write(arch_texto, 'Nombre: ', c.nom);
+    end;
+    close(arch_texto);
+end;
+
+procedure AgregarCelular(var arch: archivo);
+var
+    c: recCelular;
+begin
+end;
+
+procedure ModificarStockDisp(var arch: archivo);
+var
+    c: recCelular;
+begin
+end;
+
+procedure ExportarSinStock(var arch: archivo);
+var
+    c: recCelular;
+begin
+end;
+
 var
     m: integer;
     archivo_logico: archivo;
@@ -165,7 +188,7 @@ begin
             1: CrearArchivo(archivo_logico);
             2: ListarStockBajo(archivo_logico);
             3: ListarDesc(archivo_logico);
-            // 4: Exportar(archivo_logico);
+            4: Exportar(archivo_logico);
             // 5: AgregarCelular(archivo_logico);
             // 6: ModificarStockDisp(archivo_logico);
             // 7: ExportarSinStock(archivo_logico);
