@@ -1,0 +1,18 @@
+package tp1.ejercicio1;
+
+public class Ej1 {
+	
+	public void ImprimirFor(int a, int b) {
+		
+	}
+	
+	public void ImprimirWhile(int a, int b) {
+		
+	}
+
+	public void ImprimirRec(int a, int b) {
+		
+	}
+
+
+}

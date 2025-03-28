@@ -1,0 +1,15 @@
+package tp1.ejercicio2;
+import java.util.Scanner;
+
+public class Main {
+	
+	public static void main(String[] args) {
+		
+		
+		
+		int[] arr1 = Arreglo.MultiplosN(n);
+		for (int i : arr1) {
+			System.out.println(i);
+		}
+	}
+}

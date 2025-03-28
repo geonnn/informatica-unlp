@@ -1,0 +1,5 @@
+package tp1.ejercicio2;
+
+public class Main {
+	int[] arr1 = Arreglo.MultiplosN(5);
+}

@@ -1,0 +1,12 @@
+package tp1.ejercicio2;
+
+public class Arreglo {
+	
+	public static int[] MultiplosN(int n) {
+		int[] arr = new int[n];
+		for (int i = 1; i < n; i++)
+			arr[i-1] = i*n;
+		return arr;
+	}
+
+}

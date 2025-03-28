@@ -1,0 +1,16 @@
+package tp1.ejercicio1;
+
+public class Main {
+	
+	public static void main(String[] args) {
+		int a = 10;
+		int b = 20;
+		
+		ImprimirNumeros imp;
+		
+		imp.ImprimirFor(a, b);
+		imp.ImprimirWhile(a, b);
+		imp.ImprimirRec(a, b);
+	}
+
+}
