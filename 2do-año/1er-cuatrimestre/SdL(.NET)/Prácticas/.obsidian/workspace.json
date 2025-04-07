@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "práctica 2.md",
+                "file": "práctica 3.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "práctica 2"
+              "title": "práctica 3"
             }
           }
         ]
@@ -170,8 +170,9 @@
   },
   "active": "a80efba5cd275b31",
   "lastOpenFiles": [
-    "práctica 1.md",
     "práctica 2.md",
+    "práctica 3.md",
+    "práctica 1.md",
     "Screenshot_4.png",
     "Imágenes/Screenshot_4.png",
     "Imágenes",
