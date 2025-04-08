@@ -13,4 +13,13 @@ public class EjercicioSucesion {
 		}
 		return list;
 	}
+	
+	public static void invertirArrayList(ArrayList<Integer> lista) {
+		int aux;
+		for (int i = 0; i < lista.size()/2; i++) {
+			aux = lista.get(i);
+			lista.set(i, lista.get(lista.size()-1-i));
+			lista.set(lista.size()-1-i, aux);
+		}
+	}
 }

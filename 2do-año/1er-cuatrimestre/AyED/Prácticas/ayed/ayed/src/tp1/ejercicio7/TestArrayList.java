@@ -25,8 +25,8 @@ public class TestArrayList {
 		for (Integer n : lista) {
 			System.out.println(n);
 		}
-		
-		// Estudiante.Estudiantes();
+		/*
+		Estudiante.Estudiantes();
 		
 		System.out.println("Es capicúa: " + esCapicua(lista));
 		
@@ -34,6 +34,15 @@ public class TestArrayList {
 		
 		for (Integer integer : listaRecursiva) {
 			System.out.println(integer);
+		}
+		
+		*/
+		
+		EjercicioSucesion.invertirArrayList(lista);
+		System.out.println("lista invertida:\n");
+		
+		for (Integer n : lista) {
+			System.out.println(n);
 		}
 		
 		long fin = System.nanoTime();
