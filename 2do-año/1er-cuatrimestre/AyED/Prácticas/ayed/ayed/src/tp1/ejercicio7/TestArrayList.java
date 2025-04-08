@@ -22,6 +22,22 @@ public class TestArrayList {
 			lista.add(Integer.parseInt(num));
 		}
 		
+		ArrayList<Integer> lista2 = new ArrayList<Integer>();
+		for (String num : args) {
+			lista2.add(Integer.parseInt(num));
+		}
+		
+		LinkedList<Integer> listaLinked = new LinkedList<Integer>();
+		for (String num : args) {
+			listaLinked.add(Integer.parseInt(num));
+		}
+		
+		System.out.println("lista:\n");
+		for (Integer n : lista) {
+			System.out.println(n);
+		}
+		
+		System.out.println("lista 2:\n");
 		for (Integer n : lista) {
 			System.out.println(n);
 		}
@@ -36,7 +52,6 @@ public class TestArrayList {
 			System.out.println(integer);
 		}
 		
-		*/
 		
 		EjercicioSucesion.invertirArrayList(lista);
 		System.out.println("lista invertida:\n");
@@ -45,8 +60,21 @@ public class TestArrayList {
 			System.out.println(n);
 		}
 		
+		System.out.println("suma: " + EjercicioSucesion.sumarLinkedListRec(listaLinked));
+		*/
+		
+		ArrayList<Integer> listaOrd = EjercicioSucesion.combinarOrdenado(lista, lista2);
+		
+		System.out.println("lista ordenada:\n");
+		
+		for (Integer integer : listaOrd) {
+			System.out.println(integer);
+		}
+		
+		
+		
 		long fin = System.nanoTime();
-		System.out.println("Tiempo de ejecución: " + (fin - inicio) + " nanosegundos." );
+		System.out.println("Tiempo de ejecución: " + (fin - inicio)/1_000_000 + " milisegundos." );
 	}
 
 }
