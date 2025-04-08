@@ -1,0 +1,3 @@
+Código: 3, Nombre: Arroz, Precio: 130.00, Stock Actual: 5, Stock Mínimo: 10
+Código: 4, Nombre: Fideos, Precio: 85.00, Stock Actual: -1, Stock Mínimo: 10
+Código: 5, Nombre: Aceite, Precio: 300.00, Stock Actual: -10, Stock Mínimo: 10
