@@ -269,4 +269,135 @@ Si la clave es 5,3,9,7 y el mensaje a cifrar es “HOLA MUNDO”, se cifra de la
 | 5     | 3     | 9     | 7     | 5     | 3     | 9     | 7     | 5     | 3     | **<- Clave repetida**    |
 | 13    | 19    | 21    | 8     | 5     | 16    | 3     | 21    | 9     | 19    | **<- Código cifrado**    |
 | **M** | **R** | **T** | **H** | **E** | **O** | **C** | **T** | **I** | **R** | **<- Mensaje cifrado**   |
+
 A cada carácter del mensaje original se le suma la cantidad indicada en la clave. En el caso que la suma fuese mayor que 28 se debe volver a contar desde el principio, Implementar una cola con los números de la clave encolados y a medida que se desencolen para utilizarlos en el cifrado, se vuelvan a encolar para su posterior utilización. Programar un método para cifrar y otro para descifrar.
+
+```C#
+using System.Text;
+
+const string caracteres = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ ";
+Dictionary<char, int> mapaLetras = new Dictionary<char, int>();
+for (int i = 0; i < caracteres.Length; i++)
+    mapaLetras[caracteres[i]] = i + 1; // ej. primer bucle: mapaLetras['A'] = 0;
+
+Dictionary<int, char> mapaNums = new Dictionary<int, char>();
+for (int i = 0; i < caracteres.Length; i++)
+    mapaNums[i + 1] = caracteres[i];
+
+string MensajeCifrado(string mensaje, Queue<int> claveParam) {
+    StringBuilder msjCifrado = new StringBuilder();
+    int numLetra, numClave;
+
+    Queue<int> clave = new Queue<int>(claveParam);
+
+    foreach (char letra in mensaje)
+    {
+        numLetra = mapaLetras[letra];
+        numClave = clave.Dequeue();
+        clave.Enqueue(numClave);
+        numLetra += numClave;
+        if (numLetra > 28)
+            numLetra -= 28;
+        msjCifrado.Append(mapaNums[numLetra]);
+    }
+    
+    return msjCifrado.ToString();
+}
+
+string DescifrarMensaje(string mensaje, Queue<int> claveParam) {
+    StringBuilder msjCifrado = new StringBuilder();
+    int numLetra, numClave;
+
+    Queue<int> clave = new Queue<int>(claveParam);
+
+    foreach (char letra in mensaje)
+    {
+        numLetra = mapaLetras[letra];
+        numClave = clave.Dequeue();
+        clave.Enqueue(numClave);
+        numLetra -= numClave;
+        if (numLetra < 1)
+            numLetra += 28;
+        msjCifrado.Append(mapaNums[numLetra]);
+    }
+    
+    return msjCifrado.ToString();
+
+}
+
+System.Console.WriteLine("Ingrese mensaje a cifrar y una clave: ");
+
+string? msj = Console.ReadLine().ToUpper();
+if (msj == null)
+    throw new ArgumentException("Mensaje no válido.");
+
+int num;
+System.Console.WriteLine("Ingrese números enteros para la clave (00 para cortar): ");
+    Queue<int> colaClave = new Queue<int>();
+    num = int.Parse(Console.ReadLine());
+    while (num != 00) {
+        colaClave.Enqueue(num);
+        num = int.Parse(Console.ReadLine());
+    }
+
+System.Console.WriteLine("\nMensaje cifrado: \n");
+System.Console.WriteLine(MensajeCifrado(msj, colaClave));
+
+System.Console.WriteLine("\nMensaje descifrado: \n");
+System.Console.WriteLine(DescifrarMensaje("MRTHEOCTIR", colaClave));
+```
+---
+15) ¿Qué salida por la consola produce el siguiente código?
+
+```C#
+int x = 0;
+try
+{
+    Console.WriteLine((double)1.0 / x);
+    Console.WriteLine(1 / x);
+    Console.WriteLine("todo OK");
+}
+catch (Exception e)
+{
+    Console.WriteLine(e.Message);
+}
+```
+
+```
+∞
+Exception thrown: 'System.DivideByZeroException' in teoria1.dll
+Attempted to divide by zero.
+```
+---
+16) Implementar un programa que permita al usuario ingresar números por la consola. Debe ingresarse un número por línea finalizado el proceso cuando el usuario ingresa una línea vacía. A medida que se van ingresando los valores el sistema debe mostrar por la consola la suma acumulada de los mismos. Utilizar double.Parse() y try/catch para validar que la entrada ingresada sea un número válido, en caso contrario advertir con un mensaje al usuario y proseguir con el ingreso de datos.
+
+```C#
+void ProcesarNumero(ref double num, string input) {
+    try
+    {
+        num += double.Parse(input);
+    }
+    catch (Exception e)
+    {
+        System.Console.WriteLine($"Número ingresado no válido, excepción: {e.Message}");
+    }
+    finally {
+        System.Console.WriteLine($"Acumulado: {num}");
+    }
+}
+
+
+double num = 0;
+string? input;
+
+System.Console.WriteLine("Ingrese un número a sumar");
+input = Console.ReadLine();
+ProcesarNumero(ref num, input);
+while (input != "") {
+    System.Console.WriteLine("Ingrese un número a sumar");
+    input = Console.ReadLine();
+    System.Console.WriteLine();
+    ProcesarNumero(ref num, input);
+}
+```
+---

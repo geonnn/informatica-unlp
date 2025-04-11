@@ -1,28 +1,27 @@
-﻿using System.Text;
-const string caracteres = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ ";
-Dictionary<char, int> mapaLetras = new Dictionary<char, int>();
-for (int i = 0; i < caracteres.Length; i++)
-    mapaLetras[caracteres[i]] = i + 1; // ej. primer bucle: mapaLetras['A'] = 1;
-
-string MensajeCifrado(string mensaje, string clave) {
-    Queue<int> colaClave = new Queue<int>();
-
-
-    Stack<char> pila = new Stack<char>();
-        
-    StringBuilder r = new StringBuilder();
-    while (pila.Count > 0)
-        r.Append(pila.Pop());
-    return r.ToString();
+﻿void ProcesarNumero(ref double num, string input) {
+    try
+    {
+        num += double.Parse(input);
+    }
+    catch (Exception e)
+    {
+        System.Console.WriteLine($"Número ingresado no válido, excepción: {e.Message}");
+    }
+    finally {
+        System.Console.WriteLine($"Acumulado: {num}");
+    }
 }
 
-System.Console.WriteLine("Ingrese mensaje a cifrar y una clave: ");
 
-string? msj = Console.ReadLine();
-string? clave = Console.ReadLine();
+double num = 0;
+string? input;
 
-if (msj == null || clave == null)
-    throw new ArgumentException("Mensaje o clave no válidos.");
-
-System.Console.WriteLine("\nMensaje cifrado: \n");
-System.Console.WriteLine(MensajeCifrado(msj, clave));
+System.Console.WriteLine("Ingrese un número a sumar");
+input = Console.ReadLine();
+ProcesarNumero(ref num, input);
+while (input != "") {
+    System.Console.WriteLine("Ingrese un número a sumar");
+    input = Console.ReadLine();
+    System.Console.WriteLine();
+    ProcesarNumero(ref num, input);
+}
