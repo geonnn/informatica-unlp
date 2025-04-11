@@ -6,17 +6,19 @@ Notas:
 
 program ej5;
 
+uses sysutils;
+
 const
     VALOR_ALTO = maxInt;
     CANT_PCS = 5;
 
-uses sysutils;
 
 type
     recFecha = record
         dia: 1..31;
         mes: 1..12;
         anio: integer;
+    end;
 
     recLog = record
         cod_usuario: integer;
@@ -40,11 +42,40 @@ procedure Leer(var det: detalle; var l: recLog);
 begin
     if not EOF(det) then
         read(det, l)
-    else begin
+    else
         l.cod_usuario := VALOR_ALTO;
-        l.fecha.anio := VALOR_ALTO;
-    end;
 end;
+
+function SonFechasIguales(f1, f2: recFecha): boolean;
+begin
+    SonFechasIguales := true;
+    if (f1.dia <> f2.dia) then
+        SonFechasIguales := false
+    else if (f1.mes <> f2.mes) then
+        SonFechasIguales := false
+    else if (f1.anio <> f2.anio) then
+        SonFechasIguales := false;
+end;
+
+function EsMenor(r1, r2: recLog): boolean;
+begin
+    if (r1.cod_usuario < r2.cod_usuario) then
+        EsMenor := true
+    else if (r1.cod_usuario = r2.cod_usuario) then
+    begin
+        if (r1.fecha.anio < r2.fecha.anio) then
+            EsMenor := true
+        else if (r1.fecha.anio = r2.fecha.anio) and (r1.fecha.mes < r2.fecha.mes) then
+            EsMenor := true
+        else if (r1.fecha.anio = r2.fecha.anio) and (r1.fecha.mes = r2.fecha.mes) and (r1.fecha.dia < r2.fecha.dia) then
+            EsMenor := true
+        else
+            EsMenor := false;
+    end
+    else
+        EsMenor := false;
+end;
+
 
 procedure Minimo(var aD: arrayDetalles; var aL: arrayLogs; var min: recLog);
 var
@@ -54,7 +85,7 @@ begin
     posMin := -1;
 
     for i := 1 to CANT_PCS do
-        if (aL[i].cod_usuario < min.cod_usuario) then begin
+        if EsMenor(aL[i], min) then begin
             min := aL[i];
             posMin := i;
         end;
@@ -70,10 +101,29 @@ begin
 
     Minimo(aD, aL, min);
     while (min.cod_usuario <> VALOR_ALTO) do begin
-    regm.cod_usuario := min.cod_usuario;
-        while(regm.cod_usuario = min.cod_usuario) do begin
-            regm.tiempo_total_de_sesiones_abiertas
+        regm.cod_usuario := min.cod_usuario;
+        regm.fecha := min.fecha;
+        regm.tiempo_total_de_sesiones_abiertas := 0;
+        while(regm.cod_usuario = min.cod_usuario) and (SonFechasIguales(regm.fecha, min.fecha)) do begin
+            regm.tiempo_total_de_sesiones_abiertas := regm.tiempo_total_de_sesiones_abiertas + min.tiempo_sesion;
             Minimo(aD, aL, min);
+        end;
+        write(mae, regm);
+    end;
+end;
+
+procedure ImprimirMaestro(var mae: maestro);
+var
+    regm: recLogMaestro;
+begin
+    writeln('Cod Usuario | Fecha       | Tiempo Total de Sesiones Abiertas');
+    writeln('-----------------------------------------------------------');
+    while not EOF(mae) do begin
+        read(mae, regm);
+        with regm do begin
+            writeln(cod_usuario:11, ' | ', 
+                    fecha.dia:2, '/', fecha.mes:2, '/', fecha.anio:4, ' | ', 
+                    tiempo_total_de_sesiones_abiertas:10:2);
         end;
     end;
 end;
@@ -84,7 +134,9 @@ var
     mae: maestro;
     i: integer;
 begin
-    assign(mae, '/var/log/maestro.dat');
+    mkdir('var');
+    mkdir('var\log');
+    assign(mae, 'var\log\maestro.dat');
     rewrite(mae);
     for i := 1 to CANT_PCS do begin
         assign(aD[i], 'log' + Format('%.2d', [i]) + '.dat'); // log01.dat, log02.dat ... log05.dat.
@@ -93,8 +145,12 @@ begin
     end;
 
     GenerarMaestro(mae, aD, aL);
+    close(mae);
+
+    reset(mae);
+    ImprimirMaestro(mae);
+    close(mae);
 
     for i := 1 to CANT_PCS do
         close(aD[i]);
-    close(mae);
 end.
