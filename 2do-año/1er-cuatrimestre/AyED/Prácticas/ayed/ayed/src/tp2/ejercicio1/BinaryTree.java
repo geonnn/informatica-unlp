@@ -1,5 +1,8 @@
 package tp2.ejercicio1;
 
+import tp1.ejercicio8.Queue;
+import java.util.LinkedList;
+
 public class BinaryTree <T> {
 	
 	private T data;
@@ -78,14 +81,14 @@ public class BinaryTree <T> {
 		else if (this.isLeaf()) return 1;
 		else {
 			int count = 0;
-			if (this.hasLeftChild()) count += this.leftChild.contarHojas();
+			if (this.hasLeftChild()) count = this.leftChild.contarHojas();
 			if (this.hasRightChild()) count += this.rightChild.contarHojas();
 			return count;
 		}
 	}
 	
     public BinaryTree<T> espejo(){
-    	if (this.isEmpty()) return null;
+    	if (this.isEmpty()) return new BinaryTree<T>();
     	else {
     		BinaryTree<T> arbol = new BinaryTree<T>(this.getData());
     		if (this.hasLeftChild()) arbol.addRightChild(this.leftChild.espejo());
@@ -114,23 +117,34 @@ public class BinaryTree <T> {
     }
 
 
-	// 0<=n<=m	
+	// 0<=n<=m
+    // Se usa null como separador de niveles.
+    // Se encolan los nodos de un nivel y antes de pasar al siguiente se encola null.
 	public void entreNiveles(int n, int m) {
-	    entreNivelesRec(n, m, 0);  // nivel inicial = 0
-	}
-
-	private void entreNivelesRec(int n, int m, int nivelActual) {
-	    if (this.isEmpty()) return;
-
-	    if (nivelActual >= n && nivelActual <= m)
-	        System.out.print(this.getData().toString() + " ");
-
-	    if (nivelActual < m) {
-	        if (this.hasLeftChild())
-	            this.getLeftChild().entreNivelesRec(n, m, nivelActual + 1);
-	        if (this.hasRightChild())
-	            this.getRightChild().entreNivelesRec(n, m, nivelActual + 1);
+	    Queue<BinaryTree<T>> cola = new Queue<BinaryTree<T>>();
+	    
+	    cola.enqueue(this);
+	    cola.enqueue(null);
+	    BinaryTree<T> nodo;
+	    int nivelActual = 0;
+	    
+	    while (!cola.isEmpty()) {	
+	    	nodo = cola.dequeue();
+	    	if (nodo != null) {
+	    		if (nivelActual >= n && nivelActual <= m)
+	    			System.out.println(nodo.getData().toString());
+	    		if (nodo.hasLeftChild())
+	    			cola.enqueue(nodo.getLeftChild());
+	    		if (nodo.hasRightChild())
+	    			cola.enqueue(nodo.getRightChild());
+	    	}
+	    	else {
+	    		if (!cola.isEmpty()) {
+	    			cola.enqueue(null);
+	    			nivelActual++;
+	    		}
+	    	}
 	    }
-	}
-		
+	    
+	}	
 }

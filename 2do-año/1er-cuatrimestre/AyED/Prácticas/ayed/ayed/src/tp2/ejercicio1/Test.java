@@ -1,5 +1,8 @@
 package tp2.ejercicio1;
 
+import java.util.LinkedList;
+import tp2.ejercicio3.ContadorArbol;
+
 public class Test {
 	
 	public static void main(String[] args) {
@@ -11,9 +14,22 @@ public class Test {
 		arbol.getLeftChild().addRightChild(new BinaryTree<Integer>(5));
 		arbol.getRightChild().addLeftChild(new BinaryTree<Integer>(6));
 		
+		System.out.println("hojas: " + arbol.contarHojas());
+		
+		System.out.println("-------------------");
 		arbol.imprimirArbol(arbol);
 		System.out.println("-------------------");
-		arbol.imprimirArbol(arbol.espejo());		
+//		arbol.imprimirArbol(arbol.espejo());		
+//		System.out.println("-------------------");
+//		System.out.println("por niveles: ");
+//		arbol.entreNiveles(1, 2);
+		
+		ContadorArbol contArbol = new ContadorArbol(arbol);
+		LinkedList<Integer> list = new LinkedList<Integer>(contArbol.numerosParesInOrden());
+		
+		for (Integer integer : list) {
+			System.out.println(integer);
+		}
 	}
 
 }
