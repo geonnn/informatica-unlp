@@ -27,7 +27,7 @@ public class BinaryTree <T> {
 	 * @return
 	 */
 	public BinaryTree<T> getLeftChild() {
-		return leftChild;
+		return this.leftChild;
 	}
 	/**
 	 * Preguntar antes de invocar si hasRightChild()
@@ -74,26 +74,63 @@ public class BinaryTree <T> {
 	}
 
 	public int contarHojas() {
-		if (isEmpty())
-			return 0;
-		else if (!this.isLeaf()) {
-			if (this.hasLeftChild())
-				this.leftChild.contarHojas();
-			if (this.hasRightChild())
-				this.rightChild.contarHojas();
+		if (this.isEmpty()) return 0;
+		else if (this.isLeaf()) return 1;
+		else {
+			int count = 0;
+			if (this.hasLeftChild()) count += this.leftChild.contarHojas();
+			if (this.hasRightChild()) count += this.rightChild.contarHojas();
+			return count;
 		}
 	}
-		
-		
-    	 
+	
     public BinaryTree<T> espejo(){
-		       		  
- 	   return null;
+    	if (this.isEmpty()) return null;
+    	else {
+    		BinaryTree<T> arbol = new BinaryTree<T>(this.getData());
+    		if (this.hasLeftChild()) arbol.addRightChild(this.leftChild.espejo());
+    		if (this.hasRightChild()) arbol.addLeftChild(this.rightChild.espejo());
+    		
+    		return arbol;
+    	}
+    }
+    
+    public void imprimirArbol(BinaryTree<T> arbol) {
+        imprimirRecursivo(arbol, 0);
     }
 
-	// 0<=n<=m
-	public void entreNiveles(int n, int m){
-		
-   }
+    private void imprimirRecursivo(BinaryTree<T> nodo, int nivel) {
+        if (nodo == null || nodo.isEmpty()) return;
+
+        // Primero imprime el hijo derecho
+        imprimirRecursivo(nodo.getRightChild(), nivel + 1);
+
+        // Imprime el dato con indentación
+        for (int i = 0; i < nivel; i++) System.out.print("   ");
+        System.out.println(nodo.getData());
+
+        // Después imprime el hijo izquierdo
+        imprimirRecursivo(nodo.getLeftChild(), nivel + 1);
+    }
+
+
+	// 0<=n<=m	
+	public void entreNiveles(int n, int m) {
+	    entreNivelesRec(n, m, 0);  // nivel inicial = 0
+	}
+
+	private void entreNivelesRec(int n, int m, int nivelActual) {
+	    if (this.isEmpty()) return;
+
+	    if (nivelActual >= n && nivelActual <= m)
+	        System.out.print(this.getData().toString() + " ");
+
+	    if (nivelActual < m) {
+	        if (this.hasLeftChild())
+	            this.getLeftChild().entreNivelesRec(n, m, nivelActual + 1);
+	        if (this.hasRightChild())
+	            this.getRightChild().entreNivelesRec(n, m, nivelActual + 1);
+	    }
+	}
 		
 }
