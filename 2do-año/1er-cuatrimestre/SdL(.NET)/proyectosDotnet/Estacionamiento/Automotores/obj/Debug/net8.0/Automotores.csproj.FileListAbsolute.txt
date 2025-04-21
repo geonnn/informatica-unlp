@@ -1,0 +1,12 @@
+E:\Repos\informatica-unlp\2do-año\1er-cuatrimestre\SdL(.NET)\proyectosDotnet\Estacionamiento\Automotores\bin\Debug\net8.0\Automotores.deps.json
+E:\Repos\informatica-unlp\2do-año\1er-cuatrimestre\SdL(.NET)\proyectosDotnet\Estacionamiento\Automotores\bin\Debug\net8.0\Automotores.dll
+E:\Repos\informatica-unlp\2do-año\1er-cuatrimestre\SdL(.NET)\proyectosDotnet\Estacionamiento\Automotores\bin\Debug\net8.0\Automotores.pdb
+E:\Repos\informatica-unlp\2do-año\1er-cuatrimestre\SdL(.NET)\proyectosDotnet\Estacionamiento\Automotores\obj\Debug\net8.0\Automotores.GeneratedMSBuildEditorConfig.editorconfig
+E:\Repos\informatica-unlp\2do-año\1er-cuatrimestre\SdL(.NET)\proyectosDotnet\Estacionamiento\Automotores\obj\Debug\net8.0\Automotores.AssemblyInfoInputs.cache
+E:\Repos\informatica-unlp\2do-año\1er-cuatrimestre\SdL(.NET)\proyectosDotnet\Estacionamiento\Automotores\obj\Debug\net8.0\Automotores.AssemblyInfo.cs
+E:\Repos\informatica-unlp\2do-año\1er-cuatrimestre\SdL(.NET)\proyectosDotnet\Estacionamiento\Automotores\obj\Debug\net8.0\Automotores.csproj.CoreCompileInputs.cache
+E:\Repos\informatica-unlp\2do-año\1er-cuatrimestre\SdL(.NET)\proyectosDotnet\Estacionamiento\Automotores\obj\Debug\net8.0\Automotores.sourcelink.json
+E:\Repos\informatica-unlp\2do-año\1er-cuatrimestre\SdL(.NET)\proyectosDotnet\Estacionamiento\Automotores\obj\Debug\net8.0\Automotores.dll
+E:\Repos\informatica-unlp\2do-año\1er-cuatrimestre\SdL(.NET)\proyectosDotnet\Estacionamiento\Automotores\obj\Debug\net8.0\refint\Automotores.dll
+E:\Repos\informatica-unlp\2do-año\1er-cuatrimestre\SdL(.NET)\proyectosDotnet\Estacionamiento\Automotores\obj\Debug\net8.0\Automotores.pdb
+E:\Repos\informatica-unlp\2do-año\1er-cuatrimestre\SdL(.NET)\proyectosDotnet\Estacionamiento\Automotores\obj\Debug\net8.0\ref\Automotores.dll
