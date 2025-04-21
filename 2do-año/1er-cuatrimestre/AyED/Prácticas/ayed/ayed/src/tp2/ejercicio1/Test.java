@@ -17,7 +17,7 @@ public class Test {
 		System.out.println("hojas: " + arbol.contarHojas());
 		
 		System.out.println("-------------------");
-		arbol.imprimirArbol(arbol);
+		arbol.imprimirArbol();
 		System.out.println("-------------------");
 //		arbol.imprimirArbol(arbol.espejo());		
 //		System.out.println("-------------------");

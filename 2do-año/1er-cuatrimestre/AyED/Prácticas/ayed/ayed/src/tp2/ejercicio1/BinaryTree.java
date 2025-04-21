@@ -98,8 +98,8 @@ public class BinaryTree <T> {
     	}
     }
     
-    public void imprimirArbol(BinaryTree<T> arbol) {
-        imprimirRecursivo(arbol, 0);
+    public void imprimirArbol() {
+        imprimirRecursivo(this, 0);
     }
 
     private void imprimirRecursivo(BinaryTree<T> nodo, int nivel) {
@@ -118,8 +118,14 @@ public class BinaryTree <T> {
 
 
 	// 0<=n<=m
+    
     // Se usa null como separador de niveles.
     // Se encolan los nodos de un nivel y antes de pasar al siguiente se encola null.
+    
+    /**
+     * Imprime el recorrido por niveles de los elementos del árbol receptor entre los niveles n y m (ambos inclusive).
+     * (0≤n<m≤altura del árbol)
+     */
 	public void entreNiveles(int n, int m) {
 	    Queue<BinaryTree<T>> cola = new Queue<BinaryTree<T>>();
 	    
