@@ -15,6 +15,11 @@ public class Persona
         this.DNI = dni;
     }
 
+    public bool EsMayorQue(Persona p)
+    {
+        return this.Edad > p.Edad;
+    }
+
     public override string ToString()
     {
         return $"Nombre: {Nombre}, Edad: {Edad}, DNI: {DNI}";

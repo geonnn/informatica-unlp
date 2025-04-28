@@ -71,11 +71,11 @@ double[][] GetArregloDeArreglo(double[,] matriz) {
     int f = matriz.GetLength(0);
     int c = matriz.GetLength(1);
     double[][] vector = new double[f][];
-        for (int i = 0; i < f; i++) {
-            vector[i] = new double[c];
-            for (int j = 0; j < c; j++)
-                vector[i][j] = matriz[i,j];
-        }
+	for (int i = 0; i < f; i++) {
+		vector[i] = new double[c];
+		for (int j = 0; j < c; j++)
+			vector[i][j] = matriz[i,j];
+	}
     return vector;
 }
 

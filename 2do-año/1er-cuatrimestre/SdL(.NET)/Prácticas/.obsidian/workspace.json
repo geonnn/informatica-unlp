@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "práctica 4.md",
+                "file": "práctica 3.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "práctica 4"
+              "title": "práctica 3"
             }
           }
         ]
@@ -78,7 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 265.5
   },
   "right": {
     "id": "4bcb56e401943ab9",
@@ -170,10 +170,10 @@
   },
   "active": "a80efba5cd275b31",
   "lastOpenFiles": [
-    "práctica 2.md",
     "práctica 4.md",
-    "práctica 1.md",
     "práctica 3.md",
+    "práctica 1.md",
+    "práctica 2.md",
     "Screenshot_4.png",
     "Imágenes/Screenshot_4.png",
     "Imágenes",

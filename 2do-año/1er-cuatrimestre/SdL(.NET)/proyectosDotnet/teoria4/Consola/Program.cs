@@ -2,25 +2,23 @@
 
 using Clases;
 
-Console.WriteLine("Ingrese los datos de las personas de la siguiente manera:");
-Console.WriteLine("Nombre, documento, edad.");
-Console.WriteLine("Presione ENTER para ingresar los datos de la siguiente persona.");
-Console.WriteLine("Ingrese nombre \"zzz\" para finalizar.");
+Matriz m = new Matriz(2, 4);
+m.SetElemento(0, 2, 4);
+m.SetElemento(1, 1, 4000);
+m.SetElemento(1, 2, 3001);
+m.Imprimir("0.00");
 
-string[] datos = Console.ReadLine().Split(", ");
-int edad, dni;
-LinkedList<Persona> personas = new();
+double[] fila = m.GetFila(1);
 
-while (datos[0] != "zzz") {
-    dni = int.Parse(datos[1]);
-    edad = int.Parse(datos[2]);
-    personas.AddLast(new Persona(datos[0], edad, dni));
-    Console.WriteLine("Ingrese datos de la siguiente persona: ");
-    datos = Console.ReadLine().Split(", ");
+System.Console.WriteLine("---------");
+foreach (double d in fila)
+{
+    System.Console.Write(d + " | ");
 }
 
-int i = 1;
-foreach (Persona p in personas)
+double[] columna = m.GetColumna(2);
+System.Console.WriteLine("\n---------");
+foreach (double d in columna)
 {
-    System.Console.WriteLine($"{i++}) {p}");
+    System.Console.Write(d + " | ");
 }
