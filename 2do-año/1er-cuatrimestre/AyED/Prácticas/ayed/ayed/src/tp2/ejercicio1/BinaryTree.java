@@ -1,7 +1,6 @@
 package tp2.ejercicio1;
 
 import tp1.ejercicio8.Queue;
-import java.util.LinkedList;
 
 public class BinaryTree <T> {
 	
@@ -114,6 +113,36 @@ public class BinaryTree <T> {
 
         // Después imprime el hijo izquierdo
         imprimirRecursivo(nodo.getLeftChild(), nivel + 1);
+    }
+
+    public void imprimirArbolArray(BinaryTree<Integer[]> arbol) {
+        imprimirRecursivoArray(arbol, 0);
+    }
+
+    private void imprimirRecursivoArray(BinaryTree<Integer[]> nodo, int nivel) {
+        if (nodo == null || nodo.isEmpty()) return;
+
+        // Imprimir primero el hijo derecho
+        imprimirRecursivoArray(nodo.getRightChild(), nivel + 1);
+
+        // Indentación para simular estructura del árbol
+        for (int i = 0; i < nivel; i++) System.out.print("   ");
+
+        // Imprimir el array de Integer[] como string
+        Integer[] datos = nodo.getData();
+        if (datos != null) {
+            System.out.print("[");
+            for (int i = 0; i < datos.length; i++) {
+                System.out.print(datos[i]);
+                if (i < datos.length - 1) System.out.print(", ");
+            }
+            System.out.println("]");
+        } else {
+            System.out.println("null");
+        }
+
+        // Imprimir después el hijo izquierdo
+        imprimirRecursivoArray(nodo.getLeftChild(), nivel + 1);
     }
 
 
