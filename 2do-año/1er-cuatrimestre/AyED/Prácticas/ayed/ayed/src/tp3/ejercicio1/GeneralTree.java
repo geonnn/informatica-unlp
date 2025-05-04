@@ -3,6 +3,8 @@ package tp3.ejercicio1;
 import java.util.LinkedList;
 import java.util.List;
 
+import tp1.ejercicio8.Queue;
+
 public class GeneralTree<T>{
 
 	private T data;
@@ -57,17 +59,101 @@ public class GeneralTree<T>{
 			children.remove(child);
 	}
 	
-	public int altura() {	 
-			
-		return 0;
+	// Ejercicio 3:
+	
+	public int altura() {
+		if (this.isLeaf())
+			return 0;
+		
+		int maxAltura = 0;
+		
+		for (GeneralTree<T> child : this.getChildren())
+			maxAltura = Math.max(maxAltura, child.altura());
+		
+		return maxAltura += 1;
 	}
 	
 	public int nivel(T dato){
-		return 0;
+		Queue<GeneralTree<T>> cola = new Queue<GeneralTree<T>>();
+		GeneralTree<T> nodoAux;
+		int nivel = 0;
+		
+		cola.enqueue(this); cola.enqueue(null);
+		while (!cola.isEmpty()) {
+			nodoAux = cola.dequeue();
+			if (nodoAux != null) {
+				if (nodoAux.getData().equals(dato))
+					return nivel;					
+			if (nodoAux.hasChildren())
+				for (GeneralTree<T> child : nodoAux.getChildren())
+					cola.enqueue(child);
+			}
+			else {
+				if (!cola.isEmpty()) {
+					nivel++;
+					cola.enqueue(null);
+				}
+			}
+		}
+		// Si no lo encuentra retorna -1.
+		return -1;
 	  }
 
 	public int ancho(){
+		Queue<GeneralTree<T>> cola = new Queue<GeneralTree<T>>();
+		GeneralTree<T> nodoAux;
+		int maxAncho = Integer.MIN_VALUE;
 		
-		return 0;
+		cola.enqueue(this); cola.enqueue(null);
+		while (!cola.isEmpty()) {
+			maxAncho = Math.max(maxAncho, cola.size()-1); // Se resta el null.
+			nodoAux = cola.dequeue();
+			if (nodoAux != null) {	
+				if (nodoAux.hasChildren())
+					for (GeneralTree<T> child : nodoAux.getChildren())
+						cola.enqueue(child);
+			}
+			else {
+				if (!cola.isEmpty()) {
+					cola.enqueue(null);
+				}
+			}
+		}
+		return maxAncho;
 	}
+	
+	// Ejercico 5:
+	public boolean esAncestro(T a, T b) {
+		GeneralTree<T> nodoA = buscar(this, a);
+		if (nodoA == null) return false; // Nodo ancestro no existe.
+		return contiene(nodoA, b);
+	}
+	
+	private GeneralTree<T> buscar(GeneralTree<T> nodo, T valor) {
+		if (nodo.getData().equals(valor)) return nodo;
+		if (nodo.hasChildren()) {
+			GeneralTree<T> result;
+			for (GeneralTree<T> child : nodo.getChildren()) {
+				result = buscar(child, valor);
+				if (result != null) return result;
+			}
+		}
+		// Si llega a este punto no lo encontró y retorna null.
+		return null;
+	}
+	
+	/* Recibe un nodo y un dato.
+	 * Retorna true si el dato es descendiente del nodo.
+	 * Retorna false si el dato no se encuentra en el subárbol del nodo. 
+	 */
+	private boolean contiene(GeneralTree<T> nodo, T dato) {
+		if (nodo.getData().equals(dato)) return true;
+		if (nodo.hasChildren())
+			for (GeneralTree<T> child : nodo.getChildren()) {
+				if (contiene(child, dato)) return true;
+			}
+		// El dato no existe en el subárbol del nodo.
+		return false;
+	}
+	
 }

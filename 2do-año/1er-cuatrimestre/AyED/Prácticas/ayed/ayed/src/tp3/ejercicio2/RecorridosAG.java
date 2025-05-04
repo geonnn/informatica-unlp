@@ -95,15 +95,11 @@ public class RecorridosAG {
 	private void numerosPostOrden(List<Integer> list, GeneralTree<Integer> n, int num) {
 		
 		List<GeneralTree<Integer>> children = n.getChildren();
-		
 		for (GeneralTree<Integer> child : children) {
 			numerosPostOrden(list, child, num);
 		}
-		
 		int nAct = n.getData();
 		if (nAct > num && (nAct % 2 != 0))
 			list.add(nAct);		
 	}
-	
-	
 }

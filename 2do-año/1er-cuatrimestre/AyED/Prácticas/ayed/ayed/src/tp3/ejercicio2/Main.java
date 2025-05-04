@@ -31,6 +31,12 @@ public class Main {
 		for (Integer n : rAg.numerosImparesMayoresQuePorNiveles(ag, 0)) {
 			System.out.println(n);
 		}
+		System.out.println();
+		System.out.print("ancho: ");
+		System.out.print(ag.ancho());
+		System.out.println();
+		System.out.print("es ancestro: ");
+		System.out.print(ag.esAncestro(3, 31));
 	}
 
 }
