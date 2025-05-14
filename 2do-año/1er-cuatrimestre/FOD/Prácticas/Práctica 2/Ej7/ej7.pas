@@ -39,7 +39,7 @@ type
         codAlumno: integer;
         codMateria: integer;
         fecha: recFecha;
-        nota: 1..10;
+        nota: integer;
     end;
 
 maestro = file of recAlumno;
@@ -54,7 +54,7 @@ begin
         r.codAlumno := VALOR_ALTO;
 end;
 
-procedure LeerFinal(var det: detalleFinal; var r: recFinal);
+procedure LeerFinal(var det: detalleFinales; var r: recFinal);
 begin
     if not EOF(det) then
         read(det, r)
@@ -62,19 +62,67 @@ begin
         r.codAlumno := VALOR_ALTO;
 end;
 
+procedure ProcesarCursada(var cantCursadas: integer; var aprobada: boolean);
+begin
+    if (aprobada) then
+        cantCursadas := cantCursadas + 1;
+end;
+
+procedure ProcesarFinal(var cantMaterias: integer; var nota: integer);
+begin
+    if (nota >= 4) then
+        cantMaterias := cantMaterias + 1;
+end;
+
 procedure ProcesarDetalles(var mae: maestro; var detC: detalleCursadas; var detF: detalleFinales);
 var
     minC: recCursada;
     minF: recFinal;
-    regm: recMaestro;
+    regm: recAlumno;
+    cantMaterias, cantCursadas, auxCodAlu: integer;
 begin
-    Minimo()
+
+    LeerCursada(detC, minC);
+    LeerFinal(detF, minF);
+    while ((minC.codAlumno <> VALOR_ALTO) or (minF.codAlumno <> VALOR_ALTO)) do begin
+        
+        cantMaterias := 0;
+        cantCursadas := 0;
+
+        if (minC.codAlumno <= minF.codAlumno) then
+            auxCodAlu := minC.codAlumno
+        else
+            auxCodAlu := minF.codAlumno;
+
+        // Registro de cursada coincide con el alumno, actualiza cursadas.
+        if (minC.codAlumno = auxCodAlu) then
+            while (minC.codAlumno = auxCodAlu) do begin
+                ProcesarCursada(cantCursadas, minC.aprobada);
+                LeerCursada(detC, minC);
+            end;
+
+        // Registro de finales coincide con el alumno, actualiza finales.
+        if (minF.codAlumno = auxCodAlu) then
+            while (minF.codAlumno = auxCodAlu) do begin
+                ProcesarFinal(cantMaterias, minF.nota);
+                LeerFinal(detF, minF);
+            end;
+
+        read(mae, regm);
+        while (regm.codAlumno <> auxCodAlu) do
+            read(mae, regm);
+        regm.cantCursadas := regm.cantCursadas + cantCursadas;
+        regm.cantFinales := regm.cantFinales + cantMaterias;
+        seek(mae, FilePos(mae)-1);
+        write(mae, regm);
+    end;
 end;
 
 var
     mae: maestro;
     detC: detalleCursadas;
     detF: detalleFinales;
+    regm: recAlumno;
 begin
     assign(mae, 'maestro');
     assign(detC, 'cursadas.dat');
@@ -88,4 +136,12 @@ begin
     close(mae);
     close(detC);
     close(detF);
+
+    reset(mae);
+    while not EOF(mae) do begin
+        read(mae, regm);
+        writeln('Codigo: ', regm.codAlumno, ', Apellido: ', regm.ap, ', Nombre: ', regm.nom,
+                ', Cursadas Aprobadas: ', regm.cantCursadas, ', Finales Aprobados: ', regm.cantFinales);
+    end;
+    close(mae);
 end.
