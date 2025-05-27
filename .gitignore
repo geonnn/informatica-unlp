@@ -7,11 +7,5 @@
 /1er-año/2do-cuatrimestre/TdP/Módulo-2-Objetos/Parciales_de_prueba/nbproject/private/
 /1er-año/2do-cuatrimestre/AC/WinMips64/Sim-WinMips64/winmips64.ini
 /1er-año/2do-cuatrimestre/AC/WinMips64/Sim-WinMips64/winmips64.las
-/2do-año/1er-cuatrimestre/SdL(.NET)/proyectosDotnet/teoria1/obj/
-/2do-año/1er-cuatrimestre/SdL(.NET)/proyectosDotnet/teoria1/bin/
-/2do-año/1er-cuatrimestre/SdL(.NET)/proyectosDotnet/teoria4/Clases/bin
-/2do-año/1er-cuatrimestre/SdL(.NET)/proyectosDotnet/teoria4/Clases/obj
-/2do-año/1er-cuatrimestre/SdL(.NET)/proyectosDotnet/teoria4/Consola/bin
-/2do-año/1er-cuatrimestre/SdL(.NET)/proyectosDotnet/teoria4/Consola/obj
-/2do-año/1er-cuatrimestre/SdL(.NET)/proyectosDotnet/teoria6/bin
-/2do-año/1er-cuatrimestre/SdL(.NET)/proyectosDotnet/teoria6/obj
+/2do-año/1er-cuatrimestre/SdL(.NET)/proyectosDotnet/**/obj/
+/2do-año/1er-cuatrimestre/SdL(.NET)/proyectosDotnet/**/bin/
