@@ -1,0 +1,26 @@
+﻿@page "/hola"
+@rendermode InteractiveServer
+
+<h1>Listado de personas</h1>
+<ul>
+    @foreach (var p in lista)
+    {
+        <li>@p.Apellido, @p.Nombre (@p.Edad)</li>
+    }
+</ul>
+<input placeholder="Nombre" @bind="nombre" /><br>
+<input placeholder="Apellido" @bind="apellido" /><br>
+<input type="number" placeholder="Edad" @bind="edad" /><br>
+<button @onclick="Agregar">Agregar</button>
+
+@code {
+    List<Persona> lista = Persona.GetLista();
+    int? edad;
+    string? nombre;
+    string? apellido;
+    void Agregar()
+    {
+        Persona p = new Persona(nombre, apellido, edad);
+        lista.Add(p);
+    }
+}
