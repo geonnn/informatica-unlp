@@ -1,5 +1,5 @@
 1) Sea el siguiente código:
-```C#
+```csharp
 object o1 = "A";
 object o2 = o1;
 o2 = "Z";
@@ -10,7 +10,7 @@ El tipo object es un tipo referencia, por lo tanto luego de la sentencia o2 = o1
 > Después de la sentencia o2 = "Z", o2 almacena un puntero que apunta a otra dirección en memoria heap en donde se contiene "Z". Mientras tanto o1 no se modifica nunca y sigue apuntando a "A" en la heap.
 ---
 2) Qué líneas del siguiente código provocan conversiones boxing y unboxing.
-```C#
+```csharp
 char c1 = 'A'; 
 string st1 = "A";
 object o1 = c1; // boxing.
@@ -21,7 +21,7 @@ string st2 = (string)o2; // unboxing.
 ---
 3) ¿Qué diferencias existen entre las conversiones de tipo implícitas y explícitas?
 > Las operaciones explícitas requieren un operador de conversión, mientras que las implícitas no. Las conversiones implícitas las realiza por sí mismo el compilador, las explícitas requieren de una expresión cast, escrita por el programador.
-```C#
+```csharp
 byte b = 10;
 double x = 12.25;
 int i = b; // Conversión implícita de byte a int.
@@ -31,7 +31,7 @@ i = (int)x; // Conversión explícita de double a int.
 ```
 ---
 4) Resolver los errores de compilación en el siguiente fragmento de código. Utilizar el operador as cuando sea posible.
-```C#
+```csharp
 object o = "Hola Mundo!";
 string st = o;
 int i = 12;
@@ -42,7 +42,7 @@ o = i;
 i = o + 1;
 ```
 
-```C#
+```csharp
 object o = "Hola Mundo!";
 string? st = o as string;
 int? i = 12;
@@ -54,7 +54,7 @@ i = (o as int?) + 1;
 ```
 ---
 6) Supongamos que Program.cs sólo tiene las siguientes dos líneas:
-```C#
+```csharp
 int i;
 Console.WriteLine(i);
 ```
@@ -62,7 +62,7 @@ Console.WriteLine(i);
 > La variable i no tiene ningún valor de inicialización. Basura =/= null.
 ---
 7) ¿Cuál es la salida por consola del siguiente fragmento de código? ¿Por qué la tercera y sexta línea producen resultados diferentes?
-```C#
+```csharp
 char c1 = 'A';
 char c2 = 'A';
 Console.WriteLine(c1 == c2);
@@ -76,7 +76,7 @@ Console.WriteLine(o1 == o2);
 ---
 8) Investigar acerca de la clase StringBuilder del espacio de nombre System.Text ¿En qué circunstancias es preferible utilizar StringBuilder en lugar de utilizar string? Implementar un caso de ejemplo en el que el rendimiento sea claramente superior utilizando StringBuilder en lugar de string y otro en el que no.
 9) Investigar sobre el tipo DateTime y usarlo para medir el tiempo de ejecución de los algoritmos implementados en el ejercicio anterior.
-```C#
+```csharp
 DateTime dt1 = DateTime.Now;
 System.Console.WriteLine("Start Time: " + dt1);
 
@@ -95,7 +95,7 @@ TimeSpan duration = dt2 - dt1;
 System.Console.WriteLine("Duration: " + duration.TotalMilliseconds + " ms");
 ```
 > ~90ms.
-```C#
+```csharp
 using System.Text;
 DateTime dt1 = DateTime.Now;
 System.Console.WriteLine("Start Time: " + dt1);
@@ -118,7 +118,7 @@ System.Console.WriteLine("Duration: " + duration.TotalMilliseconds + " ms");
 > ~40ms.
 ---
 10) Comprobar el funcionamiento del siguiente programa y dibujar el estado de la pila y la memoria heap cuando la ejecución alcanza los puntos indicados (comentarios en el código).
-```C#
+```csharp
 using System.Text;
 
 object[] v = new object[10];
@@ -145,7 +145,7 @@ Console.WriteLine(s);
 >Corrección: los objetos en el vector que está en la heap son punteros a un único object, modificar uno afecta a lo que se imprime en todas las posiciones del vector.
 ---
 11) ¿Para qué sirve el método Split de la clase string? Usarlo para escribir en la consola todas las palabras (una por línea) de una frase ingresada por consola por el usuario.
-```C#
+```csharp
 void Imprimir(params string[] arrStr) {
     foreach (string st in arrStr) {
         Console.WriteLine(st);
@@ -162,7 +162,7 @@ b) Solicitar al usuario que ingrese un texto y responder si el texto tipeado cor
 Nota: en todos los casos utilizar un for iterando sobre una variable de tipo Meses
 
 **a)**
-```C#
+```csharp
 using System.Text;
 
 StringBuilder sb = new StringBuilder();
@@ -177,7 +177,7 @@ enum Meses {
 ```
 
 **b)**
-```C#
+```csharp
 Console.WriteLine("Ingrese un texto: ");
 string texto = Console.ReadLine();
 
@@ -193,7 +193,7 @@ enum Meses {
 ```
 ---
 13) ¿Cuál es la salida por consola si no se pasan argumentos por la línea de comandos?
-```C#
+```csharp
 Console.WriteLine(args == null);
 Console.WriteLine(args.Length);
 ```
@@ -201,13 +201,13 @@ Console.WriteLine(args.Length);
 > 0
 ---
 14) ¿Qué hace la instrucción? ¿Asigna a la variable vector el valor null?
-```C#
+```csharp
 int[]? vector = new int[0]
 ```
 > No, inicializa un vector de enteros vacío.
 ---
 15) Determinar qué hace el siguiente programa y explicar qué sucede si no se pasan parámetros cuando se invoca desde la línea de comandos.
-```C#
+```csharp
 Console.WriteLine("¡Hola {0}!", args[0]);
 ```
 > Imprime el primer parámetro pasado por la consola, es decir el de la posición 0 en el arreglo args. Si no se pasa ningún parámetro tira el siguiente error:
@@ -219,14 +219,14 @@ Unhandled exception. System.IndexOutOfRangeException: Index was outside the boun
 	a) Utilizando la sentencia for
 	b) Utilizando la sentencia foreach
 **a)**
-```C#
+```csharp
 for (int i = 0; i < args.Length; i++)
 {
     Console.WriteLine($"¡Hola {args[i]}!");
 }
 ```
 **b)**
-```C#
+```csharp
 foreach (string nom in args)
 {
     Console.WriteLine($"¡Hola {nom}!");
@@ -234,7 +234,7 @@ foreach (string nom in args)
 ```
 ---
 17) Implementar un programa que muestre todos los números primos entre 1 y un número natural dado (pasado al programa como argumento por la línea de comandos). Definir el método bool EsPrimo(int n) que devuelve true sólo si n es primo. Esta función debe comprobar si n es divisible por algún número entero entre 2 y la raíz cuadrada de n. (Nota: Math.Sqrt(d) devuelve la raíz cuadrada de d)
-```C#
+```csharp
 bool EsPrimo(int n) {
     if (n <= 1) return false;
     if (n == 2) return true;
@@ -260,7 +260,7 @@ else Console.WriteLine("El parámetro ingresado debe ser un número entero.");
 	a) Definiendo una función no recursiva
 	b) Definiendo una función recursiva
 	c) idem a b) pero con expression-bodied methods (Tip: utilizar el operador condicional ternario)
-```C#
+```csharp
 // a)
 int Fac(int n) {
     for (int i = n-1; i >= 2; i--) {
@@ -289,7 +289,7 @@ else Console.WriteLine("El parámetro ingresado debe ser un número entero.");
 ```
 ---
 19) Idem. al ejercicio 18.a) y 18.b) pero devolviendo el resultado en un parámetro de salida void Fac(int n, out int f)
-```C#
+```csharp
 // a)
 void Fac(int n, out int f) {
     f = n;
@@ -321,7 +321,7 @@ else Console.WriteLine("El parámetro ingresado debe ser un número entero.");
 ```
 ---
 20) Codificar el método Swap que recibe 2 parámetros enteros e intercambia sus valores. El cambio debe apreciarse en el método invocador.
-```C#
+```csharp
 void Swap(ref int x, ref int y) {
     (x, y) = (y, x);
 }
@@ -333,7 +333,7 @@ System.Console.WriteLine($"x: {x} | y: {y}");
 ```
 ---
 21) Codificar el método Imprimir para que el siguiente código produzca la salida por consola que se observa. Considerar que el usuario del método Imprimir podría querer más adelante imprimir otros datos, posiblemente de otros tipos pasando una cantidad distinta de parámetros cada vez que invoque el método. Tip: usar params
-```C#
+```csharp
 Imprimir(1, "casa", 'A', 3.4, DayOfWeek.Saturday);
 Imprimir(1, 2, "tres");
 Imprimir();
@@ -345,7 +345,7 @@ Imprimir("-------------");
 // -------------
 ```
 
-```C#
+```csharp
 void Imprimir(params object[] v) {
     foreach (object obj in v)
     {

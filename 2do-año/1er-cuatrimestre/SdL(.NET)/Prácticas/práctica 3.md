@@ -1,9 +1,9 @@
 2) Implementar un método para imprimir por consola todos los elementos de una matriz (arreglo de dos dimensiones) pasada como parámetro. Debe imprimir todos los elementos de una fila en la misma línea en la consola.
-```C#
+```csharp
 void ImprimirMatriz(double[,] matriz)
 ```
 
-```C#
+```csharp
 void ImprimirMatriz(double[,] matriz) {
     for (int i = 0; i < matriz.GetLength(0); i++) {
         for (int j = 0; j < matriz.GetLength(1); j++)
@@ -14,11 +14,11 @@ void ImprimirMatriz(double[,] matriz) {
 ```
 ---
 3) Implementar el método ImprimirMatrizConFormato, similar al anterior pero ahora con un parámetro más que representa la plantilla de formato que debe aplicarse a los números al imprimirse. La plantilla de formato es un string de acuerdo a las convenciones de formato compuesto, por ejemplo “0.0” implica escribir los valores reales con un dígito para la parte decimal.
-```C#
+```csharp
 void ImprimirMatrizConFormato(double[,] matriz, string formatString)
 ```
 
-```C#
+```csharp
 void ImprimirMatrizConFormato(double[,] matriz, string formato) {
     for (int i = 0; i < matriz.GetLength(0); i++) {
         for (int j = 0; j < matriz.GetLength(1); j++)
@@ -29,12 +29,12 @@ void ImprimirMatrizConFormato(double[,] matriz, string formato) {
 ```
 ---
 4) Implementar los métodos GetDiagonalPrincipal y GetDiagonalSecundaria que devuelven un vector con la diagonal correspondiente de la matriz pasada como parámetro. Si la matriz no es cuadrada generar una excepción ArgumentException.
-```C#
+```csharp
 double[] GetDiagonalPrincipal(double[,] matriz)
 double[] GetDiagonalSecundaria(double[,] matriz)
 ```
 
-```C#
+```csharp
 bool EsCuadrada(double[,] matriz) => matriz.GetLength(0) == matriz.GetLength(1);
 
 double[] GetDiagonalPrincipal(double[,] matriz) {
@@ -62,11 +62,11 @@ double[] GetDiagonalSecundaria(double[,] matriz) {
 ```
 ---
 5) Implementar un método que devuelva un arreglo de arreglos con los mismos elementos que la matriz pasada como parámetro:
-```C#
+```csharp
 double[][] GetArregloDeArreglo(double [,] matriz)
 ```
 
-```C#
+```csharp
 double[][] GetArregloDeArreglo(double[,] matriz) {
     int f = matriz.GetLength(0);
     int c = matriz.GetLength(1);
@@ -95,13 +95,13 @@ foreach (double[] dim in arrArr)
 ```
 ---
 6) Implementar los siguientes métodos que devuelvan la suma, resta y multiplicación de matrices pasadas como parámetros. Para el caso de la suma y la resta, las matrices deben ser del mismo tamaño, en caso de no serlo devolver null. Para el caso de la multiplicación la cantidad de columnas de A debe ser igual a la cantidad de filas de B, en caso contrario generar una excepción ArgumentException.
-```C#
+```csharp
 double[,]? Suma(double[,] A, double[,] B)
 double[,]? Resta(double[,] A, double[,] B)
 double[,] Multiplicacion(double[,] A, double[,] B)
 ```
 
-```C#
+```csharp
 double[,]? Suma(double[,] A, double[,] B) {
     if (A.GetLength(0) != B.GetLength(0) || A.GetLength(1) != B.GetLength(1))
         return null;
@@ -145,7 +145,7 @@ double[,] Multiplicacion(double[,] A, double[,] B) {
         int cB = B.GetLength(1);
         double[,] matriz = new double[fA,cB];
 
-        // C# inicializa automáticamente en 0.
+        // csharp inicializa automáticamente en 0.
         // for (int i = 0; i < fA; i++)
         //     for (int j = 0; j < cB; j++)
         //         matriz[i,j] = 0;
@@ -163,7 +163,7 @@ double[,] Multiplicacion(double[,] A, double[,] B) {
 ```
 ---
 7) ¿De qué tipo quedan definidas las variables x, y, z en el siguiente código?
-```C#
+```csharp
 int i = 10;
 var x = i * 1.0;
 var y = 1f;
@@ -174,7 +174,7 @@ var z = i * y;
 >z: single (float) `int * float => float`
 ---
 8) Señalar errores de compilación y/o ejecución en el siguiente código
-```C#
+```csharp
 object obj = new int[10];
 dynamic dyna = 13;
 Console.WriteLine(obj.Length); // error de compilación, obj no tiene definido Length.
@@ -182,7 +182,7 @@ Console.WriteLine(dyna.Length); // error de ejecución, int no tiene definido Le
 ```
 ---
 9) ¿Qué líneas del siguiente método provocan error de compilación y por qué?
-```C#
+```csharp
 var a = 3L;
 dynamic b = 32;
 object obj = 3;
@@ -206,14 +206,14 @@ f = e; // Cannot implicitly convert type '<anonymous type: string Nombre, int Ed
 
 ---
 11) Señalar errores de ejecución en el siguiente código
-```C#
+```csharp
 List<int> a = [ 1, 2, 3, 4 ];
 a.Remove(5);
 a.RemoveAt(4); // Error out of range.
 ```
 ---
 12) Realizar un análisis sintáctico para determinar si los paréntesis en una expresión aritmética están bien balanceados. Verificar que por cada paréntesis de apertura exista uno de cierre en la cadena de entrada. Utilizar una pila para resolverlo. Los paréntesis de apertura de la entrada se almacenan en una pila hasta encontrar uno de cierre, realizándose entonces la extracción del último paréntesis de apertura almacenado. Si durante el proceso se lee un paréntesis de cierre y la pila está vacía, entonces la cadena es incorrecta. Al finalizar el análisis, la pila debe quedar vacía para que la cadena leída sea aceptada, de lo contrario la misma no es válida.
-```C#
+```csharp
 bool Parentesis(string expresion) {
     Stack<char> pila = new Stack<char>();
     foreach (char c in expresion) {
@@ -230,7 +230,7 @@ bool Parentesis(string expresion) {
 ```
 ---
 13) Utilizar la clase Stack\<T> (pila) para implementar un programa que pase un número en base 10 a otra base realizando divisiones sucesivas. Por ejemplo para pasar 35 en base 10 a binario dividimos sucesivamente por dos hasta encontrar un cociente menor que el divisor, luego el resultado se obtiene leyendo de abajo hacia arriba el cociente de la última división seguida por todos los restos.
-```C#
+```csharp
 using System.Text;
 
 string ConvertirNumeroABase(int num, int baseN) {
@@ -272,7 +272,7 @@ Si la clave es 5,3,9,7 y el mensaje a cifrar es “HOLA MUNDO”, se cifra de la
 
 A cada carácter del mensaje original se le suma la cantidad indicada en la clave. En el caso que la suma fuese mayor que 28 se debe volver a contar desde el principio, Implementar una cola con los números de la clave encolados y a medida que se desencolen para utilizarlos en el cifrado, se vuelvan a encolar para su posterior utilización. Programar un método para cifrar y otro para descifrar.
 
-```C#
+```csharp
 using System.Text;
 
 const string caracteres = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ ";
@@ -349,7 +349,7 @@ System.Console.WriteLine(DescifrarMensaje("MRTHEOCTIR", colaClave));
 ---
 15) ¿Qué salida por la consola produce el siguiente código?
 
-```C#
+```csharp
 int x = 0;
 try
 {
@@ -371,7 +371,7 @@ Attempted to divide by zero.
 ---
 16) Implementar un programa que permita al usuario ingresar números por la consola. Debe ingresarse un número por línea finalizado el proceso cuando el usuario ingresa una línea vacía. A medida que se van ingresando los valores el sistema debe mostrar por la consola la suma acumulada de los mismos. Utilizar double.Parse() y try/catch para validar que la entrada ingresada sea un número válido, en caso contrario advertir con un mensaje al usuario y proseguir con el ingreso de datos.
 
-```C#
+```csharp
 void ProcesarNumero(ref double num, string input) {
     try
     {
@@ -402,7 +402,7 @@ while (input != "") {
 ```
 ---
 17) Cuál es la salida por consola del siguiente programa:
-```C#
+```csharp
 try
 {
 	Metodo1();

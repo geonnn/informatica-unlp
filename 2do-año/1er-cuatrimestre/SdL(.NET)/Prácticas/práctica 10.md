@@ -7,7 +7,7 @@ e) Lista de todos los $n^2$ que terminan con el dígito 6, para n entre 1 y 20
 f) Lista con los nombres de los días de la semana en inglés que contengan una letra ‘u’
 (tip: utilizar el enumerativo DayOfWeek)
 
-```C#
+```csharp
 // a)
 var lista = Enumerable.Range(100, 101)
                       .Where(n => n%5 == 0);
@@ -22,7 +22,7 @@ while (enumerator.MoveNext())
 // lista.ToList().ForEach(Console.WriteLine);
 ```
 
-```C#
+```csharp
 // b)
 var lista = Enumerable.Range(1, 100)
                       .Where(EsPrimo);
@@ -39,7 +39,7 @@ bool EsPrimo(int n)
 }
 ```
 
-```C#
+```csharp
 // c)
 var lista = Enumerable.Range(0, 11)
                       .Select(n => Math.Pow(2, n));
@@ -50,7 +50,7 @@ var lista = Enumerable.Range(20, 191)
  
 ```
 
-```C#
+```csharp
 // d)
 var suma = lista.Sum();
 var prom = lista.Average();
@@ -58,14 +58,14 @@ var prom = lista.Average();
 Console.WriteLine($"suma: {suma} | promedio: {prom:0.000}");
 ```
 
-```C#
+```csharp
 // e)
 var lista = Enumerable.Range(1, 21)
                       .Where(n => Math.Pow(n, 2) % 10 == 6)
                       .Select(n => n*n);
 ```
 
-```C#
+```csharp
 // f)
 var lista = Enumerable.Range(0, 7)
                       .Select(i => ((DayOfWeek)i).ToString())

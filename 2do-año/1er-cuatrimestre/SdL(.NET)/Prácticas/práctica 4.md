@@ -16,7 +16,7 @@ Ejemplo de listado por consola:
 3) Agregar a la clase Persona un método EsMayorQue(Persona p) que devuelva verdadero si la persona que recibe el mensaje tiene más edad que la persona enviada como parámetro. Utilizarlo para realizar un programa que devuelva la persona más jóven de la lista.
 
 ##### Programa principal:
-```C#
+```csharp
 // -------------------- Program.cs -------------------- //
 
 using Clases;
@@ -51,7 +51,7 @@ System.Console.WriteLine("La persona más joven es: " + pJoven);
 ```
 
 ##### Clase Persona:
-```C#
+```csharp
 // -------------------- Persona.cs -------------------- //
 
 namespace Clases;
@@ -82,7 +82,7 @@ public class Persona
 ```
 ---
 4) Codificar la clase Hora de tal forma que el siguiente código produzca la salida por consola que se observa.
-```C#
+```csharp
 Hora h = new Hora(23,30,15);
 h.Imprimir
 ```
@@ -91,7 +91,7 @@ h.Imprimir
 ```
 ---
 5) Agregar un segundo constructor a la clase Hora para que pueda especificarse la hora por medio de un único valor que admita decimales. Por ejemplo 3,5 indica la hora 3 y 30 minutos. Si se utiliza este segundo constructor, el método imprimir debe mostrar los segundos con tres dígitos decimales. Así el siguiente código debe producir la salida por consola que se observa.
-```C#
+```csharp
 new Hora(23, 30, 15).Imprimir();
 new Hora(14.43).Imprimir();
 new Hora(14.45).Imprimir();
@@ -104,7 +104,7 @@ new Hora(14.45114).Imprimir();
 14 horas, 27 minutos y 4,104 segundos
 ```
 
-```C#
+```csharp
 // -------------------- Hora.cs -------------------- //
 
 namespace Clases;
@@ -162,7 +162,7 @@ public class Hora
 ● ImprimirRaices(): imprime la única o las 2 posibles raíces reales de la ecuación. En caso de no
 poseer soluciones reales debe imprimir una leyenda que así lo especifique.
 
-```C#
+```csharp
 // -------------------- Ecuacion2.cs -------------------- //
 
 namespace Clases;
@@ -216,7 +216,7 @@ public class Ecuacion2
 ```
 ---
 7) Implementar la clase Matriz que se utilizará para trabajar con matrices matemáticas. Implementar los dos constructores y todos los métodos que se detallan a continuación:
-```C#
+```csharp
 public Matriz(int filas, int columnas)
 public Matriz(double[,] matriz)
 public void SetElemento(int fila, int columna, double elemento)
@@ -233,6 +233,6 @@ public void restarle(Matriz m)
 public void multiplicarPor(Matriz m)
 ```
 
-```C#
+```csharp
 
 ```
