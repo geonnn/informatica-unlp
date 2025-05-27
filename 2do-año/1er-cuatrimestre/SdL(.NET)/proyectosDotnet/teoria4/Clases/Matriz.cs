@@ -148,4 +148,29 @@ public class Matriz
             for (int j = 0; j < columnas; j++)
                 this.matriz[i,j] -= m.GetElemento(i,j);
     }
+
+    public void MultiplicarPor(Matriz m)
+    {
+        if (this.columnas != m.filas)
+            throw new ArgumentException();
+        // En este punto ya se sabe que columnas de A = filas de B.
+        else
+        {
+            double[,] matriz = new double[filas, m.columnas];
+
+            // C# inicializa automáticamente en 0.
+            // for (int i = 0; i < fA; i++)
+            //     for (int j = 0; j < cB; j++)
+            //         matriz[i,j] = 0;
+
+            for (int i = 0; i < filas; i++)
+            {
+                for (int j = 0; j < m.columnas; j++)
+                {
+                    for (int k = 0; k < m.filas; k++)
+                        matriz[i, j] += matriz[i, k] * m.GetElemento(k, j);
+                }
+            }
+        }
+    }
 }
