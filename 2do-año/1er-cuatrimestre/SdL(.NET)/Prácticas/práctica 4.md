@@ -234,5 +234,272 @@ public void multiplicarPor(Matriz m)
 ```
 
 ```csharp
+// -------------------- Matriz.cs -------------------- //
 
+namespace Clases;
+
+public class Matriz
+{
+    private int filas;
+    private int columnas;
+    private double[,] matriz;
+
+    public Matriz(int filas, int columnas)
+    {
+        this.matriz = new double[filas, columnas];
+        this.filas = filas;
+        this.columnas = columnas;
+    }
+
+    public Matriz(double[,] matriz)
+    {
+        this.matriz = matriz;
+    }
+
+    public void SetElemento(int fila, int columna, double elemento)
+    {
+        try
+        {
+            this.matriz[fila,columna] = elemento;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
+    }
+
+    public double GetElemento(int fila, int columna)
+    {
+        try
+        {
+            return this.matriz[fila,columna];
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return 0;
+        }
+    }
+
+    public void Imprimir()
+    {
+        for (int i = 0; i < filas; i++)
+        {
+            for (int j = 0; j < columnas; j++)
+                Console.Write($"{matriz[i, j], 4} | ");
+            Console.WriteLine();
+        }
+    }
+    public void Imprimir(string formato)
+    {
+        for (int i = 0; i < filas; i++)
+        {
+            for (int j = 0; j < columnas; j++)
+                Console.Write($"{matriz[i, j].ToString(formato), 7} | ");
+            Console.WriteLine();
+        }
+    }
+
+    public double[] GetFila(int fila)
+    {
+        try
+        {
+            double[] vector = new double[columnas];
+            for (int i = 0; i < columnas; i++)
+                vector[i] = matriz[fila,i];
+            return vector;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return new double[0];
+        }
+    }
+
+    public double[] GetColumna(int columna)
+    {
+        try
+        {
+            double[] vector = new double[filas];
+            for (int i = 0; i < filas; i++)
+                vector[i] = matriz[i,columna];
+            return vector;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return new double[0];
+        }
+    }
+
+    private bool EsCuadrada(double[,] matriz) => filas == columnas;
+
+    public double[] GetDiagonalPrincipal(double[,] matriz)
+    {
+        if (!EsCuadrada(matriz))
+            throw new ArgumentException();
+        else
+        {
+            double[] vector = new double[filas];
+            for (int i = 0; i < filas; i++)
+                vector[i] = matriz[i, i];
+            return vector;
+        }
+    }
+
+    public double[] GetDiagonalSecundaria(double[,] matriz)
+    {
+        if (!EsCuadrada(matriz))
+            throw new ArgumentException();
+        else
+        {
+            double[] vector = new double[filas];
+            for (int i = 0; i < filas; i++)
+                vector[i] = matriz[i, filas - 1 - i];
+            return vector;
+        }
+    }
+
+    public double[][] GetArregloDeArreglo()
+    {
+        double[][] arrDeArr = new double[filas][];
+        for (int i = 0; i < filas; i++) {
+            arrDeArr[i] = new double[columnas];
+            for (int j = 0; j < columnas; j++)
+                arrDeArr[i][j] = matriz[i,j];
+        }
+        return arrDeArr;
+    }
+
+    public void Sumarle(Matriz m)
+    {
+        for (int i = 0; i < filas; i++)
+            for (int j = 0; j < columnas; j++)
+                this.matriz[i,j] += m.GetElemento(i,j);
+    }
+
+    public void Restarle(Matriz m)
+    {
+        for (int i = 0; i < filas; i++)
+            for (int j = 0; j < columnas; j++)
+                this.matriz[i,j] -= m.GetElemento(i,j);
+    }
+
+    public void MultiplicarPor(Matriz m)
+    {
+        if (this.columnas != m.filas)
+            throw new ArgumentException();
+        // En este punto ya se sabe que columnas de A = filas de B.
+        else
+        {
+            double[,] matriz = new double[filas, m.columnas];
+
+            // C# inicializa automáticamente en 0.
+            // for (int i = 0; i < fA; i++)
+            //     for (int j = 0; j < cB; j++)
+            //         matriz[i,j] = 0;
+
+            for (int i = 0; i < filas; i++)
+            {
+                for (int j = 0; j < m.columnas; j++)
+                {
+                    for (int k = 0; k < m.filas; k++)
+                        matriz[i, j] += matriz[i, k] * m.GetElemento(k, j);
+                }
+            }
+        }
+    }
+}
+```
+---
+8) Prestar atención a los siguientes programas (ninguno funciona correctamente):
+```csharp
+Foo f = new Foo();
+f.Imprimir();
+
+class Foo
+{
+	string? _bar;
+	public void Imprimir()
+	{
+	Console.WriteLine(_bar.Length);
+	}
+}
+```
+
+```csharp
+Foo f = new Foo();
+f.Imprimir();
+class Foo
+{
+	public void Imprimir()
+	{
+		string? bar;
+		Console.WriteLine(bar.Length);
+	}
+}
+```
+
+¿Qué se puede decir acerca de la inicialización de los objetos? ¿En qué casos son inicializados
+automáticamente y con qué valor?
+
+> No puede imprimir bar porque no tiene ningún valor de inicialización.
+---
+9) ¿Qué se puede decir en relación a la sobrecarga de métodos en este ejemplo?
+```csharp
+class A
+{
+    public void Metodo(short n)
+    {
+        Console.Write("short {0} - ", n);
+    }
+    public void Metodo(int n)
+    {
+        Console.Write("int {0} - ", n);
+    }
+    public int Metodo(int n)
+    {
+        return n + 10;
+    }
+}
+```
+
+> No se puede sobrecargar un método que ya existe con los mismos parámetros.
+---
+10) Completar la clase Cuenta para que el siguiente código produzca la salida indicada:
+```csharp
+Cuenta cuenta = new Cuenta();
+cuenta.Imprimir();
+cuenta = new Cuenta(30222111);
+cuenta.Imprimir();
+cuenta = new Cuenta("José Perez");
+cuenta.Imprimir();
+cuenta = new Cuenta("Maria Diaz", 20287544);
+cuenta.Imprimir();
+cuenta.Depositar(200);
+cuenta.Imprimir();
+cuenta.Extraer(150);
+cuenta.Imprimir();
+cuenta.Extraer(1500);
+```
+
+Salida:
+```
+Nombre: No especificado, DNI: No especificado, Monto: 0
+Nombre: No especificado, DNI: 30222111, Monto: 0
+Nombre: José Perez, DNI: No especificado, Monto: 0
+Nombre: Maria Diaz, DNI: 20287544, Monto: 0
+Nombre: Maria Diaz, DNI: 20287544, Monto: 200
+Nombre: Maria Diaz, DNI: 20287544, Monto: 50
+Operación cancelada, monto insuficiente
+```
+
+```csharp
+class Cuenta
+{
+	private double _monto;
+	private int _titularDNI;
+	private string? _titularNobre;
+. . .
+}
 ```
