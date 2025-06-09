@@ -1,0 +1,5 @@
+Usuario n 1: 11 emails enviados.
+Usuario n 2: 5 emails enviados.
+Usuario n 3: 4 emails enviados.
+Usuario n 4: 14 emails enviados.
+Usuario n 5: 1 emails enviados.
