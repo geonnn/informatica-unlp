@@ -1,6 +1,7 @@
 package tp5.ejercicio4;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import tp5.ejercicio1.Graph;
 import tp5.ejercicio1.Vertex;
@@ -19,7 +20,7 @@ public class Main {
 		Vertex<String> elTigre = grafo.createVertex("El Tigre");
 		Vertex<String> laOpera = grafo.createVertex("La Opera");
 		Vertex<String> akershus = grafo.createVertex("Fortaleza Akershus");
-		Vertex<String> akkerBridge = grafo.createVertex("Akker Bridge");
+		Vertex<String> akkerBrigge = grafo.createVertex("Akker Brigge");
 		Vertex<String> palacioReal = grafo.createVertex("Palacio real");
 		Vertex<String> galeria = grafo.createVertex("Galería nacional");
 		Vertex<String> holmenkollen = grafo.createVertex("Holmenkollen");
@@ -31,7 +32,7 @@ public class Main {
 
         grafo.connect(ayuntamiento, parqueBotanico, 10);
         grafo.connect(ayuntamiento, elTigre, 15);
-        grafo.connect(ayuntamiento, akkerBridge, 20);
+        grafo.connect(ayuntamiento, akkerBrigge, 20);
         grafo.connect(ayuntamiento, palacioReal, 5);
         
         grafo.connect(parqueBotanico, munch, 1);
@@ -51,8 +52,8 @@ public class Main {
         
         grafo.connect(folkMuseum, parqueVigeland, 20);
         
-        grafo.connect(akkerBridge, folkMuseum, 30);     
-        grafo.connect(akkerBridge, museoVikingo, 30);
+        grafo.connect(akkerBrigge, folkMuseum, 30);     
+        grafo.connect(akkerBrigge, museoVikingo, 30);
         
         grafo.connect(museoVikingo, museoBarcoPolar, 5);
         
@@ -60,7 +61,11 @@ public class Main {
         
         grafo.connect(fram, folkMuseum, 5);
         
-        VisitaOslo.paseoEnBici(grafo, "Holmenkollen", 999, new LinkedList<String>());
+        List<String> restringidos = new LinkedList<String>();
+//        restringidos.add("Galería nacional");
+//        restringidos.add("Akker Brigge");
+        
+        System.out.println(VisitaOslo.paseoEnBici(grafo, "Galería nacional", 30, restringidos));
 	}
 
 }
