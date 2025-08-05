@@ -156,8 +156,19 @@ public class Mapa {
 		List<String> result = new LinkedList<>();
 		if (grafo != null && !grafo.isEmpty()) {
 			
+			Vertex<String> orig = grafo.search(ciudad1);
+			Vertex<String> dest = grafo.search(ciudad2);
+			
+			if (orig != null && dest != null) {
+				boolean[] marcas = new boolean[grafo.getSize()];
+				camSinCargar(orig, ciudad2, marcas, result, new LinkedList<>());
+			}
 		}
 		return result;
+	}
+	
+	private void camSinCargar(Vertex<String> vAct, String dest, boolean[] marcas, List<String> result, List<String> caminoParcial) {
+		
 	}
 	
 	
