@@ -117,31 +117,42 @@ public class Mapa {
 			
 			if (orig != null && dest != null) {
 				boolean[] marcas = new boolean[grafo.getSize()];
-				camMasCorto(orig, ciudad2, marcas, result, new LinkedList<>());
+				double[] menorDist = {Double.MAX_VALUE};
+				camMasCorto(orig, ciudad2, marcas, result, new LinkedList<>(), 0, menorDist);
+				System.out.println("menorDist: " + menorDist[0]);
 			}
 		}
 		return result;
 	}
 	
-	private void camMasCorto(Vertex<String> vAct, String dest, boolean[] marcas, List<String> result, List<String> caminoParcial) {
+	// primer camino más corto.
+	private void camMasCorto(Vertex<String> vAct, String dest, boolean[] marcas, List<String> result, List<String> caminoParcial, double distAct, double[] menorDist) {
 		
+		// Si la distancia actual ya es más grande (o igual) que la menor distancia obtenida no se sigue por este camino.
+		if (distAct >= menorDist[0])
+			return;
+				
 		int posAct = vAct.getPosition();
+				
+		// En este punto:
+		// distancia actual < menor distancia. Se agrega el vértice y sigue el curso como cualquier otro.
 		marcas[posAct] = true;
 		caminoParcial.add(vAct.getData());
 		
 		if (vAct.getData().equals(dest)) {
 			
-			if (result.isEmpty())
+			menorDist[0] = distAct;
 			result.clear();
 			result.addAll(caminoParcial);
-			return;
 		}
-		
-		for (Edge<String> e: this.grafo.getEdges(vAct)) {
-			
-			Vertex<String> v = e.getTarget();
-			if (!marcas[v.getPosition()])
-				dC(v, dest, marcas, result, caminoParcial);
+		else {
+			for (Edge<String> e: this.grafo.getEdges(vAct)) {
+				
+				Vertex<String> v = e.getTarget();
+				// if (!marcas[v.getPosition()] && distAct+e.getWeight() < menorDist[0]) ¿podría evaluarse la distancia acá y sacar el primer if?
+				if (!marcas[v.getPosition()])
+					camMasCorto(v, dest, marcas, result, caminoParcial, (distAct + e.getWeight()), menorDist);
+			}
 		}
 		
 		marcas[posAct] = false;
@@ -161,7 +172,9 @@ public class Mapa {
 			
 			if (orig != null && dest != null) {
 				boolean[] marcas = new boolean[grafo.getSize()];
-				camSinCargar(orig, ciudad2, marcas, result, new LinkedList<>());
+				double[] menorDist = {Double.MAX_VALUE};
+				camSinCargar(orig, ciudad2, marcas, result, new LinkedList<>(), 0, menorDist);
+				System.out.println("menorDist: " + menorDist[0]);
 			}
 		}
 		return result;

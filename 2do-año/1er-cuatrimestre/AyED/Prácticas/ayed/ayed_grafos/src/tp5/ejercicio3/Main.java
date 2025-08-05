@@ -24,6 +24,7 @@ public class Main {
         grafo.connect(caba, santaFe, 7);
         grafo.connect(rosario, cordoba, 12);
         grafo.connect(santaFe, cordoba, 8);
+        grafo.connect(santaFe, sanJuan, 21);
         grafo.connect(cordoba, mendoza, 15);
         grafo.connect(cordoba, sanLuis, 10);
         grafo.connect(mendoza, sanJuan, 10);
