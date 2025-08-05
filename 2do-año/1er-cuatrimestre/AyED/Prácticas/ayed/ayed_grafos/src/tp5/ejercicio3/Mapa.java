@@ -149,6 +149,8 @@ public class Mapa {
 	}
 	
 	
+	// Retorna la lista de ciudades que forman un camino para llegar de ciudad1 a ciudad2.
+	// El auto no debe quedarse sin combustible y no puede cargar. Si no existe camino retorna la lista vacía.
 	public List<String> caminoSinCargarCombustible(String ciudad1, String ciudad2, int tanqueAuto) {
 		
 		List<String> result = new LinkedList<>();
@@ -158,6 +160,10 @@ public class Mapa {
 		return result;
 	}
 	
+	
+	// Retorna la lista de ciudades que forman un camino para llegar de ciudad1 a ciudad2 teniendo en cuenta que el auto debe cargar la menor cantidad de veces.
+	// El auto no se debe quedar sin combustible en medio de una ruta, además puede completar su tanque al llegar a cualquier ciudad.
+	// Si no existe camino retorna la lista vacía.
 	public List<String> caminoConMenorCargaDeCombustible(String ciudad1, String ciudad2, int tanqueAuto) {
 		
 		List<String> result = new LinkedList<>();
