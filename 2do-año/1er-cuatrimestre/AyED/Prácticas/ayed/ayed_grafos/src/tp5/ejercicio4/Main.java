@@ -62,10 +62,10 @@ public class Main {
         grafo.connect(fram, folkMuseum, 5);
         
         List<String> restringidos = new LinkedList<String>();
-//        restringidos.add("Galería nacional");
+        restringidos.add("Galería nacional");
 //        restringidos.add("Akker Brigge");
         
-        System.out.println(VisitaOslo.paseoEnBici(grafo, "Galería nacional", 30, restringidos));
+        System.out.println(VisitaOslo.paseoEnBici(grafo, "Holmenkollen", 100, restringidos));
 	}
 
 }

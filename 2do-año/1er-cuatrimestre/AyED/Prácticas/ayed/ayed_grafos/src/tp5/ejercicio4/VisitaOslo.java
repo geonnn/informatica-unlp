@@ -32,14 +32,14 @@ public class VisitaOslo {
 	private static void paseo(Graph<String> grafo, Vertex<String> vAct, String dest, boolean[] marcas, int maxTiempo, int tiempoAct, List<String> result, List<String> caminoParcial, List<String> lugaresRestringidos) {
 		
 		// ¿esto va si se chequea en la instancia anterior?
-		if (tiempoAct > maxTiempo)
-			return;
+//		if (tiempoAct > maxTiempo)
+//			return;
 		
 		int posAct = vAct.getPosition();
 		marcas[posAct] = true;
 		
-		if (lugaresRestringidos.contains(vAct.getData()))
-			return;
+//		if (lugaresRestringidos.contains(vAct.getData()))
+//			return;
 		
 		caminoParcial.add(vAct.getData());
 		
@@ -51,7 +51,7 @@ public class VisitaOslo {
 		for (Edge<String> e: grafo.getEdges(vAct)) {
 			Vertex<String> v = e.getTarget();
 			int nuevoTiempo = tiempoAct + e.getWeight();
-			if (!marcas[v.getPosition()] && (nuevoTiempo < maxTiempo))
+			if (!marcas[v.getPosition()] && (nuevoTiempo < maxTiempo) && !lugaresRestringidos.contains(vAct.getData()))
 				paseo(grafo, v, dest, marcas, maxTiempo, nuevoTiempo, result, caminoParcial, lugaresRestringidos);
 		}
 			

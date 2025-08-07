@@ -17,7 +17,7 @@ public class Main {
         Persona e1 = new Persona("Juan", "Calle Falsa 123", false, false); // empleado
         Persona j1 = new Persona("Ana", "Av. Siempre Viva 742", true, false); // jubilado sin cobrar
         Persona j2 = new Persona("Carlos", "Rivadavia 1000", true, false); // jubilado sin cobrar
-        Persona j3 = new Persona("Marta", "Belgrano 200", true, true); // jubilado que ya cobró
+        Persona j3 = new Persona("Marta", "Belgrano 200", true, false); // jubilado que ya cobró
         Persona j4 = new Persona("Luis", "Mitre 300", true, false); // jubilado sin cobrar
         Persona e2 = new Persona("Laura", "San Martín 400", false, false); // otro empleado
 
@@ -40,12 +40,12 @@ public class Main {
         grafo.connect(vJ3, vJ4); // 3° grado desde e1
 
         // Ejecutar prueba
-        int gradoBusqueda = 2;
-        int maxJubilados = 40;
+        int gradoBusqueda = 3;
+        int maxJubilados = 2;
         List<Persona> cartera = SueldoJubilados.cartera(grafo, "Juan", gradoBusqueda, maxJubilados);
 
         // Imprimir resultados
-        System.out.println("Jubilados encontrados para el empleado Juan (grado <= " + gradoBusqueda + "):");
+        System.out.println("Jubilados encontrados para el empleado Juan (grado < " + gradoBusqueda + "):");
         for (Persona p : cartera) {
             System.out.println("- " + p.getNombre() + " | Domicilio: " + p.getDomicilio());
         }

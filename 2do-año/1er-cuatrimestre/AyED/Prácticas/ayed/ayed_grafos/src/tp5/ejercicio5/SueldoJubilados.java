@@ -35,7 +35,7 @@ public class SueldoJubilados {
 		
 		marcas[origen.getPosition()] = true;
 		
-		while (!q.isEmpty() && grado >= 0 && listaJubilados.size() < maxJubilados) {
+		while (!q.isEmpty() && grado > 0 && listaJubilados.size() < maxJubilados) {
 			
 			Vertex<Persona> vPer = q.dequeue();
 			
@@ -45,7 +45,7 @@ public class SueldoJubilados {
 				System.out.println("Visitando: " + p.getNombre());
 				
 				// cumple = isJubilado && no cobró.
-				System.out.println(" - " + p.getNombre() + " | Grado: " + (gradoIn-grado) + " | Jubilado: " + p.isJubilado());
+				System.out.println(" - " + p.getNombre() + " | Grado: " + (gradoIn-grado) + " | Jubilado: " + p.isJubilado() + " | cobró este mes: " + p.cobroElMes());
 				if (vPer.getData().cumple())
 					listaJubilados.add(vPer.getData());
 				
