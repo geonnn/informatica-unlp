@@ -5,6 +5,7 @@
 - Usuario/cliente de la empresa
 
 **Historias de usuarios:**
+- Disponibilidad de mobiliario
 - Reserva de mobiliario para clientes
 - 
 - 
