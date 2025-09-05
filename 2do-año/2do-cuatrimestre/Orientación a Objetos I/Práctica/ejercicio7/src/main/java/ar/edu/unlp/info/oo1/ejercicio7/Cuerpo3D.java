@@ -1,4 +1,4 @@
-package ar.edu.unlp.info.oo1.ejercicio5;
+package ar.edu.unlp.info.oo1.ejercicio7;
 
 public class Cuerpo3D {
 

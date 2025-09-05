@@ -5,8 +5,6 @@ import java.util.List;
 
 public class Balanza {
 	
-	private int cantidadDeProductos;
-	private double pesoTotal;
 	private List<Producto> productos; // ej. 4
 	
 	public Balanza() {		
@@ -15,19 +13,15 @@ public class Balanza {
 	}
 	
 	double getCantidadDeProductos() {
-		return cantidadDeProductos;
+		return productos.size();
 	}
 	
 	double getPrecioTotal() {
-		double total = 0;
-		for (Producto producto : productos) {
-			total += producto.getPrecio();
-		}
-		return total;
+		return productos.stream().mapToDouble(p -> p.getPrecio()).sum();
 	}
 	
 	double getPesoTotal() {
-		return pesoTotal;
+		return productos.stream().mapToDouble(p -> p.getPeso()).sum();
 	}
 	
 	public List<Producto> getProductos() {
@@ -36,18 +30,18 @@ public class Balanza {
 	
 	void ponerEnCero() {
 		productos.clear(); // ej. 4
-		cantidadDeProductos = 0;
-		pesoTotal = 0;
+		// cantidadDeProductos = 0;
+		// pesoTotal = 0;
 	}
 
 	void agregarProducto(Producto producto) {
-		cantidadDeProductos += 1;
+		// cantidadDeProductos += 1;
 		productos.add(producto); // ej. 4
-		pesoTotal += producto.getPeso();
+		// pesoTotal += producto.getPeso();
 	}
 	
 	Ticket emitirTicket() {
-		return new Ticket(cantidadDeProductos, pesoTotal, productos);
+		return new Ticket(productos);
 	}
 }
 

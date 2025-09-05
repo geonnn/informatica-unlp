@@ -1,24 +1,16 @@
 package ar.edu.unlp.info.oo1.ejercicio2;
 
 import java.time.LocalDate;
-import java.util.LinkedList;
 import java.util.List;
 
 public class Ticket {
 
 	private LocalDate fecha;
-	private int cantidadDeProductos;
-	private double pesoTotal;
-	private double precioTotal;
 	public List<Producto> productos;
 	
-	public Ticket(int cantidadDeProductos, double pesoTotal, List<Producto> productos) {
+	public Ticket(List<Producto> productos) {
 		this.fecha = LocalDate.now();
-		this.cantidadDeProductos = cantidadDeProductos;
-		this.pesoTotal = pesoTotal;
-		this.productos = new LinkedList<Producto>();
-		this.productos.addAll(productos);
-		this.precioTotal = calcularPrecioTotal();
+		this.productos = productos.stream().map(p -> new Producto(p.getDescripcion(), p.getPeso(), p.getPrecioPorKilo())).toList();
 	}
 	
 	LocalDate getFecha() {
@@ -26,11 +18,11 @@ public class Ticket {
 	}
 
 	int getCantidadDeProductos() {
-		return cantidadDeProductos;
+		return productos.size();
 	}
 
 	double getPesoTotal() {
-		return pesoTotal;
+		return productos.stream().mapToDouble(p -> p.getPeso()).sum();
 	}
 	
 	public List<Producto> getProductos() {
@@ -38,19 +30,11 @@ public class Ticket {
 	}
 
 	double getPrecioTotal() {
-		return precioTotal;
+		return productos.stream().mapToDouble(p -> p.getPrecio()).sum();
 	}
 
 	double impuesto() {
 		return getPrecioTotal() * 0.21;
-	}
-	
-	private double calcularPrecioTotal() {
-		double total = 0;
-		for (Producto producto : productos) {
-			total += producto.getPrecio();
-		}
-		return total;
 	}
 }
 

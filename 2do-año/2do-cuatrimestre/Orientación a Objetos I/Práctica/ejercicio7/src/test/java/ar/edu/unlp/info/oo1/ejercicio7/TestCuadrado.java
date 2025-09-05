@@ -1,9 +1,11 @@
-package ar.edu.unlp.info.oo1.ejercicio5;
+package ar.edu.unlp.info.oo1.ejercicio7;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import ar.edu.unlp.info.oo1.ejercicio7.Cuadrado;
 
 public class TestCuadrado {
 
