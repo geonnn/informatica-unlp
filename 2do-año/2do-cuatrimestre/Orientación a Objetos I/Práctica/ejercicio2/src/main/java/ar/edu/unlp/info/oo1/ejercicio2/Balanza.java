@@ -1,5 +1,6 @@
 package ar.edu.unlp.info.oo1.ejercicio2;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ public class Balanza {
 		ponerEnCero();
 	}
 	
-	double getCantidadDeProductos() {
+	int getCantidadDeProductos() {
 		return productos.size();
 	}
 	
@@ -25,7 +26,7 @@ public class Balanza {
 	}
 	
 	public List<Producto> getProductos() {
-		return productos;
+		return this.productos.stream().map(p -> new Producto(p.getDescripcion(), p.getPeso(), p.getPrecioPorKilo())).toList();
 	}
 	
 	void ponerEnCero() {
@@ -41,7 +42,7 @@ public class Balanza {
 	}
 	
 	Ticket emitirTicket() {
-		return new Ticket(productos);
+		return new Ticket(this.getProductos(), this.getPesoTotal(), this.getPrecioTotal(), this.getCantidadDeProductos());
 	}
 }
 

@@ -1,6 +1,6 @@
 package ar.edu.unlp.info.oo1.ejercicio7;
 
-public class Circulo extends Figura2D {
+public class Circulo implements Figura2D {
 	
 	private double radio;
 
@@ -20,11 +20,11 @@ public class Circulo extends Figura2D {
 		return radio * 2;
 	}
 	
-	double getPerimetro() {
+	public double getPerimetro() {
 		return Math.PI * getDiametro();
 	}
 	
-	double getArea() {
+	public double getArea() {
 		return Math.PI * (radio * radio);
 	}
 }

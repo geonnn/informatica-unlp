@@ -1,19 +1,20 @@
 package ar.edu.unlp.info.oo1.ejercicio5;
 
-public class Accion extends Inversion {
+public class Accion {
 	
 	private String nombre;
-	private int cantidad;
 	private double valorUnitario;
 	
-	public Accion(String nombre, int cantidad, double valorUnitario) {
+	public Accion(String nombre, double valorUnitario) {
 		this.nombre = nombre;
-		this.cantidad = cantidad;
 		this.valorUnitario = valorUnitario;
 	}
 
-	@Override
-	public double getValorActual() {
-		return cantidad * valorUnitario;
+	public double getValorUnitario() {
+		return this.valorUnitario;
+	}
+	
+	public String getNombre() {
+		return this.nombre;
 	}
 }

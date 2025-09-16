@@ -20,8 +20,10 @@ public class Farola {
 	* Crea la relación de vecinos entre las farolas. La relación de vecinos entre las farolas es recíproca, es decir el receptor del mensaje será vecino de otraFarola, al igual que otraFarola también se convertirá en vecina del receptor del mensaje
 	*/
 	public void pairWithNeighbor(Farola otraFarola) {
-		this.neighbors.add(otraFarola);
-		otraFarola.getNeighbors().add(this);
+		if (!this.neighbors.contains(otraFarola)) {
+			this.neighbors.add(otraFarola);
+			otraFarola.pairWithNeighbor(this);
+		}
 	}
 	
 	/*

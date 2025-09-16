@@ -1,6 +1,6 @@
 package ar.edu.unlp.info.oo1.ejercicio7;
 
-public class Cuadrado extends Figura2D{
+public class Cuadrado implements Figura2D{
 	
 	private double lado;
 
@@ -12,11 +12,11 @@ public class Cuadrado extends Figura2D{
 		return lado;
 	}
 	
-	double getPerimetro() {
+	public double getPerimetro() {
 		return lado * 4;
 	}
 	
-	double getArea() {
+	public double getArea() {
 		return lado * lado;
 	}
 }

@@ -1,7 +1,7 @@
 package ar.edu.unlp.info.oo1.ejercicio5;
 
-public abstract class Inversion {
+public interface Inversion {
 	
-	abstract double getValorActual();
+	double getValorActual();
 
 }
