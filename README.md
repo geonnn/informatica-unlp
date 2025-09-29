@@ -1,27 +1,32 @@
 # Informática UNLP 📚💻
 
----
-
 ## Índice por materias 📑
 
+---
 
 ### Primer año
-##### Primer cuatrimestre
-- [(SI101) Matemática 1](1er-año/1er-cuatrimestre/Mat1)
-- [(SI104) Organización de Computadoras](1er-año/1er-cuatrimestre/OC)
-- [(SI106) Conceptos de Algoritmos, Datos y Programas](1er-año/1er-cuatrimestre/CADP)
-##### Segundo cuatrimestre
-- [(SI102) Matemática 2](1er-año/2do-cuatrimestre/Mat2)
-- [(SI105) Arquitectura de Computadoras](1er-año/2do-cuatrimestre/AC)
-- [(SI107) Taller de Programación](1er-año/2do-cuatrimestre/TdP)
+- ##### Primer cuatrimestre
+    - [(SI101) Matemática 1](1er-año/1er-cuatrimestre/Mat1)
+    - [(SI104) Organización de Computadoras](1er-año/1er-cuatrimestre/OC)
+    - [(SI106) Conceptos de Algoritmos, Datos y Programas](1er-año/1er-cuatrimestre/CADP)
+- ##### Segundo cuatrimestre
+    - [(SI102) Matemática 2](1er-año/2do-cuatrimestre/Mat2)
+    - [(SI105) Arquitectura de Computadoras](1er-año/2do-cuatrimestre/AC)
+    - [(SI107) Taller de Programación](1er-año/2do-cuatrimestre/TdP)
+
+---
 
 ### Segundo año
-##### Primer cuatrimestre
-- [(SI203) Algoritmos y Estructuras de Datos](2do-año/1er-cuatrimestre/AyED)
-- [(SI209) Fundamentos de Organización de Datos](2do-año/1er-cuatrimestre/FOD)
-- [(SI207) Seminario de Lenguajes (.NET)](2do-año/1er-cuatrimestre/SdL(.NET))
-##### Segundo cuatrimestre
-- [(SI202) Ingeniería de Software 1](2do-año/2do-cuatrimestre/Ingeniería%20de%20Software%201/)
-- [(SI204) Introducción a los Sistemas Operativos](2do-año/2do-cuatrimestre/Introducción%20a%20los%20Sistemas%20Operativos/)
-- [(SI206) Orientación a Objetos 1](2do-año/2do-cuatrimestre/Orientación%20a%20Objetos%201/)
-- [(SI210) Diseño de Bases de Datos](2do-año/2do-cuatrimestre/Diseño%20de%20Bases%20de%20Datos/)
+- ##### Primer cuatrimestre
+    - [(SI203) Algoritmos y Estructuras de Datos](2do-año/1er-cuatrimestre/AyED)
+    - [(SI209) Fundamentos de Organización de Datos](2do-año/1er-cuatrimestre/FOD)
+    - [(SI207) Seminario de Lenguajes (.NET)](2do-año/1er-cuatrimestre/SdL(.NET))
+- ##### Segundo cuatrimestre
+    - [(SI202) Ingeniería de Software 1](2do-año/2do-cuatrimestre/Ingeniería%20de%20Software%201/)
+    - [(SI204) Introducción a los Sistemas Operativos](2do-año/2do-cuatrimestre/Introducción%20a%20los%20Sistemas%20Operativos/)
+    - [(SI206) Orientación a Objetos 1](2do-año/2do-cuatrimestre/Orientación%20a%20Objetos%201/)
+    - [(SI210) Diseño de Bases de Datos](2do-año/2do-cuatrimestre/Diseño%20de%20Bases%20de%20Datos/)
+
+---
+
+
