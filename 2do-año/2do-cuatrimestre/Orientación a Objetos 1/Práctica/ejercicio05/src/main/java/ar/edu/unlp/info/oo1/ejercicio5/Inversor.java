@@ -10,15 +10,19 @@ public class Inversor {
 	
 	public Inversor(String nombre) {
 		this.nombre = nombre;
-		inversiones = new ArrayList<>();
+		this.inversiones = new ArrayList<>();
 	}
 	
 	public void agregarInversion(Inversion inversion) {
-		inversiones.add(inversion);
+		this.inversiones.add(inversion);
 	}
 	
 	public void removerInversion(Inversion inversion) {
-		inversiones.remove(inversion);
+		this.inversiones.remove(inversion);
+	}
+	
+	protected List<Inversion> getInversiones() {
+		return this.inversiones;
 	}
 
 	public double getValorInversiones() {
