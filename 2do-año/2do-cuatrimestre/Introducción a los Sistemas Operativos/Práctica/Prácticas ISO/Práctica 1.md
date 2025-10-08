@@ -639,3 +639,117 @@ pwd >> donde
 > m. Apague el sistema.
 
 ---
+#### 22.​ Indique qué comando sería necesario ejecutar para realizar cada una de las siguientes acciones:
+
+> a.​ Cree un directorio cuyo nombre sea su número de legajo e ingrese a él.
+
+
+> b.​ Cree un archivo utilizando el editor de textos vi, e introduzca su información personal: Nombre, Apellido, Número de alumno y dirección de correo electrónico. El archivo debe llamarse "LEAME".
+
+
+> c.​ Cambie los permisos del archivo LEAME, de manera que se puedan ver reflejados los siguientes permisos:
+> ➢​ Dueño: ningún permiso
+> ➢​ Grupo: permiso de ejecución
+> ➢​ Otros: todos los permisos
+
+
+> d.​ Vaya al directorio /etc y verifique su contenido. Cree un archivo dentro de su directorio personal cuyo nombre sea leame donde el contenido del mismo sea el listado de todos los archivos y directorios contenidos en /etc. ¿Cuál es la razón por la cuál puede crear este archivo si ya existe un archivo llamado "LEAME” en este directorio?
+
+
+> e.​ ¿Qué comando utilizaría y de qué manera si tuviera que localizar un archivo dentro del filesystem? ¿Y si tuviera que localizar varios archivos con características similares. Explique el concepto teórico y ejemplifique.
+
+
+> f.​ Utilizando los conceptos aprendidos en el punto anterior, busque todos los archivos cuya extensión sea .so y almacene el resultado de esta búsqueda en un archivo dentro del directorio creado en el primer inciso. El archivo deberá llamarse ejercicioF.
+
+---
+#### 23.​ Indique qué acción realiza cada uno de los comandos indicados a continuación considerando su orden. Suponga que se ejecutan desde un usuario que no es root ni pertenece al grupo de root. (Asuma que se encuentra posicionado en el directorio de trabajo del usuario con el que se logueó). En caso de no poder ejecutarse el comando indique la razón:
+```bash
+01.​ mkdir iso
+02.​ cd . / iso; ps > f0
+03.​ ls > f1
+04.​ cd /
+05.​ echo $HOME
+06.​ ls −l $> $HOME/ iso/ls
+07.​ cd $HOME; mkdir f2
+08.​ ls −ld f2
+09.​ chmod 341 f2
+10.​ touch dir
+11.​ cd f2
+12.​ cd ~/iso
+13.​ pwd > f3
+14.​ ps | grep 'ps' | wc −l >> ../f2/f3
+15.​ chmod 700 ../f2 ; cd ..
+16.​ find . −name etc/passwd
+17.​ find / −name etc/passwd
+18.​ mkdir ejercicio5
+19.​ . . . . . . . . . . . . . . . . . . .
+20.​ . . . . . . . . . . . . . . . . . . .
+```
+
+> a.​ Inicie 2 sesiones utilizando su nombre de usuario y contraseña. En una sesión vaya siguiendo paso a paso las órdenes que se encuentran escritas en el cuadro superior. En la otra sesión, cree utilizando algún editor de textos un archivo que se llame “explicacion_de_ejercicio" dentro del directorio creado en el ejercicio 22 y, para cada una de los comandos que ejecute en la otra sesión, realice una breve explicación de los resultados obtenidos.
+
+
+> b.​ Complete los comandos 19 y 20, de manera tal que realicen la siguiente acción:
+> 19: Copiar el directorio iso y todo su contenido al directorio creado en 24.a
+> 20: Copiar el resto de los archivos y directorios que se crearon en este ejercicio al directorio creado en el ejercicio 24.a
+
+
+> c.​ Ejecute las órdenes 19 y 20 y coméntelas en el archivo creado en el inciso a).
+
+---
+#### 24.​ Cree una estructura desde el directorio /home que incluya varios directorios, subdirectorios y archivos, según el esquema siguiente.
+
+	/
+	|
+	home
+	|
+	| -usuario
+		|
+		| - dir1
+			|
+			| - dir11
+			| - f3
+		| - dir2
+			|
+			| - f4
+		| - f1
+		| - f2
+
+> Asuma que “usuario” indica cuál es su nombre de usuario. Además deberá tener en cuenta que dirX hace referencia a directorios y fX hace referencia a archivos. Utilizando la estructura de directorios anteriormente creada, indique qué comandos son necesarios para realizar las siguientes acciones:
+> 
+> a.​ Mueva el archivo "f3” al directorio de trabajo /home/usuario.
+> 
+> 
+> b.​ Copie el archivo "f4” en el directorio "dir11".
+> 
+> 
+> c.​ Haga los mismo que en el inciso anterior pero el archivo de destino, se debe llamar "f7".
+> 
+> d.​ Cree el directorio copia dentro del directorio usuario y copie en él, el contenido de "dir1".
+> 
+> e.​ Renombre el archivo "f1" por el nombre archivo y vea los permisos del mismo.
+> 
+> f.​ Cambie los permisos del archivo llamado archivo de manera de reflejar lo siguiente:
+> ➢​ Usuario: Permisos de lectura y escritura
+> ➢​ Grupo: Permisos de ejecución
+> ➢​ Otros: Todos los permisos
+> 	
+> g.​ Renombre los archivos "f3” y “f4" de manera que se llamen "f3.exe” y “f4.exe” respectivamente.
+> 
+> h.​ Utilizando un único comando cambie los permisos de los dos archivos renombrados en el inciso anterior, de manera de reflejar lo siguiente:
+➢​ Usuario: Ningún permiso
+➢​ Grupo: Permisos de escritura
+➢​ Otros: Permisos de escritura y ejecución
+
+---
+#### 25.​ Indique qué comando/s es necesario para realizar cada una de las acciones de la siguiente secuencia de pasos (considerando su orden de aparición):
+
+> a.​ Cree un directorio llamado logs en el directorio /tmp.
+> 
+> b.​ Copie todo el contenido del directorio /var/log en el directorio creado en el punto anterior.
+> 
+> c.​ Empaquete el directorio creado en a), el archivo resultante se debe llamar "misLogs.tar".
+> d.​ Empaquete y comprima el directorio creado en a), el archivo resultante se debe llamar "misLogs.tar.gz".
+> e.​ Copie los archivos creados en c) y d) al directorio de trabajo de su usuario.
+> f.​ Elimine el directorio creado en a), logs.
+> g.​ Desempaquete los archivos creados en c y d en 2 directorios diferentes.
