@@ -214,7 +214,7 @@ Para formatos de otras plataformas como NTFS, FAT32, exFAT, HFS+ y ZFS GNU/Linux
 > c. Cree un archivo llamado “prueba.exe” en su directorio personal usando el vim. El mismo debe contener su número de alumno y su nombre.
 
 
-> d. Investigue el funcionamiento del comando fi le. Pruébelo con diferentes archivos. ¿Qué diferencia nota?
+> d. Investigue el funcionamiento del comando file. Pruébelo con diferentes archivos. ¿Qué diferencia nota?
 
 
 > e. Investigue la funcionalidad y parámetros de los siguientes comandos relacionados con el uso de archivos:
@@ -236,47 +236,128 @@ Para formatos de otras plataformas como NTFS, FAT32, exFAT, HFS+ y ZFS GNU/Linux
 
 > a. Cree la carpeta ISOCSO
 
+```bash
+mkdir ISOCSO
+```
+
 
 > b. Acceda a la carpeta
 
+```bash
+cd ISOCSO
+```
 
 > c. Cree dos archivos con los nombres isocso.txt e isocso.csv
 
+```bash
+touch isocso.txt isocso.csv
+```
 
 > d. Liste el contenido del directorio actual
 
+```bash
+ls
+```
 
 > e. Visualizar la ruta donde estoy situado
 
+```bash
+pwd
+```
 
 > f. Busque todos los archivos en los que su nombre contiene la cadena “iso*”
 
+```bash
+find iso*
+```
 
 > g. Informar la cantidad de espacio libre en disco
 
+```bash
+df / -h
+```
 
 > h. Verifique los usuarios conectados al sistema
 
+```bash
+who
+```
 
 > i. Editar a el archivo isocso.txt e ingresar Nombre y Apellido
 
+```bash
+echo Gonzalo > isocso.txt
+echo Gil >> isocso.txt
+```
 
 > j. Mostrar en pantalla las últimas líneas de un archivo.
+
+```bash
+tail isocso.txt
+```
 
 ---
 #### 11. Investigue el funcionamiento, parámetros y ubicación (directorio) de los siguientes comandos:
 
+```bash
+whatis [comando]
+which [comando]
+```
+
 > ➔ man
+
+Manual para el funcionamiento de comandos.
+/usr/bin/man.
+
 > ➔ shutdown
+
+Halt, power off or reboot the machine.
+/usr/sbin/shutdown
+
 > ➔ reboot
+
+Halt, power off or reboot the machine.
+/usr/sbin/reboot
+
 > ➔ halt
+
+Halt, power off or reboot the machine.
+/usr/sbin/halt
+
 > ➔ uname
+
+Print system information.
+/usr/bin/uname
+
 > ➔ dmesg
+
+Print or control kernel ring buffer.
+/usr/bin/dmesg
+
 > ➔ lspci
+
+List all PCI devices.
+/usr/bin/lspci
+
 > ➔ at
+
+Queue, examine or delete jobs for later execution.
+/usr/bin/at
+
 > ➔ netstat
+
+Print network connections, routing tables, interface statistics, masquerade connections, and multicast memberships.
+/usr/bin/netstat
+
 > ➔ head
+
+Output the first part of files (default 10 líneas). 
+/usr/bin/head
+
 > ➔ tail
+
+Output the last part of files (default 10 líneas).
+/usr/bin/tail
 
 ---
 #### 12. Procesos:
