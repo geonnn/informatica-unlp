@@ -424,7 +424,7 @@ Output the last part of files (default 10 líneas).
 #### 15. Usuarios:
 
 > a. ¿Qué archivos son utilizados en un sistema GNU/Linux para guardar la información de los usuarios?
->
+
 
 > b. ¿A qué hacen referencia las siglas UID y GID? ¿Pueden coexistir UIDs iguales en un sistema GNU/Linux? Justifique.
 
@@ -520,7 +520,7 @@ Output the last part of files (default 10 líneas).
 #### 19. Indique qué acción realiza cada uno de los comandos indicados a continuación considerando su orden. Suponga que se ejecutan desde un usuario que no es root ni pertenece al grupo de root. (Asuma que se encuentra posicionado en el directorio de trabajo del usuario con el que se logueó). En caso de no poder ejecutarse el comando, indique la razón:
 
 ```bash
-l s −l > prueba
+ls −l > prueba
 ps > PRUEBA
 chmod 710 prueba
 chown root:root PRUEBA
@@ -529,11 +529,11 @@ chmod 700 /etc/passwd
 passwd root
 rm PRUEBA
 man /etc/shadow
-find / −name ∗ .conf
+find / −name ∗.conf
 usermod root −d /home/ newroot −L
-cd / root
+cd /root
 rm ∗
-cd / etc
+cd /etc
 cp ∗ /home −R
 shutdown
 ```
@@ -543,35 +543,59 @@ shutdown
 
 > a. Terminar el proceso con PID 23.
 
+```bash
+kill -9 23
+```
 
 > b. Terminar el proceso llamado init o systemd. ¿Qué resultados obtuvo?
 
-
 > c. Buscar todos los archivos de usuarios en los que su nombre contiene la cadena “.conf”
 
+```bash
+find /home -type f -name "*.conf"
+```
 
 > d. Guardar una lista de procesos en ejecución el archivo /home/\<su nombre de usuario>/procesos
 
+```bash
+ps aux > /home/gonzalo/procesos
+```
 
 > e. Cambiar los permisos del archivo /home/\<su nombre de usuario>/xxxx a:
 > i. Usuario: Lectura, escritura, ejecución
 > ii. Grupo: Lectura, ejecución
 > iii. Otros: ejecución
 
+```bash
+chmod 751 xxxx
+```
 
 > f. Cambiar los permisos del archivo /home/\<su nombre de usuario>/yyyy a:
 > i. Usuario: Lectura, escritura.
 > ii. Grupo: Lectura, ejecución
 > iii. Otros: Ninguno
 
+```bash
+chmod 650 yyyy
+```
 
 > g. Borrar todos los archivos del directorio /tmp
 
+```bash
+rm -rf /tmp/*
+```
 
 > h. Cambiar el propietario del archivo /opt/isodata al usuario isocso
 
+```bash
+chown isocso /opt/isodata 
+```
 
 > i. Guardar en el archivo /home/\<su nombre de usuario>/donde el directorio donde me encuentro en este momento, en caso de que el archivo exista no se debe eliminar su contenido anterior.
+
+```bash
+pwd >> donde
+```
 
 ---
 #### 21. Indique qué comando sería necesario ejecutar para realizar cada una de las siguientes acciones:
