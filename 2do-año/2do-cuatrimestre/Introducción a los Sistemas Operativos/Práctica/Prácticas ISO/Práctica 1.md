@@ -664,8 +664,8 @@ pwd >> donde
 ---
 #### 23.​ Indique qué acción realiza cada uno de los comandos indicados a continuación considerando su orden. Suponga que se ejecutan desde un usuario que no es root ni pertenece al grupo de root. (Asuma que se encuentra posicionado en el directorio de trabajo del usuario con el que se logueó). En caso de no poder ejecutarse el comando indique la razón:
 ```bash
-01.​ mkdir iso
-02.​ cd . / iso; ps > f0
+01.​ mkdir iso 
+02.​ cd ./iso; ps > f0
 03.​ ls > f1
 04.​ cd /
 05.​ echo $HOME
