@@ -22,10 +22,10 @@
     - [(SI209) Fundamentos de Organización de Datos](2do-año/1er-cuatrimestre/FOD)
     - [(SI207) Seminario de Lenguajes (.NET)](2do-año/1er-cuatrimestre/SdL(.NET))
 - ##### Segundo cuatrimestre
-    - [(SI202) Ingeniería de Software 1](2do-año/2do-cuatrimestre/Ingeniería%20de%20Software%201/)
-    - [(SI204) Introducción a los Sistemas Operativos](2do-año/2do-cuatrimestre/Introducción%20a%20los%20Sistemas%20Operativos/)
-    - [(SI206) Orientación a Objetos 1](2do-año/2do-cuatrimestre/Orientación%20a%20Objetos%201/)
-    - [(SI210) Diseño de Bases de Datos](2do-año/2do-cuatrimestre/Diseño%20de%20Bases%20de%20Datos/)
+    - [(SI202) Ingeniería de Software 1](2do-año/2do-cuatrimestre/IS1/)
+    - [(SI204) Introducción a los Sistemas Operativos](2do-año/2do-cuatrimestre/ISO/)
+    - [(SI206) Orientación a Objetos 1](2do-año/2do-cuatrimestre/OO1/)
+    - [(SI210) Diseño de Bases de Datos](2do-año/2do-cuatrimestre/DBD/)
 
 ---
 
