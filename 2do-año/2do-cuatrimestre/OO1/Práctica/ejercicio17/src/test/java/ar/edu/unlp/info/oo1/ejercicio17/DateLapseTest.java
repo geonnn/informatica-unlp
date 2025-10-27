@@ -31,7 +31,7 @@ class DateLapseTest {
 	// no especifica si es con bordes incluidos o no.
 	@Test
 	void testIncludesDate() {
-		assertTrue(dl.includesDate(ld1.plusDays(1)));
+		assertTrue(dl.includesDate(ld1));
 		assertFalse(dl.includesDate(ldOut));
 	}
 }
