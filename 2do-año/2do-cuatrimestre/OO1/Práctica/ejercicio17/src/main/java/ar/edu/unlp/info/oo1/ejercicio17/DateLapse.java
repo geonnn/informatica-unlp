@@ -40,6 +40,17 @@ public class DateLapse {
 	}
 	
 	public boolean overlaps(DateLapse dl) {
-		return this.includesDate(dl.getFrom()) || this.includesDate(dl.getTo());
+		return this.includesDate(dl.getFrom()) || this.includesDate(dl.getTo())
+				|| dl.includesDate(this.from) || dl.includesDate(this.getTo());
+	}
+	
+	public int coincidencias(DateLapse dl) {
+		if (!overlaps(dl))
+			return 0;
+		
+		LocalDate inicio = this.from.isAfter(dl.getFrom()) ? this.from : dl.getFrom();
+		LocalDate fin = this.getTo().isBefore(dl.getTo()) ? this.getTo() : dl.getTo();
+		
+		return (int)ChronoUnit.DAYS.between(inicio, fin) + 1;
 	}
 }
