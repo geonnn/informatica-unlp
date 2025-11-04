@@ -23,12 +23,12 @@ public class Inmueble {
 
 	public boolean isAvailable(DateLapse dl) {
 		Iterator<Reserva> it = this.reservas.iterator();
-		boolean overlaps = false;
-		while (it.hasNext() && !overlaps) {
+		boolean available = true;
+		while (it.hasNext() && available) {
 			Reserva r = it.next();
-			overlaps = dl.overlaps(r.getDateLapse());
+			available = !dl.overlaps(r.getDateLapse());
 		}
-		return overlaps;
+		return available;
 	}
 	
 	public boolean addReserva(Usuario u, DateLapse dl) {
