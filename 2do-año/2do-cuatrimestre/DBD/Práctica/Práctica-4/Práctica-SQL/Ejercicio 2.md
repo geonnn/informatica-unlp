@@ -1,181 +1,134 @@
-### 1)
+**Localidad** = (<u>codigoPostal</u>, nombreL, descripcion, nroHabitantes)
+**Arbol** = (<u>nroArbol</u>, especie, anios, calle, nro, codigoPostal(fk))
+**Podador** = (<u>DNI</u>, nombre, apellido, telefono, fnac, codigoPostalVive(fk))
+**Poda** = (<u>codPoda</u>, fecha, DNI(fk), nroArbol(fk))
+### 1) Listar especie, años, calle, nro y localidad de árboles podados por el podador ‘Juan Perez’ y por el podador ‘Jose Garcia’.
 
 ```sql
-SELECT nombre, apellido, DNI, telefono, direccion
-FROM Cliente
-WHERE apellido LIKE "Pe%"
-ORDER BY DNI
+-- distinct porque un mismo árbol puede haber sido podado varias veces por los dos podadores.
+SELECT DISTINCT a.especie, a.anios, a.calle, a.nro, l.nombreL
+FROM Localidad l
+NATURAL JOIN Arbol a
+NATURAL JOIN Poda
+NATURAL JOIN Podador p
+WHERE (p.nombre = "Juan" AND p.apellido = "Pérez")
+
+INTERSECT
+
+SELECT DISTINCT a.especie, a.anios, a.calle, a.nro, l.nombreL
+FROM Localidad l
+NATURAL JOIN Arbol a
+NATURAL JOIN Poda
+NATURAL JOIN Podador p
+WHERE (p.nombre = "José") AND (p.apellido = "García")
+
 ```
 ---
-### 2)
+### 2) Reportar DNI, nombre, apellido, fecha de nacimiento y localidad donde viven de aquellos podadores que tengan podas realizadas durante 2023.
 
 ```sql
-SELECT DISTINCT nombre, apellido, DNI, telefono, direccion
-FROM Cliente NATURAL JOIN Factura
-WHERE (fecha BETWEEN "2024-01-01" AND "2024-12-31")
+-- distinct porque un podador puede haber podado el mismo árbol varias veces en 2023 (de hecho, los hay).
+SELECT DISTINCT p.DNI, p.nombre, p.apellido, p.fnac, l.nombreL
+FROM Localidad l
+INNER JOIN Podador p ON (p.codigoPostalVive = l.codigoPostal)
+NATURAL JOIN Poda pd
+WHERE (pd.fecha BETWEEN "2023-01-01" AND "2023-12-31")
 ```
 ---
-### 3)
+### 3) Listar especie, años, calle, nro y localidad de árboles que no fueron podados nunca.
 
 ```sql
-SELECT nombreP, descripcion, precio, stock
-FROM Producto
-NATURAL JOIN Detalle
-NATURAL JOIN Factura
-NATURAL JOIN Cliente 
-WHERE (DNI = 45789456)
-EXCEPT (
-	SELECT nombreP, descripcion, precio, stock
-	FROM Producto
-	NATURAL JOIN Detalle
-	NATURAL JOIN Factura
-	NATURAL JOIN Cliente
-	WHERE apellido = "García"
-)
+SELECT a.especie, a.anios, a.calle, a.nro, l.nombreL
+FROM Arbol a
+NATURAL JOIN Localidad l
+
+EXCEPT
+
+-- podría ir un distinct acá para sacar una tupla por cada árbol que fue podado, optimizando la consulta, pero el resultado es el mismo.
+SELECT a.especie, a.anios, a.calle, a.nro, l.nombreL
+FROM Localidad l
+NATURAL JOIN Arbol a
+NATURAL JOIN Poda
 ```
 ---
-### 4)
+### 4) Reportar especie, años, calle, nro y localidad de árboles que fueron podados durante 2022 y no fueron podados durante 2023.
 
 ```sql
-SELECT nombreP, descripcion, precio, stock
-FROM Producto
-EXCEPT (
-	SELECT nombreP, descripcion, precio, stock
-	FROM Producto
-	NATURAL JOIN Detalle
-	NATURAL JOIN Factura
-	NATURAL JOIN Cliente
-	WHERE telefono LIKE "221%"
-)
-ORDER BY nombreP
+SELECT a.especie, a.anios, a.calle, a.nro, l.nombreL
+FROM Localidad l
+NATURAL JOIN Arbol a
+NATURAL JOIN Poda pd
+WHERE pd.fecha BETWEEN "2022-01-01" AND "2022-12-31"
+
+EXCEPT
+
+SELECT a.especie, a.anios, a.calle, a.nro, l.nombreL
+FROM Localidad l
+NATURAL JOIN Arbol a
+NATURAL JOIN Poda pd
+WHERE pd.fecha BETWEEN "2023-01-01" AND "2023-12-31"
 ```
 ---
-### 5)
+### 5) Reportar DNI, nombre, apellido, fecha de nacimiento y localidad donde viven de aquellos podadores con apellido terminado con el string ‘ata’ y que tengan al menos una poda durante 2024. Ordenar por apellido y nombre.
 
 ```sql
-SELECT nombreP, descripcion, precio,
-	COUNT(d.idProducto) as veces_vendido
-FROM Producto p
-LEFT JOIN Detalle d ON (p.idProducto = d.idProducto)
-GROUP BY p.idProducto, nombreP, descripcion, precio
+SELECT DISTINCT p.DNI, p.nombre, p.apellido, p.fnac, l.nombreL
+FROM Podador p
+INNER JOIN Localidad l ON (p.codigoPostalVive = l.codigoPostal)
+NATURAL JOIN Poda pd
+WHERE (p.apellido LIKE "%ata") AND
+    (pd.fecha BETWEEN "2024-01-01" AND "2024-12-31")
+ORDER BY p.apellido, p.nombre
 ```
 ---
-### 6)
+### 6) Listar DNI, apellido, nombre, teléfono y fecha de nacimiento de podadores que sólo podaron árboles de especie ‘Conífera’.
 
 ```sql
-SELECT nombre, apellido, DNI, telefono, direccion
-FROM Cliente c
-NATURAL JOIN Factura
-NATURAL JOIN Detalle
-NATURAL JOIN Producto
-WHERE 
-	c.idCliente IN (
-        SELECT f.idCliente
-        FROM Factura f
-        NATURAL JOIN Detalle d
-        NATURAL JOIN Producto p
-        WHERE p.nombreP = "prod1"
-    )
+SELECT DISTINCT p.DNI, p.apellido, p.nombre, p.telefono, p.fnac
+FROM Podador p
+NATURAL JOIN Poda pd
+NATURAL JOIN Arbol a
+WHERE a.especie = "Conífera"
 
-    AND c.idCliente IN (
-        SELECT f.idCliente
-        FROM Factura f
-        NATURAL JOIN Detalle d
-        NATURAL JOIN Producto p
-        WHERE p.nombreP = "prod2"
-    )
-EXCEPT (
-	SELECT nombre, apellido, DNI, telefono, direccion
-	FROM Cliente
-	NATURAL JOIN Factura
-	NATURAL JOIN Detalle
-	NATURAL JOIN Producto
-	WHERE nombreP = "prod3"
-)
+EXCEPT
 
--- otra opción:
-
-SELECT nombre, apellido, DNI, telefono, direccion
-FROM Cliente c
-NATURAL JOIN Factura
-NATURAL JOIN Detalle
-NATURAL JOIN Producto p
-WHERE p.nombreP = "prod1"
-INTERSECT (
-        SELECT nombre, apellido, DNI, telefono, direccion
-        FROM Cliente c
-        NATURAL JOIN Factura
-        NATURAL JOIN Detalle
-        NATURAL JOIN Producto p
-        WHERE p.nombreP = "prod2"
-)
-EXCEPT (
-    SELECT nombre, apellido, DNI, telefono, direccion
-    FROM Cliente
-    NATURAL JOIN Factura
-    NATURAL JOIN Detalle
-    NATURAL JOIN Producto
-    WHERE nombreP = "prod3"
-)
+SELECT DISTINCT p.DNI, p.apellido, p.nombre, p.telefono, p.fnac
+FROM Podador p
+NATURAL JOIN Poda pd
+NATURAL JOIN Arbol a
+WHERE a.especie <> "Conífera"
 ```
 ---
-### 7)
+### 7) Listar especies de árboles que se encuentren en la localidad de ‘La Plata’ y también en la localidad de ‘Salta’.
 
 ```sql
-SELECT DISTINCT f.nroTicket, f.total, f.fecha, f.hora, c.DNI
-FROM Cliente c
-NATURAL JOIN Factura f
-NATURAL JOIN Detalle
-NATURAL JOIN Producto p
-WHERE (f.fecha BETWEEN "2023-01-01" AND "2023-12-31")
-	OR (p.nombreP = "prod38")
+SELECT DISTINCT a.especie
+FROM Arbol a
+NATURAL JOIN Localidad l
+WHERE l.nombreL = "La Plata"
+
+INTERSECT
+
+SELECT DISTINCT a.especie
+FROM Arbol a
+NATURAL JOIN Localidad l
+WHERE l.nombreL = "Salta"
 ```
 ---
-### 8)
+### 8) Eliminar el podador con DNI 22234566.
 
 ```sql
-INSERT INTO Cliente (
-    idCliente,
-    nombre,
-    apellido,
-    DNI,
-    direccion,
-    telefono
-)
-VALUES (
-    500002,
-    "Jorge Luis",
-    "Castor",
-    40578999,
-    "11 entre 500 y 501 nro:2587",
-    "221-4400789"
-)
+DELETE
+FROM Podador p
+WHERE p.DNI = 22234566
 ```
 ---
-### 9)
+### 9) Reportar nombre, descripción y cantidad de habitantes de localidades que tengan menos de 5 árboles.
 
 ```sql
-SELECT f.nroTicket, f.total, f.fecha, f.hora
-FROM Cliente c
-NATURAL JOIN Factura f
-WHERE c.nombre = "Jorge" AND c.apellido = "Pérez"
-EXCEPT (
-	SELECT f.nroTicket, f.total, f.fecha, f.hora
-	FROM Cliente c
-	NATURAL JOIN Factura f
-	NATURAL JOIN Detalle
-	NATURAL JOIN Producto p
-	WHERE (c.nombre = "Jorge" AND c.apellido = "Pérez")
-	    AND p.nombreP = "Z"
-)
-```
----
-### 10)
-
-```sql
-SELECT nombreP, descripcion, precio,
-	COUNT(d.idProducto) as veces_vendido
-FROM Producto p
-LEFT JOIN Detalle d ON (p.idProducto = d.idProducto)
-GROUP BY p.idProducto, nombreP, descripcion, precio
+SELECT l.nombreL, l.descripcion, l.nroHabitantes
+FROM Localidad l
+NATURAL JOIN Arbol a
+GROUP BY l.codigoPostal, l.nombreL, l.descripcion, l.nroHabitantes
+HAVING COUNT(a.nroArbol) < 5
 ```
