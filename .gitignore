@@ -1,16 +1,10 @@
-/1er-año/2do-cuatrimestre/TdP/Módulo-2-Objetos/Práctica-1/TP_ProyectoAlumnos/build/
-/1er-año/2do-cuatrimestre/TdP/Módulo-2-Objetos/Proyecto_Tema5/nbproject/private/
-/1er-año/2do-cuatrimestre/TdP/Módulo-2-Objetos/Proyecto_Tema5/build/
-/1er-año/2do-cuatrimestre/TdP/Módulo-2-Objetos/Parcial_agenda_semanal/nbproject/private/
-/1er-año/2do-cuatrimestre/TdP/Módulo-2-Objetos/Parcial_agenda_semanal/build/
-/1er-año/2do-cuatrimestre/TdP/Módulo-2-Objetos/Parciales_de_prueba/build/
-/1er-año/2do-cuatrimestre/TdP/Módulo-2-Objetos/Parciales_de_prueba/nbproject/private/
+/1er-año/2do-cuatrimestre/TdP/Módulo-2-Objetos/**/build/
+/1er-año/2do-cuatrimestre/TdP/Módulo-2-Objetos/**/private/
 /1er-año/2do-cuatrimestre/AC/WinMips64/Sim-WinMips64/winmips64.ini
 /1er-año/2do-cuatrimestre/AC/WinMips64/Sim-WinMips64/winmips64.las
 /2do-año/1er-cuatrimestre/SdL(.NET)/proyectosDotnet/**/obj/
 /2do-año/1er-cuatrimestre/SdL(.NET)/proyectosDotnet/**/bin/
 /2do-año/1er-cuatrimestre/AyED/Prácticas/ayed/**/bin/
-/2do-año/2do-cuatrimestre/IS1/Práctica/Prácticas Ing. de Software 1/.obsidian/
 /2do-año/2do-cuatrimestre/OO1/Práctica/**/.settings/
 /2do-año/2do-cuatrimestre/OO1/Práctica/**/bin/
-/2do-año/2do-cuatrimestre/ISO/Práctica/Prácticas ISO/.obsidian/
+**/.obsidian/
