@@ -11,10 +11,11 @@ for i in $(seq 1 $#); do
 	ruta="${!i}"
 	# echo "debug: verificando $i: '$ruta'"
 	if [ ! -e "$ruta" ]; then
-		(( inexistentes++ ))
+		let inexistentes++ # (( inexistentes++ ))
 		continue
 	fi
-
+	
+	# let a=$i%2
 	if [ $(( i % 2 )) -eq 1 ]; then
 		if [ -f "$ruta" ]; then
 			echo "$ruta es regular file."
