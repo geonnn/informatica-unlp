@@ -1,0 +1,21 @@
+_unlp_completion() {
+	local repo="$HOME/Documents/Repos/informatica-unlp"
+	local cur
+	cur="${COMP_WORDS[COMP_CWORD]}"
+
+	mapfile -d '' dirs < <(
+		find "$repo" -mindepth 3 -maxdepth 3 -type d \
+		-not -path "$repo/.git*" -print0
+	)
+
+	COMPREPLY=()
+	local dir
+	for dir in "${dirs[@]}"; do
+		dir="$(basename "$dir")"
+		if [[ "$dir" == "$cur"* ]]; then
+			COMPREPLY+=("$dir")
+		fi
+	done
+}
+
+complete -F _unlp_completion unlp
