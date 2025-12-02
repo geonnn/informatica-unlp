@@ -49,6 +49,15 @@ SELECT a.especie, a.anios, a.calle, a.nro, l.nombreL
 FROM Localidad l
 NATURAL JOIN Arbol a
 NATURAL JOIN Poda
+
+-- otra opción:
+SELECT a.especie, a.anios, a.calle, a.nro, l.nombreL
+FROM Arbol a
+NATURAL JOIN Localidad l
+WHERE a.nroArbol NOT IN (
+    SELECT pd.nroArbol
+    FROM Poda pd
+)
 ```
 ---
 ### 4) Reportar especie, años, calle, nro y localidad de árboles que fueron podados durante 2022 y no fueron podados durante 2023.
@@ -118,6 +127,10 @@ WHERE l.nombreL = "Salta"
 ### 8) Eliminar el podador con DNI 22234566.
 
 ```sql
+DELETE
+FROM Poda pd
+WHERE pd.DNI = 22234566
+
 DELETE
 FROM Podador p
 WHERE p.DNI = 22234566

@@ -76,19 +76,17 @@ HAVING COUNT(i.DNI) > 5
 ```sql
 SELECT e.nombre_escenario, e.ubicacion, e.descripcion
 FROM Escenario e
-NATURAL JOIN Recital r
+NATURAL JOIN Recital
 NATURAL JOIN Banda b
 WHERE b.genero_musical = "rock and roll"
-
-EXCEPT
-
-SELECT e.nombre_escenario, e.ubicacion, e.descripcion
-FROM Escenario e
-NATURAL JOIN Recital r
-NATURAL JOIN Banda b
-WHERE b.genero_musical <> "rock and roll"
-
-ORDER BY nombre_escenario
+    AND e.nroEscenario NOT IN (
+		SELECT e2.nroEscenario
+		FROM Escenario e2
+		NATURAL JOIN Recital
+		NATURAL JOIN Banda b2
+		WHERE b2.genero_musical <> "rock and roll"
+)
+ORDER BY e.nombre_escenario
 ```
 ---
 ### 7) Listar nombre, género musical y año de creación de bandas que hayan realizado recitales en escenarios cubiertos durante 2023. *// cubierto es true, false según corresponda.*
