@@ -2,25 +2,76 @@
 
 > a. Describa qué beneficios introduce este esquema de administración de la memoria.
 
-sdasdas
+Más procesos pueden ser mantenidos en memoria al mismo tiempo, ya que sólo se cargan las partes necesarias de c/u (multiprogramación). También permite ejecutar procesos que sean más grandes que la memoria principal.
 
 > b. ¿En que se debe apoyar el SO para su implementación?
+
+Requiere:
+- Hardware que soporte paginación (y/o segmentación) por demanda.
+- Un dispositivo de memoria secundaria que dé el apoyo para almacenar las partes del proceso que no están en memoria (swap).
+- Kernel que administre los intercambios de páginas entre memoria principal y memoria secundaria.
+
 > c. Al implementar está técnica utilizando paginación por demanda, las tablas de páginas de un proceso deben contar con información adicional además del marco donde se encuentra la página. ¿Cuál es está información? ¿Por qué es necesaria?
+
+La información adicional son bits de control, que se encuentran en cada entrada en la tabla de páginas de un proceso. Son:
+- Bit V: indica si la página está cargada en memoria principal (lo activa/desactiva el kernel, lo consulta el HW).
+- Bit M: indica si la página fue modificada. Si fue modificada, eventualmente se deben persistir los cambios en memoria secundaria (lo activa el HW, lo consulta y desactiva el kernel).
 
 ---
 #### 2\. Fallos de Página (Page Faults):
 
-a. ¿Cuándo se producen?
-b. ¿Quién es responsable de detectar un fallo de página?
-c. Describa las acciones que emprende el Kernel cuando se produce un fallo de página.
+> a. ¿Cuándo se producen?
+
+Se producen cuando se un proceso referencia a una dirección lógica que se encuentra en una página no cargada en memoria principal.
+
+> b. ¿Quién es responsable de detectar un fallo de página?
+
+El hardware detecta el page fault y genera un trap.
+
+> c. Describa las acciones que emprende el Kernel cuando se produce un fallo de página.
+
+1. El kernel coloca al proceso en estado de espera.
+2. Busca un frame libre en memoria (o selecciona una víctima si no lo hay) y genera una operación de E/S al disco para copiar en dicho frame la página requerida.
+3. Mientras este proceso de E/S se realiza, el CPU puede asignarle la CPU a otro proceso.
+4. Cuando finaliza la E/S se notifica mediante una interrupción y el kernel actualiza la tabla de páginas (Bit V en 1 en la página recuperada).
+5. El proceso que generó el page fault vuelve al estado ready y la instrucción que generó el page fault se vuelve a ejecutar.
 
 ---
-#### 3\. Direcciones. Si se dispone de una espacio de direcciones virtuales de 32 bits, donde cada dirección referencia 1 byte:
+#### 3\. Direcciones. Si se dispone de un espacio de direcciones virtuales de 32 bits, donde cada dirección referencia 1 byte:
 
-a. ¿Cuál es el tamaño máximo del espacio de direcciones de un proceso?
-b. Si el tamaño de página es de 512Kb. ¿Cuál es el número máximo de páginas que puede tener un proceso?
-c. Si el tamaño de página es de 512Kb. y se disponen de 256 Mb. de memoria principal ¿Cuál es el número de marcos que puede haber?
-d. Si se utilizaran 2 Kb. para cada entrada en la tabla de páginas de un proceso: ¿Cuál sería el tamaño máximo de la tabla de páginas de cada proceso?
+> a. ¿Cuál es el tamaño máximo del espacio de direcciones de un proceso?
+
+$$ \begin{align}
+	2^{32} = 4.294.967.296\ bytes\\\\
+	\frac{4.294.967.296}{1024^3} = 4GB
+	
+\end{align} $$
+
+> b. Si el tamaño de página es de 512Kb. ¿Cuál es el número máximo de páginas que puede tener un proceso?
+
+$$ \begin{align}
+	& \text{Espacio virtual: } 4GB = 2^{32}\ \text{bytes}\\\\
+	& \text{Tamaño de página: } 512Kb = 512 \times 1024 = 2^9 \times 2^{10}=2^{19}\ \text{bytes}\\\\
+	& \frac{2^{32}}{2^{19}} = 2^{13}\ = 8192\ \text{páginas}
+	
+\end{align} $$
+
+
+> c. Si el tamaño de página es de 512Kb. y se disponen de 256 Mb. de memoria principal ¿Cuál es el número de marcos que puede haber?
+
+$$ \begin{align}
+	& \text{Espacio virtual: } 256MB = 2^{8}\times 1024^2 \text{ bytes} = 2^8 \times 2^{10^2} = 2^8\times 2^{20} \text{ bytes}= 2^{28} \text{ bytes} \\\\
+	& \text{Tamaño de página: } 512KB = 512 \times 1024 = 2^9 \times 2^{10}=2^{19}\ \text{bytes}\\\\
+	& \frac{2^{28}}{2^{19}} = 2^{9}\ = 512 \text{ marcos}
+\end{align} $$
+
+> d. Si se utilizaran 2 Kb. para cada entrada en la tabla de páginas de un proceso: ¿Cuál sería el tamaño máximo de la tabla de páginas de cada proceso?
+
+$$ \begin{align}
+	& \text{Tamaño de página: } 512KB = 512 \times 1024 = 2^9 \times 2^{10}=2^{19}\ \text{bytes}\\\\
+	& \frac{2^{32}}{2^{19}} = 2^{13}\ = 8192\ \text{páginas}\\\\
+	& 8192 \text{ páginas} \times 2KB = 16384KB = 16MB 
+\end{align} $$
 
 ---
 #### 4\. Como se vio en el ejercicio anterior, la tabla de páginas de un proceso puede alcanzar un tamaño considerablemente grande. Existen varios enfoques para administrar las tablas de páginas:
@@ -49,11 +100,41 @@ Explique brevemente cómo trabajan estos mecanismos. Tenga en cuenta analizar c�
   * Cada dirección de memoria referencia 1 byte
   * Los marcos se encuentran contiguos y en orden en memoria (0, 1, 2..) a partir de la dirección física 0.
 
-¿Qué dirección física, si existe, correspondería a cada una de las siguientes direcciones virtuales? (No gestionar ningún fallo de página en caso de producirse)
-a. 1052
-b. 2221
-c. 5499
-d. 3101
+> ¿Qué dirección física, si existe, correspondería a cada una de las siguientes direcciones virtuales? (No gestionar ningún fallo de página en caso de producirse)
+
+$$ \begin{align}
+	& \text{Número de página = Dirección div }512\\\\
+	& \text{Desplazamiento = Dirección mod }512\\\\
+	& \text{a mod b}= \bigg(\frac{a}{b}-(a\ div\ b)\bigg)\times b
+\end{align} $$
+
+> a. 1052
+
+$$ \begin{align}
+	& 1052/512=2 \rightarrow \text{page fault}\\
+	& 1052 \text{ mod } 512 = 28
+\end{align} $$
+page fault.
+
+> b. 2221
+
+$$ \begin{align}
+	& 2221/512=4 \rightarrow \text{page fault}\\
+	& 2221 \text{ mod } 512 = 173
+\end{align} $$
+
+> c. 5499
+
+$$ \begin{align}
+	& 5499/512=10 \rightarrow \text{error de direccionamiento}\\
+	& 5499 \text{ mod } 512 = 379
+\end{align} $$
+> d. 3101
+
+$$ \begin{align}
+	& 3101/512=6 \rightarrow \text{error de direccionamiento}\\
+	& 3101 \text{ mod } 512 = 29
+\end{align} $$
 
 ---
 #### 6\. Tamaño de la Página. La selección del tamaño de la página influye de manera directa sobre el funcionamiento de la memoria virtual.
@@ -67,14 +148,17 @@ Compare las siguientes situaciones con respecto al tamaño de página, indicando
 #### 7\. Asignación de marcos a un proceso (Conjunto de trabajo o Working Set).
 
 Con la memoria virtual paginada, no se requiere que todas las páginas de un proceso se encuentren en memoria. El SO debe controlar cuantas páginas de un proceso puede tener en la memoria principal. Existen 2 políticas que se pueden utilizar:
-
   * Asignación Fija
   * Asignación Dinámica.
 
-a. Describa cómo trabajan estas 2 políticas.
-b. Dada la siguiente tabla de procesos y las páginas que ellos ocupan, y teniéndose 40 marcos en la memoria principal, cuántos marcos le corresponderá a cada proceso si se usa la técnica de Asignación Fija:
-\* Reparto Equitativo
-\* Reparto Proporcional
+> a. Describa cómo trabajan estas 2 políticas.
+
+- Fija: se le da un número fijo de marcos a cada proceso.
+- Dinámica: el número de marcos de cada proceso varía según su comportamiento.
+
+> b. Dada la siguiente tabla de procesos y las páginas que ellos ocupan, y teniéndose 40 marcos en la memoria principal, cuántos marcos le corresponderá a cada proceso si se usa la técnica de Asignación Fija:
+> - Reparto Equitativo
+> - Reparto Proporcional
 
 | Proceso | Total de Paginas Usadas |
 | :------ | :---------------------- |
@@ -83,7 +167,20 @@ b. Dada la siguiente tabla de procesos y las páginas que ellos ocupan, y tenié
 | 3       | 20                      |
 | 4       | 8                       |
 
-c. ¿Cuál de los 2 repartos usados en b) resultó más eficiente? Justifique
+- Equitativo: 40 marcos, 4 procesos: 40/4 = 10 marcos cada proceso.
+- Proporcional:
+$$\begin{align}
+	& M_p = (MReq_p/MReq_{total}) \times M_{total}\\
+	& MReq_{total} = 15 + 20 + 20 + 8 = 63
+\end{align}$$
+- P1: $(15/63) \times 40 \approx 9,5 \rightarrow 10 \text{ marcos}$
+- P2: $(20/63) \times 40 \approx 12,7 \rightarrow 13 \text{ marcos}$
+- P3: $(20/63) \times 40 \approx 12,7 \rightarrow 13 \text{ marcos}$
+- P4: $(8/63) \times 40 \approx 5,1 \rightarrow 4 \text{ marcos (ajustando porque sólo quedaban 4)}$
+
+> c. ¿Cuál de los 2 repartos usados en b) resultó más eficiente? Justifique
+
+El Proporcional es más eficiente porque asigna recursos según la necesidad de los procesos. En el equitativo, el proceso 4 recibe 10 marcos pero solo necesita 8 (desperdicia 2), mientras que P2 y P3 necesitan 20 y reciben 10, generando más fallos de página.
 
 ---
 #### 8\. Reemplazo de páginas (selección de una víctima). ¿Qué sucede cuando todos los marcos en la memoria principal están usados por las páginas de los procesos y se produce un fallo de página?
@@ -113,12 +210,13 @@ b. ¿Es posible utilizar la política de "Asignación Fija" de marcos junto con 
 
 `1, 2, 15, 4, 6, 2, 1, 5, 6, 10, 4, 6, 7, 9, 1, 6, 12, 11, 12, 2, 3, 1, 8, 1, 13, 14, 15, 3, 8`
 
-a. Si se disponen de 5 marcos. ¿Cuántos fallos de página se producirán si se utilizan las siguientes técnicas de selección de víctima? (Considere una política de Asignación Dinámica y Reemplazo Global)
-i. Segunda Chance
-ii. FIFO
-iii. LRU
-iv. OPT
-b. Suponiendo que cada atención de un fallo se página requiere de 0,1 seg. Calcular el tiempo consumido por atención a los fallos de páginas para los algoritmos de a).
+> a. Si se disponen de 5 marcos. ¿Cuántos fallos de página se producirán si se utilizan las siguientes técnicas de selección de víctima? (Considere una política de Asignación Dinámica y Reemplazo Global)
+> b. Suponiendo que cada atención de un fallo se página requiere de 0,1 seg. Calcular el tiempo consumido por atención a los fallos de páginas para los algoritmos de a).
+
+i. Segunda Chance: 22 PFs - 2,2 segs.
+ii. FIFO: 21 PFs - 2,1 segs.
+iii. LRU: 22 PFs - 2,2 segs.
+iv. ÓPTIMO: 16 PFs - 1,6 segs.
 
 ---
 #### 11\. Sean los procesos A, B y C tales que necesitan para su ejecución las siguientes páginas:
@@ -226,13 +324,13 @@ Cuales de las siguientes acciones pueden mejorar la utilización del procesador:
 a) Instalar un procesador más rápido
 b) Instalar un dispositivo de paginación mayor
 c) Incrementar el grado de multiprogramación
-d) Instalar mas memoria principal
+==d) Instalar mas memoria principal==
 e) Decrementar el quantum para cada proceso
 
 ---
 #### 17\. La siguiente fórmula describe el tiempo de acceso efectivo a la memoria al utilizar paginación para la implementación de la memoria virtual:
 
-$TAE = At + (1-p) * Am + p * (Tf + Am)$
+$TAE = At + (1-p) \times Am + p \times (Tf + Am)$
 Donde:
 
   * $TAE =$ tiempo de acceso efectivo
@@ -243,10 +341,64 @@ Donde:
 
 Suponga que tenemos una memoria virtual paginada, con tabla de páginas de 1 nivel, y donde la tabla de páginas se encuentra completamente en la memoria. Servir una falla de página tarda 300 nanosegundos si hay disponible un marco vacío o si la página reemplazada no se ha modificado, y 500 nanosegundos si se ha modificado. El tiempo de acceso a memoria es de 20 nanosegundos y el de acceso a la TLB es de 1 nanosegundo.
 
-a. Si suponemos una tasa de fallos de página de 0,3 y que siempre contamos con un marco libre para atender el fallo ¿Cuál será el TAE si el 50% de las veces la entrada de la tabla de páginas se encuentra en la TLB (hit)?
-b. Si suponemos una tasa de fallos de página de 0,3; que el 70% de las ocasiones la página a reemplazar se encuentra modificada. ¿Cuál será el TAE si el 60% de las veces la entrada de la tabla de páginas se encuentra en la TLB (hit)?
-c. Si suponemos que el 60% de las veces la página a reemplazar está modificada, el 100% de las veces la entrada de la tabla de páginas requerida se encuentra en la TLB (hit) y se espera un TAE menor a 200 nanosegundos.
-d. ¿Cuál es la máxima tasa aceptable de fallas de página?
+> a. Si suponemos una tasa de fallos de página de 0,3 y que siempre contamos con un marco libre para atender el fallo ¿Cuál será el TAE si el 50% de las veces la entrada de la tabla de páginas se encuentra en la TLB (hit)?
+
+$$ \begin{align}
+	& Am = 20ns\\
+	& Tf = 300ns\\
+	& p = 0,3\\\\
+	& \text{- Hit (50\%): }1ns\\ 
+	& \text{- Miss (50\%): }1ns \text{ (TLB)} + 20ns \text{ (Am)} = 21ns\\
+	& At = (0,5 \times 1) + (0,5 \times 21) = 0,5 + 10,5 = 11ns\\\\
+	
+	& TAE = 11 + (1-0,3) \times 20 + 0,3 \times (300 + 20)\\
+	& TAE = 11 + 0,7 \times 20 + 0,3 \times 320\\
+	& TAE = 11 + 14 + 96\\
+	& TAE = 121ns
+\end{align} $$
+	- Caso hit: 1ns (sólo acceso a tabla)
+	- Caso miss: 21ns (acceso a tabla + acceso a memoria = 1 + 20)
+
+> b. Si suponemos una tasa de fallos de página de 0,3; que el 70% de las ocasiones la página a reemplazar se encuentra modificada. ¿Cuál será el TAE si el 60% de las veces la entrada de la tabla de páginas se encuentra en la TLB (hit)?
+
+$$ \begin{align}
+	& Am = 20ns\\
+	& p = 0,3\\\\
+	& Tf_{\text{marco libre}} \text{ (30\%)} = 300ns\\
+	& Tf_{\text{marcos ocupados/modif.}} \text{ (70\%)} = 500ns\\
+	& Tf = (0,3 \times 300) + (0,7 \times 500) = 440ns\\\\
+	& \text{- Hit (60\%): }1ns\\
+	& \text{- Miss (40\%): }1ns \text{ (TLB)} + 20ns \text{ (Am)} = 21ns\\
+	& At = (0,6 \times 1) + (0,4 \times 21) = 0,6 + 8,4 = 9ns\\\\
+	
+	& TAE =  9 + (1-0,3) \times 20 + 0,3 \times (440 + 20) \\
+	& TAE =  9 + 0,7 \times 20 + 0,3 \times 460\\
+	& TAE =  9 + 14 + 138\\
+	& TAE =  161ns\\
+\end{align} 
+$$
+
+> c. Si suponemos que el 60% de las veces la página a reemplazar está modificada, el 100% de las veces la entrada de la tabla de páginas requerida se encuentra en la TLB (hit) y se espera un TAE menor a 200 nanosegundos.
+> d. ¿Cuál es la máxima tasa aceptable de fallas de página?
+
+$$ \begin{align}
+	& Am = 20ns\\
+	& p =\ ?\\\\
+	& Tf_{\text{marco libre}} \text{ (40\%)} = 300ns\\
+	& Tf_{\text{marcos ocupados/modif.}} \text{ (60\%)} = 500ns\\
+	& Tf = (0,4 \times 300) + (0,6 \times 500) = 420ns\\\\
+	& At = 1ns \text{ (100\% Hit)}\\\\
+	
+	& 1 + (1-p) \times 20 + p \times (420 + 20) < 200 \\
+	& 1 + 20 - 20p + p \times 440 < 200 \\
+	& 21-20p + 440p < 200 \\
+	& 420p < 200 - 21 \\
+	& p < \frac{179}{420} \\
+	& p < 0,4262\\
+\end{align}
+$$
+
+Tasa máxima aceptable 42,62%.
 
 ---
 #### 18\. Considere el siguiente programa:
@@ -270,11 +422,24 @@ b. Puede ser modificado el programa para minimizar el número de fallos de pági
 
 *(Ver tablas de secuencias de tiempo y referencias en el documento original)*
 
-a. Considerando una ventana $\Delta=5$, indique cuál sería el conjunto de trabajo de los procesos A y B en el instante 24 ($WS_A(24)$ y $WS_B(24)$)
-b. Considerando una ventana $\Delta=5$, indique cuál sería el conjunto de trabajo de los procesos A y B en el instante 60 ($WS_A(60)$ y $WS_B(60)$)
-c. Para el los WS obtenidos en el inciso a), si contamos con 8 frames en el sistema ¿Se puede indicar que estamos ante una situación de trashing? ¿Y si contáramos con 6 frames?
-d. Considerando únicamente el proceso A, y suponiendo que al mismo se le asignaron inicialmente 4 marcos, donde el de reemplazo de páginas es realizado considerando el algoritmo FIFO. ¿Cuál será la tasa de fallos en el instante 38 de páginas suponiendo que la misma se calcula contando los fallos de páginas que ocurrieron en las últimas 10 unidades de tiempo?
-e. Para el valor obtenido en el inciso d), si suponemos que el S.O. utiliza como límites superior e inferior de tasa de fallos de páginas los valores 2 y 5 respectivamente ¿Qué acción podría tomar el S.O. respecto a la cantidad de marcos asignados al proceso?
+> a. Considerando una ventana $\Delta=5$, indique cuál sería el conjunto de trabajo de los procesos A y B en el instante 24 ($WS_A(24)$ y $WS_B(24)$)
+
+- Proceso A: {4, 5, 6}
+- Proceso B: {2, 3 ,5, 6}
+
+> b. Considerando una ventana $\Delta=5$, indique cuál sería el conjunto de trabajo de los procesos A y B en el instante 60 ($WS_A(60)$ y $WS_B(60)$)
+
+- Proceso A: {1, 2, 3, 4, 5}
+- Proceso B: {3, 4, 5}
+
+> c. Para el los WS obtenidos en el inciso a), si contamos con 8 frames en el sistema ¿Se puede indicar que estamos ante una situación de trashing? ¿Y si contáramos con 6 frames?
+
+Demanda total: $D = 3 + 4 = 7$
+- Con 8 frames: $7 < 8 \rightarrow D < m$, no hay thrashing.
+- Con 6 frames: $7 > 6 \rightarrow D > m$, hay thrashing.
+
+> d. Considerando únicamente el proceso A, y suponiendo que al mismo se le asignaron inicialmente 4 marcos, donde el de reemplazo de páginas es realizado considerando el algoritmo FIFO. ¿Cuál será la tasa de fallos en el instante 38 de páginas suponiendo que la misma se calcula contando los fallos de páginas que ocurrieron en las últimas 10 unidades de tiempo?
+> e. Para el valor obtenido en el inciso d), si suponemos que el S.O. utiliza como límites superior e inferior de tasa de fallos de páginas los valores 2 y 5 respectivamente ¿Qué acción podría tomar el S.O. respecto a la cantidad de marcos asignados al proceso?
 
 ---
 #### 20\. Dispositivos
@@ -328,10 +493,10 @@ c. ¿Quién determina cuáles deben ser estas funciones?
 ---
 #### 30\. La velocidad promedio para la obtención de datos de un disco está dada por la suma de los siguientes tiempos:
 
-  * Seek Time
-  * Latency Time
-  * Transfer Time
 De una definición para estos tres tiempos.
+- Seek Time: tiempo que tarda el brazo mecánico en ubicar el cabezal en la pista correspondiente. El más costoso.
+- Latency Time: tiempo que tarda el disco al girar hasta que el sector requerido quede ubicado debajo del cabezal. En promedio se calcula $\frac{RPM}{2}$.
+- Transfer Time: Tiempo que se necesita para leer/escribir datos.
 
 ---
 #### 31\. Suponga un disco con las siguientes características:
@@ -343,10 +508,48 @@ De una definición para estos tres tiempos.
   * 9000 RPM.
   * Velocidad de Transferencia de 10 MiB/s (Mebibytes por segundos).
 
-a. Calcule la capacidad total del disco.
-b. ¿Cuántos sectores ocuparía un archivo de tamaño de 3 MiB(Mebibytes)?
-c. Calcule el tiempo de transferencia real de un archivo de 15 MiB (Mebibytes) grabado en el disco de manera secuencial (todos sus bloques almacenados de manera consecutiva).
-d. Calcule el tiempo de transferencia real de un archivo de 16 MiB(Mebibytes) grabado en el disco de manera aleatoria.
+> a. Calcule la capacidad total del disco.
+
+$$\begin{align}
+	& \text{Capacidad} = 7 \times 2 \times 1100 \times 300 \times 512 \text{ bytes}\\
+	& \text{Capacidad} = 2.365.440.000 \text{ bytes}\\
+	& \text{Capacidad} \approx 2,2 \text{ GiB}\\
+\end{align}$$
+
+> b. ¿Cuántos sectores ocuparía un archivo de tamaño de 3 MiB(Mebibytes)?
+
+$$\begin{align}
+	& \text{Sector} = 512 \text{ bytes} \\
+	& \text{Archivo} = 3MiB \times 1024^2 = 3.145.728 \text{ bytes} \\\\
+	& \text{Sectores} = \frac{3.145.728 \text{ bytes}}{512 \text{ bytes}} = 6144
+\end{align}$$
+
+> c. Calcule el tiempo de transferencia real de un archivo de 15 MiB (Mebibytes) grabado en el disco de manera secuencial (todos sus bloques almacenados de manera consecutiva).
+
+$$\begin{align}
+& \text{Secuencial} = \text{seek + latency + transfer time(de 1 bloq.)}\times \text{\#bloques}\\\\
+& \text{9000 vueltas} \longrightarrow \text{60000ms} \\
+& \text{1/2 vuelta }\longrightarrow 1/2 \times 60000 /9000 \\
+& \text{latency = 3,33ms}\\\\
+& \text{transfer time = } \frac{15MiB/s}{10MiB/s} = 1,5s = 1500ms \\\\
+& \text{Secuencial} = \text{10ms + 3,33ms + 1500ms = 1513,33ms}\\
+& \text{Tiempo} \approx 1,51\text{s}
+\end{align}$$
+	como ya estaban en la misma unidad y se almacena de manera secuencial no tuve que sacar el tiempo de un bloque y multiplicarlo por la cantidad de bloques.
+	
+> d. Calcule el tiempo de transferencia real de un archivo de 16 MiB(Mebibytes) grabado en el disco de manera aleatoria.
+
+$$\begin{align}
+& \text{Aleatorio} = \text{(seek + latency + transfer time)}\times \text{\#bloques}\\
+& \text{9000 vueltas} \longrightarrow \text{60000ms} \\
+& \text{1/2 vuelta }\longrightarrow 1/2 \times 60000 /9000 \\
+& \text{latency = 3,33ms}\\\\
+& 10MiB \longrightarrow 1000\text{ms}\\
+& 512 \text{ bytes} \longrightarrow 0,048\text{ms} \\\\
+& 16MiB = 16.777.216\text{ bytes} \\
+& \frac{16.777.216\text{ bytes}}{512 \text{ bytes}} = 32768 \text{ bloques} \\\\
+& \text{Aleatorio} = \text{(10ms + 3,33 + 0,048ms)}\times 32768 \approx 7,54\text{mins}
+\end{align}$$
 
 ---
 #### 32\. El Seek Time es el parámetro que posee mayor influencia en el tiempo real necesario para transferir datos desde o hacia un disco. Es importante que el SO planifique los diferentes requerimientos al disco para minimizar el movimiento de la cabeza lecto-grabadora.
