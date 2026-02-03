@@ -1,5 +1,5 @@
 _unlp_completion() {
-	local repo="$HOME/Documents/Repos/informatica-unlp"
+	local repo="$HOME/Repos/informatica-unlp"
 	local cur
 	cur="${COMP_WORDS[COMP_CWORD]}"
 

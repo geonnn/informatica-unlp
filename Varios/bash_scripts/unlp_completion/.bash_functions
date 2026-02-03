@@ -1,6 +1,6 @@
 unlp() {
 
-	local REPO="$HOME/Documents/Repos/informatica-unlp"
+	local REPO="$HOME/Repos/informatica-unlp"
 
 	if [ $# -eq 0 ]; then
 		cd "$REPO" || return
