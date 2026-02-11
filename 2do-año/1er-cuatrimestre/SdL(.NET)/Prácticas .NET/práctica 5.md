@@ -1,5 +1,5 @@
 1) Codificar la clase **Cuenta** de tal forma que el siguiente código produzca la salida por consola que se indica.
-```c#
+```csharp
 Cuenta c1 = new Cuenta();
 c1.Depositar(100).Depositar(50).Extraer(120).Extraer(50);
 Cuenta c2 = new Cuenta();
@@ -32,7 +32,7 @@ EXTRACCIONES: 3 - Total extraído: 1140
 * Se denegaron 2 extracciones por falta de fondos
 ```
 
-```c#
+```csharp
 // ----- Cuenta.cs ----- //
 namespace teoria5;
 
@@ -95,7 +95,7 @@ public class Cuenta
 
 ---
 2) Agregar a la clase Cuenta del ejercicio anterior un método estático GetCuentas() que devuelva un List\<Cuenta> con todas las cuentas creadas. Controlar que la modificación de la lista devuelta, por ejemplo borrando algún elemento, no afecte el listado que internamente mantiene la clase Cuenta. Sin embargo debe ser posible interactuar efectivamente con los objetos Cuenta de la lista devuelta. Verificar que el siguiente código produzca la salida por consola que se indica:
-```c#
+```csharp
 new Cuenta();
 new Cuenta();
 List<Cuenta> cuentas = Cuenta.GetCuentas();
@@ -122,7 +122,7 @@ Se depositó 50 en la cuenta 1 (Saldo=50)
 Se extrajo 30 de la cuenta 1 (Saldo=20)
 ```
 
-```c#
+```csharp
 
 ...
 	private static List<Cuenta> s_cuentas = [];
@@ -147,7 +147,7 @@ Se extrajo 30 de la cuenta 1 (Saldo=20)
 
 ---
 3) Reemplazar el método estático GetCuentas() del ejercicio anterior por una propiedad estática de sólo lectura.
-```c#
+```csharp
 ...
 	public static readonly List<Cuenta> Cuentas = [];
 ...
@@ -164,7 +164,7 @@ El problema con hacerlo propiedad es que la lista que la propia clase Cuenta uti
 
 ---
 4) Indicar en cada caso si la definición de la clase A es correcta, en caso de no serlo detallar cuál es el error.
-```c#
+```csharp
 // a) ✅
 class A
 {
@@ -311,7 +311,7 @@ class A
 
 ---
 5) Qué líneas del código siguiente provocan error de compilación? Analizar cuándo es posible acceder a miembros estáticos y de instancia.
-```c#
+```csharp
 class A
 {
 	char c;
@@ -334,7 +334,7 @@ class A
 ```
 ---
 6) Modificar la definición de la clase Matriz realizada en la práctica 4. Eliminar los métodos SetElemento(...) y GetElemento(...). Definir un indizador adecuado para leer y escribir elementos de la matriz. Eliminar los métodos GetDiagonalPrincipal() y GetDiagonalSecundaria() reemplazándolos por las propiedades de sólo lectura DiagonalPrincipal y DiagonalSecundaria.
-```c#
+```csharp
 ...
     public double this[int fila, int columna]
     {
@@ -375,7 +375,7 @@ class A
 ```
 ---
 7) Definir la clase Persona con las siguientes propiedades de lectura y escritura: Nombre de tipo string, Sexo de tipo char, DNI de tipo int, y FechaNacimiento de tipo DateTime. Además definir una propiedad de sólo lectura (calculada) Edad de tipo int. Definir un indizador de lectura/escritura que permita acceder a las propiedades a través de un índice entero. Así, si p es un objeto Persona, con p[0] se accede al nombre, p[1] al sexo p[2] al DNI, p[3] a la fecha de nacimiento y p[4] a la edad. En caso de asignar p[4] simplemente el valor es descartado. Observar que el tipo del indizador debe ser capaz almacenar valores de tipo int, char, DateTime y string.
-```c#
+```csharp
 public class Persona
 {
     private const int _idxNombre = 0;
@@ -449,7 +449,7 @@ public class Persona
 ```
 ---
 8) Dada la siguiente definición incompleta de clase:
-```c#
+```csharp
 class ListaDePersonas
 {
 	public void Agregar(Persona p)
@@ -462,7 +462,7 @@ class ListaDePersonas
 Completarla y agregar dos indizadores de sólo lectura:
 Un índice entero que permite acceder a las personas de la lista por número de documento. Por ejemplo p=lista[30456345] devuelve el objeto Persona que tiene DNI=30456345 o null en caso que no exista en la lista.
 Un índice de tipo char que devuelve un List\<string> con todos los nombres de las personas de la lista que comienzan con el carácter pasado como índice.
-```c#
+```csharp
 namespace teoria5;
 
 public class ListaDePersonas
@@ -491,7 +491,7 @@ public class ListaDePersonas
 ```
 ---
 9) ¿Cuál es el error en el siguiente programa?
-```c#
+```csharp
 Auto a = new Auto();
 a.Marca = "Ford";
 Console.WriteLine(a.Marca);
@@ -515,7 +515,7 @@ class Auto
 ---
 10) Identificar todos los miembros en la siguiente declaración de clase. Indicar si se trata de un constructor, método, campo, propiedad o indizador, si es estático o de instancia, y en caso que corresponda si es de sólo lectura, sólo escritura o lectura y escritura. En el caso de las propiedades indicar también si se trata de una propiedad auto-implementada.
     Nota: La clase compila perfectamente. Sólo prestar atención a la sintaxis, la semántica es irrelevante.
-```c#
+```csharp
 class A
 {
 	private static int a; // campo estático privado, l y e.
@@ -538,7 +538,7 @@ class A
 ```
 ---
 11) ¿Qué diferencia hay entre estas dos declaraciones?
-```c#
+```csharp
 // a) es un campo, que se inicializa con el valor 3.
 // o sea una variable que almacena un valor modificable.
 public int X = 3;
