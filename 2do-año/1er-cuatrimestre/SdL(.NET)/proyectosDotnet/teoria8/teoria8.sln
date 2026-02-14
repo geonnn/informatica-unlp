@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "teoria8", "teoria8.csproj", "{7ADBB6B9-FE7A-DA33-5866-40BA0A16F3DD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7ADBB6B9-FE7A-DA33-5866-40BA0A16F3DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7ADBB6B9-FE7A-DA33-5866-40BA0A16F3DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7ADBB6B9-FE7A-DA33-5866-40BA0A16F3DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7ADBB6B9-FE7A-DA33-5866-40BA0A16F3DD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B312512B-96A4-41D7-95C3-D7F38E35A36E}
+	EndGlobalSection
+EndGlobal
