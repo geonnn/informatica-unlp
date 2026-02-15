@@ -381,3 +381,309 @@ Impares al cuadrado: 1, 9, 25
     }
 }
 ```
+---
+# Práctica 8 material complementario
+
+1) Responder sobre el siguiente código:
+```csharp
+// -----------Program.cs-----------
+AccionInt a1 = (ref int i) => i = i * 2;
+a1 += a1; // a1 + a1
+a1 += a1; // (a1 + a1) + (a1 + a1)
+a1 += a1; // ((a1 + a1) + (a1 + a1)) + ((a1 + a1) + (a1 + a1))
+int i = 1;
+a1(ref i);
+// -----------AccionInt.cs-----------
+delegate void AccionInt(ref int i);
+```
+> ¿Cuál es el tamaño de la lista de invocación de a1 y cual es el valor de la variable i luego de la invocación a1(ref i)?
+
+El tamaño de la lista de invocación es 8. La variable i queda en 256.
+
+---
+2) Dado el siguiente código:
+```csharp
+// -------Program.cs-------- -
+Trabajador t1 = new Trabajador();
+t1.Trabajando = T1Trabajando;
+t1.Trabajar();
+void T1Trabajando(object? sender, EventArgs e)
+    => Console.WriteLine("Se inició el trabajo");
+// -------Trabajador.cs-------- -
+class Trabajador
+{
+    public EventHandler? Trabajando;
+    //No es necesario definir un tipo delegado propio
+    //porque la plataforma provee el tipo EventHandler
+    //que se adecua a lo que se necesita
+    public void Trabajar()
+    {
+        Trabajando(this, EventArgs.Empty);
+        //realiza algún trabajo
+        Console.WriteLine("Trabajo concluido");
+    }
+}
+```
+- a) Ejecutar paso a paso el programa y observar cuidadosamente su funcionamiento. Para ejecutar paso a paso colocar un punto de interrupción (breakpoint) en la primera línea ejecutable del método Main().
+  Ejecutar el programa y una vez interrumpido, proseguir paso a paso, en general la tecla asociada para ejecutar paso a paso entrando en los métodos que se invocan es F11, sin embargo también es posible utilizar el botón de la barra que aparece en la parte superior del editor cuando el programa está con la ejecución interrumpida.
+- b) ¿Qué salida produce por Consola?
+```console
+Se inició el trabajo
+Trabajo concluido
+```
+
+- c) Borrar (o comentar) la instrucción t1.Trabajando = T1Trabajando; del método Main y contestar:
+	- c.1) ¿Cuál es el error que ocurre? ¿Dónde y por qué?
+	  Error en `Trabajando(this, EventArgs.Empty)` en la clase Trabajador. System.NullReferenceException: 'Object reference not set to an instance of an object.'
+	- c.2) ¿Cómo se debería implementar el método Trabajar() para evitarlo? Resolverlo.
+```csharp
+    public void Trabajar()
+    {
+        Trabajando?.Invoke(this, EventArgs.Empty);
+        //realiza algún trabajo
+        Console.WriteLine("Trabajo concluido");
+    }
+    
+    // equivalente a:
+	public void Trabajar()
+    {
+	    if (Trabajando != null)
+	    {
+	        Trabajando?.Invoke(this, EventArgs.Empty);
+	        //realiza algún trabajo
+	        Console.WriteLine("Trabajo concluido");
+		}
+    }
+```
+
+- d) Eliminar el método T1Trabajando en Program.cs y suscribirse al evento con una expresión lambda.
+```csharp
+t1.Trabajando = (s, e)
+    => Console.WriteLine("Se inició el trabajo");
+```
+
+- e) Reemplazar el campo público Trabajando de la clase Trabajador, por un evento público generado por el compilador (event notación abreviada). ¿Qué operador se debe usar en la suscripción?
+`+=`
+
+- f) Cambiar en la clase Trabajador el evento generado automáticamente por uno implementado de manera explícita con los dos descriptores de acceso y haciendo que, al momento en que alguien se suscriba al evento, se dispare el método Trabajar(), haciendo innecesaria la invocación t1.Trabajar(); en Program.cs
+```csharp
+namespace teoria8;
+
+public class Trabajador
+{
+    private EventHandler? _trabajando;
+
+    public event EventHandler Trabajando
+    {
+        add
+        {
+            _trabajando += value;
+            Trabajar();
+        }
+        
+        remove
+        {
+            _trabajando -= value;
+        }
+    }
+    
+    public void Trabajar()
+    {
+        _trabajando?.Invoke(this, EventArgs.Empty);
+        Console.WriteLine("Trabajo concluido");
+    }
+}
+```
+---
+3) Analizar el siguiente código
+```csharp
+// -------Program.cs-------
+ContadorDeLineas contador = new ContadorDeLineas();
+contador.Contar();
+
+// -------ContadorDeLineas.cs-------
+class ContadorDeLineas
+{
+    private int _cantLineas = 0;
+    public void Contar()
+    {
+        Ingresador _ingresador = new Ingresador();
+        _ingresador.Contador = this;
+        _ingresador.Ingresar();
+        Console.WriteLine($"Cantidad de líneas ingresadas: {_cantLineas}");
+    }
+public void UnaLineaMas() => _cantLineas++;
+}
+
+// -------Ingresador.cs-------
+class Ingresador
+{
+    public ContadorDeLineas? Contador { get; set; }
+    public void Ingresar()
+    {
+        string st = Console.ReadLine() ?? "";
+        while (st != "")
+        {
+            Contador?.UnaLineaMas();
+            st = Console.ReadLine() ?? "";
+        }
+    }
+}
+```
+> Existe un alto nivel de acoplamiento entre las clases ContadorDeLineas e Ingresador, habiendo una referencia circular: un objeto ContadorDeLineas posee una referencia a un objeto Ingresador y éste último posee una referencia al primero. Esto no es deseable, hace que el código sea difícil de mantener.
+> Eliminar esta referencia circular utilizando un evento, de tal forma que ContadorDeLineas posea una referencia a Ingresador pero que no ocurra lo contrario.
+
+```csharp
+// -------Program.cs-------
+ContadorDeLineas contador = new ContadorDeLineas();
+contador.Contar();
+
+// -------ContadorDeLineas.cs-------
+class ContadorDeLineas
+{
+    private int _cantLineas = 0;
+    
+    public void Contar()
+    {
+        Ingresador _ingresador = new Ingresador();
+        _ingresador.Ingresando += (s, e) => _cantLineas++;
+        _ingresador.Ingresar();
+        Console.WriteLine($"Cantidad de líneas ingresadas: {_cantLineas}");
+    }
+}
+
+// -------Ingresador.cs-------
+class Ingresador
+{
+    public event EventHandler? Ingresando;
+    
+    public void Ingresar()
+    {
+        string st = Console.ReadLine() ?? "";
+        while (st != "")
+        {
+            Ingresando?.Invoke(this, EventArgs.Empty);
+            st = Console.ReadLine() ?? "";
+        }
+    }
+}
+```
+---
+4) Codificar una clase Ingresador con un método público Ingresar() que permita al usuario ingresar líneas por la consola hasta que se ingrese la línea con la palabra "fin". Ingresador debe implementar dos eventos. Uno sirve para notificar que se ha ingresado una línea vacía ( "" ). El otro para indicar que se ha ingresado un valor numérico (debe comunicar el valor del número ingresado como argumento cuando se genera el evento). A modo de ejemplo observar el siguiente código que hace uso de un objeto Ingresador.
+```csharp
+Ingresador ingresador = new Ingresador();
+ingresador.LineaVaciaIngresada += (sender, e) =>
+	{ Console.WriteLine("Se ingresó una línea en blanco"); };
+ingresador.NroIngresado += (sender, e) =>
+	{ Console.WriteLine($"Se ingresó el número {e.Valor}"); };
+ingresador.Ingresar();
+```
+
+```csharp
+namespace teoria8;
+
+public class Ingresador
+{
+    public event EventHandler? LineaVaciaIngresada;
+    public event NroIngresadoEventHandler? NroIngresado;
+
+    public void Ingresar()
+    {
+        string st = Console.ReadLine() ?? "";
+        while (st != "fin")
+        {
+            if (st.Equals(""))
+                LineaVaciaIngresada?.Invoke(this, EventArgs.Empty);
+            else if (double.TryParse(st, out double n))
+                NroIngresado?.Invoke(this, new NroIngresadoEventArgs() {Valor = n});
+
+            st = Console.ReadLine() ?? "";
+        }
+    }
+}
+
+// ----- NroIngresadoEventHandler.cs -----
+public delegate void NroIngresadoEventHandler (object sender, NroIngresadoEventArgs e);
+
+// ----- NroIngresadoEventArgs.cs -----
+public class NroIngresadoEventArgs : EventArgs
+{
+    public double Valor {get; set;}
+}
+```
+---
+5) Codificar la clase Temporizador con un evento Tic que se genera cada cierto intervalo de tiempo medido en milisegundos una vez que el temporizador se haya habilitado. La clase debe contar con dos propiedades: Intervalo de tipo int y Habilitado de tipo bool. No se debe permitir establecer la propiedad Habilitado en true si no existe ninguna suscripción al evento Tic. No se debe permitir establecer el valor de Intervalo menor a 100. En el lanzamiento del evento, el temporizador debe informar la cantidad de veces que se provocó el evento. Para detener los eventos debe establecerse la propiedad Habilitado en false. A modo de ejemplo, el siguiente código debe producir la salida indicada.
+```csharp
+Temporizador t = new Temporizador();
+t.Tic += (sender, e) =>
+{
+    Console.WriteLine(DateTime.Now.ToString("HH:mm:ss") + " ");
+    if (e.Tics == 5)
+    {
+	    t.Habilitado = false;
+    }
+};
+t.Intervalo = 2000;
+t.Habilitado = true;
+```
+```console
+Salida por consola
+14:20:50
+14:20:52
+14:20:54
+14:20:56
+14:20:58
+```
+
+```csharp
+namespace teoria8;
+
+public class Temporizador
+{
+    public event TicEventHandler? Tic;
+
+    private int _intervalo = 100;
+    public int Intervalo
+    {
+        get => _intervalo;
+        set
+        {
+            if (value < 100)
+                throw new Exception("El intervalo debe ser mayor o igual a 100");
+            else
+                _intervalo = value;
+        }
+    }
+
+    private bool _habilitado = false;
+    public bool Habilitado
+    {
+        get => _habilitado;
+        set
+        {
+            if (value == true && Tic == null)
+                throw new Exception("No se puede habilitar si no hay suscriptores");
+            else
+                _habilitado = value;
+
+            if (_habilitado)
+                Ejecutar();
+        }
+    }
+    
+    private void Ejecutar()
+    {
+        int contador = 0;
+        
+        while (_habilitado)
+        {
+            DateTime inicio = DateTime.Now;
+
+            while ((DateTime.Now - inicio).TotalMilliseconds < _intervalo) {}
+
+            contador++;
+            Tic?.Invoke(this, new TicEventArgs {Tics = contador});
+        }
+    }
+}
+```
