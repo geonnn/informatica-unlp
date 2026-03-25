@@ -1,0 +1,37 @@
+#!/bin/bash
+
+dnetca() {
+
+    if [ $# -ne 1 ]; then
+        echo "Este script debe recibir un único parámetro que será el nombre de la solution."
+        return 1
+    fi
+
+    d="Domain"
+    a="Application"
+    i="Infrastructure"
+    w="Api"
+
+    dcsp="$1.$d/$1.$d.csproj"
+    acsp="$1.$a/$1.$a.csproj"
+    icsp="$1.$i/$1.$i.csproj"
+    wcsp="$1.$w/$1.$w.csproj"
+
+    dotnet new sln -n "$1"
+    dotnet new classlib -n "$1.$d"
+    dotnet new classlib -n "$1.$a"
+    dotnet new classlib -n "$1.$i"
+    dotnet new webapi -n "$1.$w" --use-controllers
+
+    dotnet sln add "$dcsp"
+    dotnet sln add "$acsp"
+    dotnet sln add "$icsp"
+    dotnet sln add "$wcsp"
+
+    dotnet add "$acsp" reference "$dcsp"
+
+    dotnet add "$icsp" reference "$acsp"
+
+    dotnet add "$wcsp" reference "$icsp"
+    dotnet add "$wcsp" reference "$acsp"
+}
