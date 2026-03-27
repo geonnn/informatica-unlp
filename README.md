@@ -29,4 +29,13 @@
 
 ---
 
+### Tercer año
+- ##### Primer cuatrimestre
+    - [(SI302) Ingeniería de Software 2](3er-año/1er-cuatrimestre/IS2/)
+    - [(SI306) Conceptos y Paradigmas de Lenguajes de Programación](3er-año/1er-cuatrimestre/CPLP/)
+    - [(SI307) Orientación a Objetos 2](3er-año/1er-cuatrimestre/OO2/)
+    - [(SI308) Matemática 3](3er-año/1er-cuatrimestre/MAT3/)
+- ##### Segundo cuatrimestre
+
+---
 
