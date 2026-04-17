@@ -520,17 +520,17 @@ class A
 {
 	private static int a; // campo estático privado, l y e.
 	private static readonly int b; // campo estático privado, l.
-	A() { } // constructor de instancia.
+	A() { } // constructor de instancia privado.
 	public A(int i) : this() { } // constructor de instancia público.
 	static A() => b = 2; // constructor estático.
-	int c; // campo de instancia, l y e.
+	int c; // campo de instancia privado, l y e.
 	public static void A1() => a = 1; // método estático público.
 	public int A1(int a) => A.a + a; // método de instancia público.
-	public static int A2; // campo estático público.
-	static int A3 => 3; // propiedad estática, l.
+	public static int A2; // campo estático público, l y e.
+	static int A3 => 3; // propiedad estática privada, l.
 	private int A4() => 4; // método de instancia privado.
 	public int A5 { get => 5; } // propiedad de instancia pública, l.
-	int A6 { set => c = value; } // propiedad de instancia, l.
+	int A6 { set => c = value; } // propiedad de instancia privada, e.
 	public int A7 { get; set; } // propiedad de instancia pública, l y e, auto-implementada.
 	public int A8 { get; } = 8; // propiedad de instancia pública, l, auto-implementada.
 	public int this[int i] => i; // indizador público de instancia (los indizadores siempre son de instancia), l.
@@ -547,4 +547,55 @@ public int X = 3;
 // => 3 es equivalente a get { return 3; }.
 // es lógica que se ejecuta, no se almacena nada.
 public int X => 3;
+```
+---
+# 2026
+
+12) Se solicita modelar una clase **Libro** para un sistema de inventario. El sistema debe ser muy estricto con la integridad de los datos. La clase debe cumplir con los siguientes requisitos de encapsulamiento:
+- **ISBN** (Solo lectura): Su valor solo debe asignarse a través del constructor. Una vez creado el objeto, no podrá ser reasignado bajo ninguna circunstancia.
+- **FechaPublicacion**: Debe permitir su asignación al momento de crear el objeto (usando inicializadores), pero una vez finalizada la construcción, no podrá ser reasignada. Debe permitir valores nulos si no se conoce la fecha.
+- **Titulo**: Es obligatorio proporcionar un título al instanciar el libro (vía inicializador) y este no podrá volver a asignarse después.
+- **Precio**: Debe permitir su lectura y modificación en cualquier momento del ciclo de vida del objeto.
+Prueba de compilación: En el Program.cs, verificar los siguientes casos, todos salvo el caso C deberían presentar problemas para compilar.
+
+```csharp
+// Caso A:
+Libro libro1 = new Libro();
+
+// Caso B:
+Libro libro2 = new Libro
+{
+	Titulo = "C# Moderno",
+	FechaPublicacion = new DateTime(2026, 1, 1),
+	Precio = 4500.0,
+	ISBN = "978-3-16-148410-0"
+};
+
+// Caso C:
+Libro libro3 = new Libro("978-3-16-148410-0") {Titulo="C# Moderno"};
+libro3.Precio=4500.0;
+
+// Caso D:
+libro3.ISBN = "978-3-16-148410-9";
+libro3.FechaPublicacion = DateTime.Now;
+libro3.Titulo=".NET Moderno";
+```
+
+```csharp
+class Libro
+{
+    // Sólo lectura: sólo asignable en constructor
+    public string ISBN { get; }
+
+    // Sólo asignable en el constructor e inicializador 
+    public DateTime? FechaPublicacion { get; init; } 
+
+    // Obligatorio en el inicializador 
+    public required string Titulo { get; init; }
+
+    // Lectura y escritura libre
+    public double Precio { get; set; }
+    
+    public Libro(string isbn) => ISBN = isbn;
+}
 ```
