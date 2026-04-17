@@ -475,3 +475,58 @@ Método 3 propagó una excepción
 ```
 
 
+---
+## 2026
+
+15) Contar Frecuencia de Palabras en Texto.
+    a) Crear un método ContarFrecuenciaPalabras que reciba una cadena de texto y devuelva un diccionario con el conteo de cada palabra.
+    b) El conteo debe ser insensible a mayúsculas/minúsculas (tratar "Hola" y "hola" como iguales).
+    c) Dentro del método, procesar el texto para separar las palabras. Considerar usar texto.Split() separando por espacios y signos de puntuación comunes.
+    d) Utilizar y devolver un Dictionary<string, int> donde la clave es la palabra y el valor su frecuencia.
+    e) Probar el método: Llamarlo con un texto de ejemplo y mostrar en consola cada palabra y su frecuencia del diccionario resultante.
+    Ejemplo de Salida Esperada (para "Hola, hola. Me escuchan? o no me escuchan?"):
+    
+```plaintext
+hola: 2
+me: 2
+escuchan: 2
+o: 1
+no: 1
+```
+
+```csharp
+using System;
+using System.Collections.Generic;
+
+string texto = "Hola, hola. Me escuchan? o no me escuchan?";
+	
+Dictionary<string, int> frecuencias = ContarFrecuenciaPalabras(texto);
+
+Console.WriteLine("Resultado del conteo:\n");
+foreach (var item in frecuencias)
+	Console.WriteLine($"{item.Key}: {item.Value}");
+	
+
+static Dictionary<string, int> ContarFrecuenciaPalabras(string texto)
+{
+	Dictionary<string, int> conteo = new Dictionary<string, int>();
+
+	if (string.IsNullOrWhiteSpace(texto))
+		return conteo;
+
+	texto = texto.ToLower();
+
+	char[] separadores = new char[] { ' ', ',', '.', '?', '!', ';', ':', '\n', '\r' };
+	
+	// StringSplitOptions.RemoveEmptyEntries evita que se cuenten espacios vacíos si hay dos signos de puntuación juntos p. ej: ". "
+	string[] palabras = texto.Split(separadores, StringSplitOptions.RemoveEmptyEntries);
+
+	foreach (string palabra in palabras)
+	{
+		if (conteo.ContainsKey(palabra))
+			conteo[palabra]++;
+		else
+			conteo.Add(palabra, 1);
+	}
+	return conteo;
+}
