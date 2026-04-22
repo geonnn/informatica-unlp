@@ -96,21 +96,19 @@ $G=(N,T,S,P)$
 ##### EBNF:
 $G=(N,T,S,P)$
 
-- N = {\<número_real>, \<número_entero>, \<dígito>, \<signo>}
-- T = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, ",", +, -}
+- N = {\<número_real>, \<número_entero>, \<dígito>}
+- T = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, ",", "-"}
 - S = \<número_real>
 - P = {
-	- \<número_real> ::= \[\<signo>] \<número_entero> \["," \<número_entero>]
+	- \<número_real> ::= \["-"] \<número_entero> \["," \<número_entero>]
 	- \<número_entero> ::= {\<dígito>}+
-	- \<signo> ::= + | -
-	- \<dígito> ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+	- \<dígito> ::= (0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9)
   }
 
 ##### BNF:
 - P = {
-	- \<número_real> ::= <número_entero> | \<número_entero> "," \<número_entero> | \<signo> \<número_entero> | \<signo> \<número_entero> "," \<número_entero>
+	- \<número_real> ::= <número_entero> | \<número_entero> "," \<número_entero> | "-" \<número_entero> | "-" \<número_entero> "," \<número_entero>
 	- \<número_entero> ::= \<número_entero><dígito> | <dígito> 
-	- \<signo> ::= + | -
 	- \<dígito> ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
   }
 
@@ -143,14 +141,29 @@ Utilizando la gramática que desarrolló en los puntos 6 y 7, escriba el árbol 
 ---
 ### Ejercicio 9: Defina utilizando diagramas sintácticos la gramática para la definición de un identificador de un lenguaje de programación. Tenga presente como regla que un identificador no puede comenzar con números.
 
-![[Pasted image 20260421145852.png]]
+![[Pasted image 20260422131136.png]]
 
 ---
 ### Ejercicio 10
 
-- **a)** Defina con EBNF la gramática para una expresión numérica, dónde intervienen variables y números. Considerar los operadores +, -, * y / sin orden de prioridad. No considerar el uso de paréntesis.
+- **a)** Defina con EBNF la gramática para una expresión numérica, dónde intervienen variables y números. Considerar los operadores +, -, \* y / sin orden de prioridad. No considerar el uso de paréntesis.
 - **b)** A la gramática definida en el ejercicio anterior agregarle prioridad de operadores.
 - **c)** Describa con sus palabras los pasos y decisiones que tomó para agregarle prioridad de operadores al ejercicio anterior.
+
+$G=(N, T, S, P)$
+
+- `N = {<exp>, <operando>, <variable>, <operador>, <número>, <letra>, <dígito>}`
+- `T = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, +, -, *, /, a-z, A-Z}`
+- `S = <exp>`
+- `P = {`
+	- `<exp> ::= <operando> {<operador> <operando>}*`
+	- `<operando> ::= (<variable> | <número>)`
+	- `<variable> ::= <letra> {(<letra> | <dígito>)}*`
+	- `<operador> ::= (+ | - | * | /)`
+	- `<número> ::= {<dígito>}+`
+	- `<letra> ::= (a | b | c | ... | z | A | B | C | ... | Z)`
+	- `<dígito> ::= (0 | 1 | 2 | ... | 9)`
+	`}`
 
 ---
 
@@ -160,18 +173,37 @@ La siguiente gramática intenta describir sintácticamente la sentencia for de A
 
 **N** = {`<sentencia_for>`, `<bloque>`, `<variable>`, `<letra>`, `<cadena>`, `<digito>`, `<otro>`, `<operacion>`, `<llamada_a_funcion>`, `<numero>`, `<sentencia>`}
 
-**P** = { `<sentencia_for>::= for (i= IN 1..10) loop <bloque> end loop;` `<variable>::= <letra> | <cadena>` `<cadena>::= {(<letra> | <digito> | <otro>)}+` `<letra>::=(a | .. |z|A|..|Z)` `<digito>::= (1|2|3|4|5|6|7|8|9|0)` `<bloque>::= <sentencia> | <sentencia> <bloque> | <bloque> <sentencia>;` `<sentencia>::= <sentencia_asignacion> | <llamada_a_funcion> | <sentencia_if> | <sentencia_for> | <sentencia_while> | <sentencia_switch>` }
+**P** = { `<sentencia_for>::= for (i= IN 1..10) loop <bloque> end loop;`
+`<variable>::= <letra> | <cadena>` 
+`<cadena>::= {(<letra> | <digito> | <otro>)}+` 
+`<letra>::=(a | .. |z|A|..|Z)` 
+`<digito>::= (1|2|3|4|5|6|7|8|9|0)` 
+`<bloque>::= <sentencia> | <sentencia> <bloque> | <bloque> <sentencia>;` 
+`<sentencia>::= <sentencia_asignacion> | <llamada_a_funcion> | <sentencia_if> | <sentencia_for> | <sentencia_while> | <sentencia_switch>` }
 
 ---
 
-### Ejercicio 12
+### Ejercicio 12: Realice en EBNF la gramática para la definición un tag div en html 5. (Puede ayudarse con el siguiente enlace ([https://developer.mozilla.org/es/docs/Web/HTML/Elemento/div](https://developer.mozilla.org/es/docs/Web/HTML/Elemento/div))
 
-Realice en EBNF la gramática para la definición un tag div en html 5. (Puede ayudarse con el siguiente enlace ([https://developer.mozilla.org/es/docs/Web/HTML/Elemento/div](https://developer.mozilla.org/es/docs/Web/HTML/Elemento/div))
+---
+### Ejercicio 13: Defina en EBNF una gramática para la construcción de números primos. ¿Qué debería agregar a la gramática para completar el ejercicio?
 
-### Ejercicio 13
 
-Defina en EBNF una gramática para la construcción de números primos. ¿Qué debería agregar a la gramática para completar el ejercicio?
+$G=(N, T, S, P)$
 
-### Ejercicio 14
+- `N = {<número>, <letra>, <dígito>}`
+- `T = {0, 1, 2, 3, 5, 7, 8, 9, +, -, *, /, a-z, A-Z}`
+- `S = <exp>`
+- `P = {`
+	- `<exp> ::= <operando> {<operador> <operando>}*`
+	- `<operando> ::= (<variable> | <número>)`
+	- `<variable> ::= <letra> {(<letra> | <dígito>)}*`
+	- `<operador> ::= (+ | - | * | /)`
+	- `<número> ::= {<dígito>}+`
+	- `<letra> ::= (a | b | c | ... | z | A | B | C | ... | Z)`
+	- `<dígito> ::= (0 | 1 | 2 | ... | 9)`
+	`}`
 
-Sobre un lenguaje de su preferencia escriba en EBNF la gramática para la definición de funciones o métodos o procedimientos (considere los parámetros en caso de ser necesario)
+
+---
+### Ejercicio 14: Sobre un lenguaje de su preferencia escriba en EBNF la gramática para la definición de funciones o métodos o procedimientos (considere los parámetros en caso de ser necesario)
