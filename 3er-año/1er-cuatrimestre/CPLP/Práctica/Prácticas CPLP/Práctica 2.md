@@ -125,23 +125,23 @@ Utilizando la gramática que desarrolló en los puntos 6 y 7, escriba el árbol 
 - **e.** Conceptos de lenguajes
 
 **a)**
-![[Pasted image 20260421134812.png]]
+![[Imágenes/Pasted image 20260421134812.png]]
 
 **b)**
-![[Pasted image 20260421135246.png]]
+![[Imágenes/Pasted image 20260421135246.png]]
 
 **c)**
-![[Pasted image 20260421135828.png]]
+![[Imágenes/Pasted image 20260421135828.png]]
 
 **d)**
-![[Pasted image 20260421141739.png]]
+![[Imágenes/Pasted image 20260421141739.png]]
 
 **e)** La gramática definida para palabras no admite oraciones (*porque no tiene definido el espacio " "*).
 
 ---
 ### Ejercicio 9: Defina utilizando diagramas sintácticos la gramática para la definición de un identificador de un lenguaje de programación. Tenga presente como regla que un identificador no puede comenzar con números.
 
-![[Pasted image 20260422131136.png]]
+![[Imágenes/Pasted image 20260422131136.png]]
 
 ---
 ### Ejercicio 10
@@ -150,6 +150,7 @@ Utilizando la gramática que desarrolló en los puntos 6 y 7, escriba el árbol 
 - **b)** A la gramática definida en el ejercicio anterior agregarle prioridad de operadores.
 - **c)** Describa con sus palabras los pasos y decisiones que tomó para agregarle prioridad de operadores al ejercicio anterior.
 
+**a)**
 $G=(N, T, S, P)$
 
 - `N = {<exp>, <operando>, <variable>, <operador>, <número>, <letra>, <dígito>}`
@@ -160,6 +161,23 @@ $G=(N, T, S, P)$
 	- `<operando> ::= (<variable> | <número>)`
 	- `<variable> ::= <letra> {(<letra> | <dígito>)}*`
 	- `<operador> ::= (+ | - | * | /)`
+	- `<número> ::= {<dígito>}+`
+	- `<letra> ::= (a | b | c | ... | z | A | B | C | ... | Z)`
+	- `<dígito> ::= (0 | 1 | 2 | ... | 9)`
+	`}`
+
+
+**b)**
+$G=(N, T, S, P)$
+
+- `N = {<exp>, <término>, <factor>, <variable>, <número>, <letra>, <dígito>}`
+- `T = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, +, -, *, /, a-z, A-Z}`
+- `S = <exp>`
+- `P = {`
+	- `<exp> ::= <término> {("+" | "-") <término>}*`
+	- `<término> ::= <factor> {("*" | "/") <factor>}*`
+	- `<factor> ::= (<variable> | <número>)`
+	- `<variable> ::= <letra> {(<letra> | <dígito>)}*`
 	- `<número> ::= {<dígito>}+`
 	- `<letra> ::= (a | b | c | ... | z | A | B | C | ... | Z)`
 	- `<dígito> ::= (0 | 1 | 2 | ... | 9)`
@@ -188,22 +206,50 @@ La siguiente gramática intenta describir sintácticamente la sentencia for de A
 ---
 ### Ejercicio 13: Defina en EBNF una gramática para la construcción de números primos. ¿Qué debería agregar a la gramática para completar el ejercicio?
 
+---
+### Ejercicio 14: Sobre un lenguaje de su preferencia escriba en EBNF la gramática para la definición de funciones o métodos o procedimientos (considere los parámetros en caso de ser necesario)
+
 
 $G=(N, T, S, P)$
 
-- `N = {<número>, <letra>, <dígito>}`
-- `T = {0, 1, 2, 3, 5, 7, 8, 9, +, -, *, /, a-z, A-Z}`
-- `S = <exp>`
+- `N = {<método_CSharp>, <modificador_acceso>, <tipo>, <identificador>, <sentencia>, <retorno>, <caracter>, <letra>, <dígito>, <expresión>, <operador>, <operando>, <número_entero>, <número_real>, <string_literal>, <boolean> <char_literal>, <invocación_método>}`
+- `T = {"0"..."9", "+", "-", "*", "/", "a"..."z", "A"..."Z", "(", ")", "{", "}" ";", ".", ",", '"', "'", " ", "static", "return", "public", "private", "protected", "void", "int", "double", "string", "char", "true", "false"}`
+- `S = <metodo_CSharp>`
 - `P = {`
-	- `<exp> ::= <operando> {<operador> <operando>}*`
-	- `<operando> ::= (<variable> | <número>)`
-	- `<variable> ::= <letra> {(<letra> | <dígito>)}*`
-	- `<operador> ::= (+ | - | * | /)`
-	- `<número> ::= {<dígito>}+`
-	- `<letra> ::= (a | b | c | ... | z | A | B | C | ... | Z)`
-	- `<dígito> ::= (0 | 1 | 2 | ... | 9)`
+  
+	- `<método_CSharp> ::= [<modificador_acceso>] ["static"] <tipo> <identificador> "(" [<tipo> <identificador> {"," <tipo> <identificador>}*] ")" "{" {<sentencia>}+ [<retorno>] "}"`
+	  
+	- `<modificador_acceso> ::= ("public" | "private" | "protected")`
+	  
+	- `<tipo> ::= ("void" | "int" | "double" | "string" | "char" | ...)`
+	  
+	- `<identificador> ::= (<letra> | "_") {<caracter>}*`
+	  
+	- `<sentencia> ::= (<for> | <foreach> | <while> | <if> | <trycatch> | <case> | <invocación_método> | ...)`
+	  
+	- `<retorno> ::= "return" [<expresión>] ";"`
+	  
+	- `<expresión> ::= <operando> {<operador> <operando>}*`
+	  
+	- `<operador> ::= ("+" | "-" | "*" | "/")`
+	  
+	- `<operando> ::= (<identificador> | <número_entero> | <número_real> | <string_literal> | <boolean> | <char_literal> | <invocación_método> | "(" <expresión> ")" | ...)`
+	  
+	- `<número_entero> ::= {<dígito>}+`
+	  
+	- `<número_real> ::= <número_entero> ["." <número_entero>]`
+	  
+	- `<string_literal> ::= '"' {<caracter>}* '"'`
+	  
+	- `<boolean> ::= ("true" | "false")`
+	  
+	- `<char_literal> ::= "'" <caracter> "'" `
+	  
+	- `<invocación_método> ::= <identificador> "(" [<expresión>] [{"," <expresión>}*] ")"`
+	  
+	- `<caracter> ::= (<letra> | <dígito> | "_")`
+	  
+	- `<letra> ::= ( "a" | "b" | "c" | ... | "z" | "A" | "B" | "C" | ... | "Z")`
+	  
+	- `<dígito> ::= ("0" | "1" | "2" | ... | "9")`
 	`}`
-
-
----
-### Ejercicio 14: Sobre un lenguaje de su preferencia escriba en EBNF la gramática para la definición de funciones o métodos o procedimientos (considere los parámetros en caso de ser necesario)
