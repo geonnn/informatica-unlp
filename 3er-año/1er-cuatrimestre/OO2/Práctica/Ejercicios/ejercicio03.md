@@ -187,8 +187,7 @@ Sí, el comportamiento es idéntico.
 >*If the methods have different signatures, change the signatures to the one you want to use in the superclass.*
 
 Varían sólo en el tipo de dato que devuelven.
-Sobre *pull up method* Fowler dice: *If you have two methods that are similar but not the same, you may be able to use Form
-Template Method.* 
+Sobre *pull up method* Fowler dice: *If you have two methods that are similar but not the same, you may be able to use Form Template Method.* 
 Como no son exactamente idénticos, paso a aplicar *Form template method*.
 
 ##### *Form template method*
