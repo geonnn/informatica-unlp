@@ -42,8 +42,8 @@ Qué significa que un lenguaje utilice circuito corto o circuito largo para la e
 
 1. Evaluación por Circuito Corto (Short-Circuit o Evaluación Perezosa)
    Es una técnica utilizada en la evaluación de expresiones booleanas (operadores `AND` y `OR`) donde los operandos se analizan de izquierda a derecha, **pero la evaluación se detiene inmediatamente en cuanto se determina el resultado final** de la expresión completa. En ese punto, el resto de los operandos son ignorados.
-   - **En una conjunción (****AND** **/** **y****):** Este operador da como resultado verdadero únicamente si ambos términos lo son. Por lo tanto, si se evalúa el primer término y resulta ser **Falso**, el resultado final será inexorablemente falso, por lo que **no es necesario evaluar el segundo término**.
-   - **En una disyunción (****OR** **/** **o****):** Este operador da como resultado falso solo si ambos términos lo son. Si se evalúa el primer término y resulta ser **Verdadero**, la expresión ya está cumplida, por lo que **no es necesario evaluar el segundo término**.
+   - **En una conjunción (_AND / y_):** Este operador da como resultado verdadero únicamente si ambos términos lo son. Por lo tanto, si se evalúa el primer término y resulta ser **Falso**, el resultado final será inexorablemente falso, por lo que **no es necesario evaluar el segundo término**.
+   - **En una disyunción (_OR / o_):** Este operador da como resultado falso solo si ambos términos lo son. Si se evalúa el primer término y resulta ser **Verdadero**, la expresión ya está cumplida, por lo que **no es necesario evaluar el segundo término**.
 
 **Ejemplo clásico de su utilidad (Evitar errores fatales en C):**
 ```
@@ -82,17 +82,17 @@ Los demás lenguajes diseñaron alternativas más seguras para evitar los clási
     - **Mayor expresividad:** Permite agrupar selecciones especificando rangos (por ejemplo, `when MIE..VIE =>`) o listas de alternativas en una misma línea (por ejemplo, `when MAR | SAB =>`).
     - **Exhaustividad estricta:** ADA obliga en tiempo de compilación a que todos los posibles valores del tipo evaluado estén contemplados en las ramas. Si las etiquetas no abarcan todo el dominio, es obligatorio el uso explícito de la cláusula de descarte **when others =>** para evitar errores.
 - **Pascal**: Implementa la estructura **case ... of**. Al igual que en ADA, su evaluación es segura: cada rama es independiente, no hay _fall-through_ y la ejecución del bloque finaliza automáticamente tras ejecutar la sentencia coincidente. También permite el uso de subrangos (ej. `1..5`).
-- **Python**: Históricamente, Python tomó la decisión de diseño de **no incluir** una estructura `switch-case`, promoviendo en su lugar el uso de secuencias lógicas `if-elif-else` o el mapeo a través de diccionarios (Hash) para simular el mismo comportamiento. _(Nota: Recientemente, en Python 3.10, se introdujo la sintaxis_ _match-case__, pero funciona bajo el paradigma de "Pattern Matching" o coincidencia de patrones estructurales, lo cual es mucho más avanzado, seguro y estricto que un simple_ _switch_ _de C, y tampoco utiliza fall-through)._
+- **Python**: Históricamente, Python tomó la decisión de diseño de **no incluir** una estructura `switch-case`, promoviendo en su lugar el uso de secuencias lógicas `if-elif-else` o el mapeo a través de diccionarios (Hash) para simular el mismo comportamiento. _(Nota: Recientemente, en Python 3.10, se introdujo la sintaxis_ _match-case, pero funciona bajo el paradigma de "Pattern Matching" o coincidencia de patrones estructurales, lo cual es mucho más avanzado, seguro y estricto que un simple_ _switch_ _de C, y tampoco utiliza fall-through)._
 ---
 ### Ejercicio 7
 Sea el siguiente código:
 ```pascal
 .....
 var i, z:integer;
-Procedure A;
-begin
-	i:= i +1;
-end;
+	Procedure A;
+	begin
+		i:= i +1;
+	end;
 begin
 	z:=5;
 	for i:=1..5 do begin
@@ -173,7 +173,7 @@ Qué diferencia existe entre el generador YIELD de Python y el return de una fun
 - **yield** **(Pausa y preservación de estado):** Utilizar `yield` convierte a una función normal en un **generador**. Al ejecutarse la sentencia `yield`, la rutina emite un valor hacia el llamador pero **no termina, sino que se "pausa"**. Conserva intacto su Registro de Activación en memoria, recordando el valor de todas sus variables locales y la ubicación exacta de la instrucción donde se detuvo. La próxima vez que el programa solicite un valor de este generador (usualmente iterándolo o mediante la función `next()`), la rutina retoma la ejecución exactamente en la línea siguiente al último `yield`.
 
 Ejemplo donde sería muy útil utilizar `yield`
-El uso primordial de los generadores y el `yield` radica en la **eficiencia de memoria y la evaluación perezosa (****lazy evaluation****)** al manipular secuencias masivas de datos o secuencias infinitas.
+El uso primordial de los generadores y el `yield` radica en la **eficiencia de memoria y la evaluación perezosa (_lazy evaluation_)** al manipular secuencias masivas de datos o secuencias infinitas.
 **Ejemplo clásico: Lectura y procesamiento de un archivo gigantesco.** Imagina que debes buscar información dentro de un archivo de logs que pesa 50 GB.
 
 - Si utilizaras **return**, la función se vería obligada a leer el archivo de principio a fin, guardar todas las líneas en una inmensa lista y devolver toda esa estructura junta. Esto colapsaría la memoria RAM de tu computadora inmediatamente.

@@ -100,7 +100,7 @@ function doble($x) {
 	return 2 * $x;
 }
 ```
-¿Correspondencia? Es una función, cumpliría con la definición de asociar conjunto **finito(?, depende el tipo de x supongo)** de valores de un tipo de dominio (el parámetro `$x`) a un conjunto de valores de un tipo de rango (el valor de retorno).
+¿Correspondencia finita? Es una función, cumpliría con la definición de asociar conjunto **finito** de valores de un tipo de dominio (el parámetro `$x`) a un conjunto de valores de un tipo de rango (el valor de retorno).
 
 **Python**
 ```python
@@ -108,17 +108,24 @@ tuple = ('physics', 'chemistry', 1997, 2000)
 ```
 Producto cartesiano (tupla inmutable).
 
+**Haskell**
 ```Haskell
 data ArbolBinarioInt =
 	Nil |
 	Nodo int
 	(ArbolBinarioInt dato)
 	(ArbolBinarioInt dato)
+	
+data Elemento =
+	Vacio |
+	Dato int
+	Elemento
 ```
 > Ayuda para interpretar: 'ArbolBinarioInt' es un tipo de dato que puede ser Nil (“vacío”) o un Nodo con un dato número entero (int) junto a un árbol como hijo izquierdo y otro árbol como hijo derecho.
 
 Producto cartesiano, tipo recursivo y unión. Unión porque puede ser Nil o Nodo.
 
+**Haskell**
 ```Haskell
 data Color =
 	Rojo |

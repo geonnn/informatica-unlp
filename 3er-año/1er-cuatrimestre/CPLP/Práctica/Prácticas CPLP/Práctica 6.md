@@ -55,7 +55,7 @@ Permite recibir un valor al inicio y devolver un resultado al final, o mantener 
 - **Valor / Resultado:**
     - **Definición:** Hay conexión solo en dos momentos: al inicio (se copia el valor del parámetro real al formal) y al final (el cálculo final del formal se copia de vuelta al real). Durante el intermedio, la rutina opera con su copia independiente.
     - **Ejemplo:** El lenguaje Ada utiliza este mecanismo por defecto cuando se usa la cláusula `in out` para tipos de datos primitivos (ej. enteros).
-- **Referencia (Por Variable):**
+- **Referencia:**
     - **Definición:** No se copia el dato, sino que se transfiere el L-valor (dirección de memoria) del parámetro real. El parámetro formal se convierte en un puntero a esa misma dirección en el ambiente no local (generando una situación de _aliasing_). Los cambios efectuados en la rutina impactan inmediata y automáticamente sobre el parámetro real.
     - **Ejemplo:** En Pascal se especifica anteponiendo la palabra `var` en la firma de la rutina, por ejemplo: `Procedure P(var a:integer)`.
 - **Nombre:**
