@@ -1,0 +1,2 @@
+Somos Rehabilitar, un centro de kinesiología fundado en 2010 con el objetivo de ofrecer un espacio personalizado para el entrenamiento y la rehabilitación kinesiológica. 
+Contamos con un equipo plenamente calificado, que garantiza una rehabilitación eficiente y respetuosa con las necesidades de cada paciente. 
