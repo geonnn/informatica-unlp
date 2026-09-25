@@ -1,0 +1,4 @@
+- Si no hay ninguna aplicación escuchando en el puerto X
+	- En TCP responde con: RESET ACK
+	- En UDP responde con: Port unreachable.
+- Control de flujos: manejo del tamaño de las ventanas. Lo manejan los extremos, no la red. No confundir con control de gestión.

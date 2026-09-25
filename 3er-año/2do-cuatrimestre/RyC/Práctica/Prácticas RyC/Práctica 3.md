@@ -6,13 +6,19 @@
 ---
 ### 1. Investigue y describa cómo funciona el DNS. ¿Cuál es su objetivo?
 
-El objetivo de DNS es traducir las direcciones de lenguaje natural (direcciones URL) a direcciones IP. Para localizar otros hosts se debe conocer su dirección IP. Al conocer su nombre de dominio, DNS se encarga de encontrar la IP correspondiente.
+El objetivo de DNS es traducir los identificadores de hosts de lenguaje natural (direcciones URL) a direcciones IP.
+Para localizar otros hosts se debe conocer su dirección IP o el nombre que lo identifique. Al conocer su nombre en lenguaje natural, DNS se encarga de encontrar la IP correspondiente a ese hostname. Se debe usar la dirección IP para localizar a otro host porque los routers trabajan con el protocolo IP, mediante direcciones con estructura jerárquica de 4 bytes.
 
 ---
 ### 2. ¿Qué es un root server? ¿Qué es un generic top-level domain (gTLD)?
 
+Un root server es el más alto de la jerarquía de servidores DNS. Es el primero que contacta el cliente DNS al hacer una query para obtener la dirección IP de un hostname. Son 13, nombrados de la A a la M, aunque en realidad cada uno es una red de servidores replicados, por lo que son muchos más. Luego de esa consulta, el root server le envía al cliente DNS el TLD al que le debe por el hostname requerido.
+Los gTLD son los servidores responsables de los *top-level domains* como por ejemplo *.com* (comercial), *.net*, *.edu*, *.gov*, etc. También existen los ccTLD, que son responsables de los dominios de alto nivel que referencian a países, como .ar, .br, .fr, .us, .es, entre otros.
+
 ---
 ### 3. ¿Qué es una respuesta del tipo autoritativa?
+
+
 
 ---
 ### 4. ¿Qué diferencia una consulta DNS recursiva de una iterativa?
@@ -147,5 +153,10 @@ srv00.ejemplo.com.        240    IN      __ AAAA   2a00:1450:400c:c07::1b
 
 - **a. Complete las líneas donde aparece `__` con el registro correcto.**
 - **b. ¿Es una respuesta autoritativa? En caso de no serlo, ¿a qué servidor le preguntaría para obtener una respuesta autoritativa?**
+  No es autoritativa. 
+  
 - **c. ¿La consulta fue recursiva? ¿Y la respuesta?**
+  Aparece la flag `rd`, representando que la consulta desea recursividad en la respuesta. Luego aparece la flag `ra`, que indica que la respuesta fue recursiva.
+
 - **d. ¿Qué representan los valores 10 y 5 en las líneas (1) y (2)?**
+  La prioridad de los servidores de mail. Mientras más bajo el número mayor es la prioridad del servidor. Primero se intentará utilizar el de mayor prioridad y en caso de no ser posible, se intenta con los siguientes.
