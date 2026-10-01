@@ -122,7 +122,7 @@ process Coordinador
 }
 ```
 
-#### e) CORREGIR
+#### e)
 Modificar la solución (d) para el caso en que sean 5 impresoras. El coordinador le indica a la persona cuándo puede usar una impresora, y cual debe usar.
 ```C
 sem espera[N] = ([N] = 0);
@@ -142,7 +142,7 @@ process Persona [id 0..N-1]
 	
 	P(espera[id]);
 	impresoraAsignada = impresoraAUtilizar[id];
-	Imprimir(documento);
+	Imprimir(impresora[impresoraAsignada], documento);
 	
 	P(mutexQImpresoras);
 	qImpresoras.push(impresoraAsignada);
@@ -309,6 +309,7 @@ process Empleado[id 0..E-1]
 			V(espera);
 	V(mutex);
 	P(espera);
+	// pasó la barrera
 	
 	P(mutex);
 	while (piezas < T) {
@@ -325,8 +326,8 @@ process Empleado[id 0..E-1]
 
 process Fabrica
 {
-	// con que termine uno ya alcanza porque si terminó uno es que se terminaron las piezas.
-	P(fin);
+	for int i = 1..E
+		P(fin);
 	int empleadoMaxPiezas = piezasFabricadasEmpleado
 	s.max();
 }
@@ -334,3 +335,216 @@ process Fabrica
 
 #### b)
 Implemente una solución que contemple cualquier valor de T y E.
+```C
+```
+
+---
+### Ejercicio 9
+Resolver el funcionamiento en una fábrica de ventanas con 7 empleados (4 carpinteros, 1 vidriero y 2 armadores) que trabajan de la siguiente manera:
+- Los carpinteros continuamente hacen marcos (cada marco es armado por un único carpintero) y los dejan en un depósito con capacidad de almacenar 30 marcos.
+- El vidriero continuamente hace vidrios y los deja en otro depósito con capacidad para 50 vidrios.
+- Los armadores continuamente toman un marco y un vidrio (en ese orden) de los depósitos correspondientes y arman la ventana (cada ventana es armada por un único armador).
+```C
+sem depositoMarcos = 30; sem depositoVidrios = 50;
+sem marcos = 0; sem vidrios = 0;
+sem mutexDepositoMarcos = 1; sem mutex DepositoVidrios = 1;
+cola qMarcos; cola qVidrios;
+
+process Carpintero[id 0..3]
+{	
+	while (true)
+	{
+		recurso marco = hacerMarco(); // hace el marco.
+		
+		P(depositoMarcos); // ¿hay lugar para dejar un marco?
+		
+		P(mutexDepositoMarcos);
+		qMarcos.push(marco); // deja el marco.
+		V(mutexDepositoMarcos);
+		
+		V(marcos); // avisa que hay un marco más en el depósito.
+	}
+}
+
+process Vidriero
+{
+	while (true)
+	{
+		recurso vidrio = hacerVidrio(); // hace el vidrio.
+		
+		P(depositoVidrios); // ¿hay lugar para dejar un vidrio?
+		
+		P(mutexDepositoVidrios);
+		qVidrios.push(vidrio); // deja el vidrio.
+		V(mutexDepositoVidrios);
+		
+		V(vidrios); // avisa que hay un vidrio más.
+	}
+}
+
+process Armador[id 0..1]
+{
+	while (true)
+	{
+		P(marcos); // ¿hay un marco?
+		P(vidrios); // ¿hay un vidrio?
+		
+		P(mutexDepositoMarcos);
+		recurso marco = qMarcos.pop(); // se lleva un marco 
+		V(mutexDepositoMarcos); // libera el recurso.
+		V(depositoMarcos); // avisa que hay un lugar más para dejar un marco.
+		
+		// consultar: importa el orden de los últimos V()?
+		// calculo que sí. Siempre liberar recurso de mutex primero.
+		
+		P(mutexDepositoVidrios);
+		recurso vidrio = qVidrios.pop(); // se lleva un vidrio.
+		V(mutexDepositoVidrios);
+		V(depositoVidrios);
+		
+		// armar ventana.
+	}
+}
+```
+---
+### Ejercicio 10
+A una cerealera van T camiones a descargarse trigo y M camiones a descargar maíz. Sólo hay lugar para que 7 camiones a la vez descarguen, pero no pueden ser más de 5 del mismo tipo de cereal.
+#### a)
+Implemente una solución que use un proceso extra que actúe como coordinador entre los camiones. El coordinador debe atender a los camiones según el orden de llegada. Además, debe retirarse cuando todos los camiones han descargado.
+```C#
+sem lugarMaiz = 5; sem lugarTrigo = 5; sem lugarGral = 7;
+cola qCamiones; sem mutexQ = 1;
+sem[T] esperaTrigo = ([T] 0); sem[M] esperaMaiz = ([M] 0);
+sem llegadas = 0;
+
+process CamionTrigo[id 0..T-1]
+{
+	P(mutexQ);
+	qCamiones.push(id, "trigo");
+	V(mutexQ);
+	
+	V(llegada);
+	P(esperaTrigo[id]):
+	// dejar trigo.
+	V(lugarTrigo);
+	V(lugarGral);
+}
+
+process CamionMaiz[id 0..M-1]
+{
+	P(mutexQ);
+	qCamiones.push(id, "maiz");
+	V(mutexQ);
+	
+	V(llegada);
+	P(esperaMaiz[id]):
+	// dejar maíz.
+	V(lugarMaiz);
+	V(lugarGral);
+}
+
+process Coordinador
+{
+	int camion; string tipo;
+	for int i = 1..T+M
+	{
+		P(llegada);
+		
+		P(mutexQ);
+		qCamiones.pop(camion, tipo);
+		V(mutexQ);
+		
+		// filtro por tipo
+		if (tipo == "trigo")
+		{
+			P(lugarTrigo);
+			P(lugarGral);
+			V(esperaTrigo[camion]);
+		}
+		else
+		{
+			P(lugarMaiz);
+			P(lugarGral);
+			V(esperaMaiz[camion]);
+		}	
+	}
+}
+
+```
+
+**Filtro por tipo:** para administrar un recurso con restricciones que aplican a grupos y a subgrupos del primer grupo, primero P(subgrupo), después P(grupo). Si no, no se maximiza la concurrencia.
+Si primero se hace P(grupo) y después P(subgrupo), en este caso, 5 camiones de un tipo podrían bloquear el acceso a camiones del otro tipo, cuando deberían poder ingresar.
+#### b)
+Implemente una solución que no use procesos adicionales (sólo camiones). No importa el orden de llegada para descargar. Nota: maximice la concurrencia.
+```C
+sem lugarMaiz = 5; sem lugarTrigo = 5; sem lugarGral = 7;
+
+process CamionTrigo[id 0..T-1]
+{
+	P(lugarTrigo);
+	P(lugarGral);
+	// dejar trigo.
+	V(lugarTrigo);
+	V(lugarGral);
+}
+
+process CamionMaiz[id 0..M-1]
+{
+	P(lugarMaiz);
+	P(lugarGral);
+	// dejar maíz.
+	V(lugarMaiz);
+	V(lugarGral);
+}
+```
+---
+### Ejercicio 11
+En un vacunatorio hay un empleado de salud para vacunar a 50 personas. El empleado de salud atiende a las personas de acuerdo con el orden de llegada y de a 5 personas a la vez. Es decir, que cuando está libre debe esperar a que haya al menos 5 personas esperando, luego vacuna a las 5 primeras personas, y al terminar las deja ir para esperar por otras 5. Cuando ha atendido a las 50 personas el empleado de salud se retira.
+Nota: todos los procesos deben terminar su ejecución; suponga que el empleado tiene una función VacunarPersona() que simula que el empleado está vacunando a UNA persona.
+```C
+sem mutex = 1;
+sem[50] espera = ([50] 0);
+sem llegada = 0; sem esperaVacunados = 0;
+cola q;
+
+process Persona[id 0..49]
+{
+	P(mutex);
+	q.push(id);
+	V(mutex);
+	
+	V(llegada);
+	P(espera[id]);
+	// se vacuna.
+	P(esperaVacunados); // espera que le avisen que se puede ir.
+	// se retira.
+}
+
+process Empleado
+{
+	int idP;
+		
+	for int i = 1..10
+	{
+		// espera que haya al menos 5 personas.
+		for int j = 1..5
+		{
+			P(llegada);
+		}
+		
+		// vacuna a 5 personas.
+		for int j = 1..5
+		{
+			idP = q.pop();
+			V(espera[idP]);
+			VacunarPersona(idP);
+		}
+		
+		// avisa a los 5 vacunados que pueden retirarse.
+		for int j = 1..5
+		{
+			V(esperaVacunados);
+		}
+	}
+}
+```
