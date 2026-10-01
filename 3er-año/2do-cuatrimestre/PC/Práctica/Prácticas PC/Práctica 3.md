@@ -385,7 +385,7 @@ Monitor Puente
 	float cargaActual = 0;
 	cond espera[N];
 	
-	Procedure Acceder(int id, float peso)
+	Procedure Acceder(in int id, in float peso)
 	{	
 		// si hay autos en la q o se supera la capacidad, espera.
 		if (not q.IsEmpty() or (cargaActual + peso) > CARGA_MAX)
@@ -398,9 +398,9 @@ Monitor Puente
 			cargaActual += peso;
 	}
 	
-	Procedure Salir()
+	Procedure Salir(in float p)
 	{
-		cargaActual -= peso;
+		cargaActual -= p;
 		
 		// q.peek() mira el id del primero en la q.
 		// mientras haya alguien en la cola y su peso entre en el puente, lo dejo pasar.
@@ -419,7 +419,7 @@ Process Vehículo[id 0..N-1]
 	
 	Puente.Acceder(peso);
 	// cruzar el puente
-	Puente.Salir();	
+	Puente.Salir(peso);	
 }
 ```
 Nota: en este caso, considero que hay que usar una queue para mantener el orden de llegada (generalmente no haría falta usar una queue para el orden de llegada, ya que las variables condición cumplen esa función).
@@ -522,6 +522,8 @@ Nota: hago arreglo de comprobantes para que el empleado entregue un comprobante 
 Monitor Corralón
 {
 }
+
+Process Empleado[id 0..E-1]
 ```
 
 #### c) Modifique la solución (b) considerando que los empleados deben terminar su ejecución cuando se hayan atendido todos los clientes.
