@@ -428,7 +428,7 @@ El problema con usar `while` y el método `signal and continue`, es que puede no
 Solución: **passing the baton**.
 
 ---
-### Ejercicio 5
+### Ejercicio 5 CORREGIR
 En un corralón de materiales se debe atender a N clientes de acuerdo con el orden de llegada. Cuando un cliente es llamado para ser atendido, entrega una lista con los productos que comprará, y espera a que alguno de los empleados le entregue el comprobante de la compra realizada.
 #### a) Resuelva considerando que el corralón tiene un único empleado.
 ```C
@@ -521,9 +521,526 @@ Nota: hago arreglo de comprobantes para que el empleado entregue un comprobante 
 ```C
 Monitor Corralón
 {
+	cola q;
+	cond espera[N]; cond[N] esperaComprobante;
+	cond avisoLlegada; cond[N] avisoProductos;
+	
+	list[N] productos;
+	file[N] comprobantes;
+	
+	// el cliente llega al corralón.
+	// espera a que le avisen que puede entrar.
+	Procedure Ingresar(in int id)
+	{
+		q.push(id);
+		signal(avisoLlegada);
+		wait(espera[id]);
+	}
+	
+	// el empleado le dice al cliente que puede pasar.
+	// espera a que el cliente le entregue la lista de productos.
+	// se lleva la lista de productos, dejando el monitor libre.
+	Procedure Atender(out int id, out list p)
+	{
+		while (q.IsEmpty())
+			wait(avisoLlegada);
+		
+		id = q.pop();
+		signal(espera[id]);
+		wait(avisoProductos[id]);
+		
+		p = productos[id];
+	}
+	
+	// el cliente entrega su lista de productos y deja su id.
+	// espera a que el empleado le de el comprobante.
+	Procedure EntregarLista(in int id, in list p)
+	{
+		productos[id] = p;
+		signal(avisoProductos[id]);
+		wait(esperaComprobante[id]);
+	}
+	
+	// deja el comprobante en el arreglo y despierta al cliente.
+	Procedure EntregarComprobante(in int id, in file c)
+	{
+		comprobantes[id] = c;
+		signal(esperaComprobante[id]);
+	}
+	
+	// el cliente toma el comprobante de su posición en el arreglo.
+	Procedure Retirarse(in int id, out file c)
+	{
+		c = comprobantes[id];
+	}
 }
 
 Process Empleado[id 0..E-1]
+{
+	list productos;
+	file comprobante;
+	int idCliente;
+	
+	while (true)
+	{
+		Corralón.Atender(idCliente, productos);
+		
+		for each Producto p in productos
+			comprobante.add(p);
+		
+		Corralón.EntregarComprobante(idCliente, comprobante);
+	}
+}
+
+Process Cliente[id 0..N-1]
+{
+	list listaProductos;
+	file comprobante;
+	
+	Corralón.Ingresar(id);
+	Corralón.EntregarLista(id, listaProductos);
+	Corralón.Retirarse(id, comprobante);
+}
 ```
 
 #### c) Modifique la solución (b) considerando que los empleados deben terminar su ejecución cuando se hayan atendido todos los clientes.
+```C
+Monitor Corralón
+{
+	cola q;
+	cond espera[N]; cond[N] esperaComprobante;
+	cond avisoLlegada; cond[N] avisoProductos;
+	
+	list[N] productos;
+	file[N] comprobantes;
+	
+	int clientesPendientes = N;
+	
+	// el cliente llega al corralón.
+	// espera a que le avisen que puede entrar.
+	Procedure Ingresar(in int id)
+	{
+		q.push(id);
+		signal(avisoLlegada);
+		wait(espera[id]);
+	}
+	
+	// el empleado le dice al cliente que puede pasar.
+	// espera a que el cliente le entregue la lista de productos.
+	// se lleva la lista de productos, dejando el monitor libre.
+	Procedure Atender(out int id, out list p, out bool seguir)
+	{
+		while (q.IsEmpty() and clientesPendientes > 0)
+			wait(avisoLlegada);
+		
+		if (clientesPendientes == 0)
+		{
+			seguir = false;
+			signal(avisoLlegada);
+		}
+		else
+		{
+			clientesPendientes--;
+			id = q.pop();
+			signal(espera[id]);
+			wait(avisoProductos[id]);
+			
+			p = productos[id];
+		}
+	}
+	
+	// el cliente entrega su lista de productos y deja su id.
+	// espera a que el empleado le de el comprobante.
+	Procedure EntregarLista(in int id, in list p)
+	{
+		productos[id] = p;
+		signal(avisoProductos[id]);
+		wait(esperaComprobante[id]);
+	}
+	
+	// deja el comprobante en el arreglo y despierta al cliente.
+	Procedure EntregarComprobante(in int id, in file c)
+	{
+		comprobantes[id] = c;
+		signal(esperaComprobante[id]);
+	}
+	
+	// el cliente toma el comprobante de su posición en el arreglo.
+	Procedure Retirarse(in int id, out file c)
+	{
+		c = comprobantes[id];
+	}
+}
+
+Process Empleado[id 0..E-1]
+{
+	list productos;
+	file comprobante;
+	int idCliente;
+	bool seguir = true;
+	
+	while (seguir)
+	{
+		Corralón.Atender(idCliente, productos, seguir);
+		
+		if (seguir)
+		{
+			for each Producto p in productos
+				comprobante.add(p);
+			
+			Corralón.EntregarComprobante(idCliente, comprobante);
+		}
+	}
+}
+
+Process Cliente[id 0..N-1]
+{
+	list listaProductos;
+	file comprobante;
+	
+	Corralón.Ingresar(id);
+	Corralón.EntregarLista(id, listaProductos);
+	Corralón.Retirarse(id, comprobante);
+}
+```
+---
+### Ejercicio 6 CORREGIR
+Existe una comisión de 50 alumnos que deben realizar tareas de a pares, las cuales son corregidas por un JTP. Cuando los alumnos llegan, forman una fila. Una vez que están todos en fila, el JTP les asigna un número de grupo a cada uno. Para ello, suponga que existe una función AsignarNroGrupo() que retorna un número “aleatorio” del 1 al 25. Cuando un alumno ha recibido su número de grupo, comienza a realizar su tarea. Al terminarla, el alumno le avisa al JTP y espera por su nota. Cuando los dos alumnos del grupo completaron la tarea, el JTP les asigna un puntaje (el primer grupo en terminar tendrá como nota 25, el segundo 24, y así sucesivamente hasta el último que tendrá nota 1).
+Nota: el JTP no guarda el número de grupo que le asigna a cada alumno.
+```C
+Monitor Aula
+{
+	int contadorAlumnos = 0;
+	cond[N] esperaAlumnos;
+	int[N] asignacionGrupos;
+	int[26] contadorTerminaron = ([26] 0);
+	int[26] notaGrupos;
+	cond[26] esperaGrupo;
+	// los grupos van del num 1 al 25 por lo que dice la función.
+	// para no tener que manipular el acceso restando/sumando uno
+	// hago los arreglos de tamaño 26 y la posición 0 no la uso.
+	cola qAlumnos; cola qGrupos;
+
+	Procedure Llegada(in int id, out int nroGrupo)
+	{
+		qAlumnos.push(id);
+		contadorAlumnos++;
+		if (contadorAlumnos == 50)
+			signal(avisoJTP);
+		
+		wait(esperaAlumnos[id]);
+		
+		nroGrupo = asignacionGrupos[id];
+	}
+	
+	Procedure EsperarAlumnos()
+	{
+		if (contadorAlumnos < 50)
+			wait(avisoJTP);
+	}
+	
+	Procedure AsignarGrupo(in int nroGrupo)
+	{
+		int id = qAlumnos.pop();
+		asignacionGrupos[id] = nroGrupo;
+		signal(esperaAlumnos[id]);
+	}
+	
+	Procedure TermineTarea(in int nroGrupo, out int nota)
+	{
+		contadorTerminaron[nroGrupo]++;
+		if (contadorTerminaron[nroGrupo] == 2)
+		{
+			qGrupos.push(nroGrupo);
+			signal(avisoJTP);
+		}
+		wait(esperaGrupo[nroGrupo]);
+		
+		nota = notaGrupos[nroGrupo];
+	}
+	
+	Procedure AsignarNota(in int nota)
+	{
+		if (qGrupos.IsEmpty())
+			wait(avisoJTP);
+		
+		int grupo = qGrupos.pop();
+		notaGrupos[grupo] = nota;
+		signal_all(esperaGrupo[grupo]);
+	}	
+}
+
+Process JTP
+{
+	int nro;
+	
+	Aula.EsperarAlumnos();
+	for int i = 0..49
+	{
+		nro = AsignarNroGrupo();
+		Aula.AsignarGrupo(nro);
+	}
+	for int i = 25..1
+	{
+		Aula.AsignarNota(i);
+	}
+}
+
+Process Alumno[id 0..49]
+{
+	int miGrupo; int miNota;
+	
+	Aula.Llegada(id, miGrupo);
+	// realiza su tarea.
+	Aula.TermineTarea(miGrupo, miNota);
+}
+```
+---
+### Ejercicio 7 CORREGIR
+Se debe simular una maratón con C corredores donde en la llegada hay UNA máquina expendedora de agua con capacidad para 20 botellas. Además, existe un repositor encargado de reponer las botellas de la máquina. Cuando los C corredores han llegado al inicio, comienza la carrera. Cuando un corredor termina la carrera, se dirige a la máquina expendedora, espera su turno (respetando el orden de llegada), saca una botella y se retira. Si encuentra la máquina sin botellas, le avisa al repositor para que cargue nuevamente la máquina con 20 botellas; espera a que se haga la recarga; saca una botella y se retira.
+Nota: mientras se reponen las botellas, se debe permitir que otros corredores se encolen.
+```C
+Monitor Carrera
+{
+	int cantCorredores = 0;
+	cond barrera;
+	
+	Procedure Llegada()
+	{
+		cantCorredores++;
+		if (cantCorredores == C)
+			signal_all(barrera);
+		else
+			wait(barrera);
+	}
+	
+}
+
+Monitor Máquina
+{
+	int enQ = 0;
+	bool libre = true;
+	cond avisoRepositor; cond esperaAgua; cond esperaRecarga;
+	int botellas = 20;
+	
+	Procedure TomarBotella(out BotellaAgua botellaAgua)
+	{
+		if (not libre)
+		{
+			enQ++;
+			wait(esperaAgua);
+		}
+		else
+			libre = false;
+			
+		if (botellas == 0)
+		{
+			signal(avisoRepositor);
+			wait(esperaRecarga);
+		}
+		
+		botellaAgua = RetirarBotella(); // mock de agarrar una botella.
+		botellas--;
+		
+		if (enQ > 0)
+		{
+			enQ--;
+			signal(esperaAgua);
+		}
+		else
+			libre = true;
+	}
+	
+	Procedure EsperarQueFalten()
+	{
+		if (botellas > 0)
+			wait(avisoRepositor);
+	}
+	
+	Procedure AvisarRecarga()
+	{
+		botellas = 20;
+		signal(esperaRecarga);
+	}
+}
+
+Process Repositor
+{
+	while(true)
+	{
+		Máquina.EsperarQueFalten();
+		// recarga las botellas.
+		Máquina.AvisarRecarga();
+	}
+}
+
+Process Corredor[id 0..C-1]
+{
+	BotellaAgua botella;
+
+	Carrera.Llegada();
+	// corre la carrera.
+	Maquina.TomarBotella(botella);
+}
+```
+---
+### Ejercicio 8 CORREGIR
+En un entrenamiento de fútbol hay 20 jugadores que forman 4 equipos (cada jugador conoce el equipo al cual pertenece llamando a la función DarEquipo()). Cuando un equipo está listo (han llegado los 5 jugadores que lo componen), debe enfrentarse a otro equipo que también esté listo (los dos primeros equipos en juntarse juegan en la cancha 1, y los otros dos equipos juegan en la cancha 2). Una vez que el equipo conoce la cancha en la que juega, sus jugadores se dirigen a ella. Cuando los 10 jugadores del partido llegan a la cancha, comienza el partido; juegan durante 50 minutos y, al terminar, todos los jugadores del partido se retiran (no es necesario que esperen para salir).
+```C
+Monitor Equipo[id 0..3]
+{
+	int cantidad = 0;
+	cond espera;
+	int canchaAsignada;
+
+	Procedure Llegada(out int nroCancha)
+	{
+		cantidad++;
+		if (cantidad < 5)
+			wait(espera);
+		else
+		{
+			Entrenamiento.PedirCancha(canchaAsignada);
+			signal_all(espera);
+		}
+		
+		nroCancha = canchaAsignada;
+	}
+}
+
+Monitor Entrenamiento
+{
+	int contador = 0; // para ver cuántas veces dio un nro de cancha.
+	// acá sólo se esperan 4 llamados, uno por cada equipo.
+	
+	Procedure PedirCancha(out int nroCancha)
+	{
+		contador++;
+		if (contador <= 2)
+			nroCancha = 0; // 0 para los dos primeros
+		else
+			nroCancha = 1; // 1 para los dos últimos
+	}
+}
+
+Monitor Cancha[id 0..1]
+{
+	int cantidad = 0;
+	cond espera;
+	
+	Procedure Llegada()
+	{
+		cantidad++;
+		if (cantidad < 10)
+			wait(espera);
+		else
+			signal_all(espera);
+	}
+}
+
+Process Jugador [id 0..19]
+{
+	int nroCancha;
+	int miEquipo = DarEquipo();
+	
+	Equipo[miEquipo].Llegada(nroCancha);
+	Cancha[nroCancha].Llegada(); 
+	delay(3000); // juega 50 mins.
+	// se retira.
+}
+```
+Consultar: hace falta que los jugadores hagan llegada y salida y queden en wait, mientras un proceso "juega" el partido? (p. ej. un árbitro que comienza el partido, hace el delay y lo termina)
+
+---
+### Ejercicio 9 CORREGIR
+En un examen de la secundaria hay un preceptor y una profesora que deben tomar un examen escrito a 45 alumnos. El preceptor se encarga de darles el enunciado del examen a los alumnos cuando los 45 han llegado (es el mismo enunciado para todos). La profesora se encarga de ir corrigiendo los exámenes de acuerdo con el orden en que los alumnos van entregando. Cada alumno, al llegar, espera a que le den el enunciado, resuelve el examen y, al terminar, lo deja para que la profesora lo corrija y le envíe la nota.
+Nota: maximizar la concurrencia; todos los procesos deben terminar su ejecución; suponga que la profesora tiene una función corregirExamen que recibe un examen y devuelve un entero con la nota.
+```C
+Monitor Aula
+{
+	int cant = 0;
+	cond esperaEnunciado; cond avisoPreceptor;
+	string enunciado;
+	
+	cola qExamenes;
+	int[45] notas;
+	cond avisoProfesora; cond esperaNota;
+
+	Procedure Llegada(string out examen)
+	{
+		cant++;
+		if (cant == 45)
+			signal(avisoPreceptor);
+			
+		wait(esperaEnunciado);
+		
+		examen = enunciado;
+	}
+	
+	Procedure DarEnunciado(in string e)
+	{
+		if (cant < 45)
+			wait(avisoPreceptor);
+			
+		enunciado = e;
+		signal_all(esperaEnunciado);
+	}
+	
+	Procedure TerminoExamen(in string examen, in int id, out int nota)
+	{
+		qExamenes.push(id, examen);
+		signal(avisoProfesora);
+		wait(esperaNota);
+		
+		nota = notas[id];
+	}
+	
+	Procedure Corregir(out int id, out string examen)
+	{
+		if (qExamenes.IsEmpty())
+			wait(avisoProfesora);
+		
+		qExamenes.pop(id, examen);
+	}
+	
+	Procedure EntregarNota(in int id, in int nota)
+	{
+		notas[id] = nota;
+		signal(esperaNota);
+	}
+}
+
+Process Preceptor
+{
+	string enunciado;
+	Aula.DarEnunciado(enunciado);
+}
+
+Process Profesora
+{
+	int id;
+	string examen;
+	int nota;
+	
+	for int i = 1..45
+	{
+		Aula.Corregir(id, examen);
+		nota = CorregirExamen(examen);
+		Aula.EntregarNota(id, nota);
+	}
+}
+
+Process Alumno[id 0..44]
+{
+	string examen;
+	int nota;
+
+	Aula.Llegada(examen);
+	// RealizarExamen(examen);
+	Aula.TerminoExamen(examen, id, nota);
+}
+```
+Consultar: técnicamente entiendo que no haría falta separar en dos monitores para maximizar la concurrencia. El ejercicio se desarrolla en dos fases, primero la barrera con el preceptor y después el examen con la profesora. Sin embargo, usando dos monitores quedaría una solución más modularizada (y mínimamente más concurrente?). Se podría hacer con dos monitores? Cómo evalúan estos casos?
+
+---
+### Ejercicio 10 CORREGIR

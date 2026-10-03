@@ -1,4 +1,3 @@
-
 ### Resolver con MONITORES el siguiente problema. 
 Hay una boletería virtual que vende en forma online E entradas para un partido de fútbol a P personas (P > E) de acuerdo con el orden de llegada. 
 Cuando la boletería atiende a una persona, si aún quedan entradas disponibles le envía el número de entrada vendida, sino le indica que no hay más entradas.
