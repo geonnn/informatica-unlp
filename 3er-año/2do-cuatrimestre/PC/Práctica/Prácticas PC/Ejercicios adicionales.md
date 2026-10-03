@@ -231,3 +231,61 @@ process Repositor
 	}
 }
 ```
+---
+### SEMÁFOROS
+Se debe simular el uso de un sistema virtual de venta de entradas para un evento musical.
+El sistema cuenta con C cajeros virtuales que atienden indefinidamente. Sin embargo, como la venta de entradas comienza a una hora determinada, sólo atienden a partir del aviso de un Timer. Una vez que reciben dicho aviso, los cajeros atienden de acuerdo con el orden de llegada de los compradores. La atención consiste en recibir la solicitud del comprador (datos para el pago) y responderle si pudo comprar (o no) junto al comprobante de la operación. Para este evento se cuenta con E entradas y N compradores, donde cada comprador puede solicitar a lo suma una entrada.
+```C
+cola c;
+int entradas = E;
+bool[N] operacion;
+sem inicio = 0;
+sem MUTEX = 1;
+sem HayPersona = 0;
+sem[N] respuesta = ([N] 0);
+
+process cajero [id:0..C-1]
+{
+	int comprador;
+
+	P(inicio);
+	while(true)
+	{
+		P(HayPersona);
+		P(MUTEX);
+		c.pop(comprador);
+		if (entradas>0)
+		{
+			entradas--;
+			operacion[comprador]=true;
+		}
+		else
+		{
+			operacion[comprador]=false;
+		}
+		V(MUTEX);
+		V(respuesta[comprador]);
+	}
+}
+
+process timer(n in int)
+{
+	delay(n);
+	for (int i = 0; i < C; i++)
+		V(inicio);
+}
+
+process comprador[id:0..n-1]
+{
+	int aux;
+	P(MUTEX);
+	c.push(id);
+	V(MUTEX);
+	V(HayPersona);
+	P(respuesta[id]);
+	if (operacion[id])
+		"compré";
+	else
+		"soy un gil";
+}
+```

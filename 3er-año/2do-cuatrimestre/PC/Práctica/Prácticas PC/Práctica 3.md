@@ -926,16 +926,33 @@ Monitor Entrenamiento
 Monitor Cancha[id 0..1]
 {
 	int cantidad = 0;
-	cond espera;
+	cond inicio; cond espera;
 	
 	Procedure Llegada()
 	{
 		cantidad++;
-		if (cantidad < 10)
-			wait(espera);
-		else
-			signal_all(espera);
+		if (cantidad == 10)
+			signal(inicio);
+		wait(espera);
 	}
+	
+	Procedure Iniciar()
+	{
+		if (cant < 10)
+			wait(inicio);
+	}
+	
+	Procedure Terminar()
+	{
+		signal_all(espera);
+	}
+}
+
+Process Partido[id 0..1]
+{
+	Cancha[id].Iniciar();
+	delay(50mins) // se juega el partido.
+	Cancha[id].Terminar();
 }
 
 Process Jugador [id 0..19]
@@ -944,8 +961,7 @@ Process Jugador [id 0..19]
 	int miEquipo = DarEquipo();
 	
 	Equipo[miEquipo].Llegada(nroCancha);
-	Cancha[nroCancha].Llegada(); 
-	delay(3000); // juega 50 mins.
+	Cancha[nroCancha].Llegada();
 	// se retira.
 }
 ```
