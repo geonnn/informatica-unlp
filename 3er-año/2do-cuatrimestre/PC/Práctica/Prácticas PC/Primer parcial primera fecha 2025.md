@@ -1,5 +1,3 @@
-
-# Primera Fecha - 14/05/2025
 ## 1. Resolver con SEMAFOROS el siguiente problema.
 En un laboratorio de genética trabajan 20 empleados que deben usar un pirosecuenciador de a uno a la vez, de acuerdo con el orden de llegada. Nota: sólo se pueden usar los procesos
 que representen a los empleados; cada empleado usa sólo una vez el pirosecuenciador; suponga que existe la función USAR() que simula el uso de este instrumento por parte del empleado.
@@ -140,5 +138,3 @@ Process Persona[id 0..49]
 	Oficina[tipoConsulta].Solicitud(id, solicitud, resultado);
 }
 ```
----
-# Parcial

@@ -373,17 +373,16 @@ Process Persona[id 0..N-1]
 }
 ```
 ---
-### Ejercicio 4 CORREGIR
+### Ejercicio 4
 Existen N vehículos que deben pasar por un puente de acuerdo con el orden de llegada. Considere que el puente no soporta más de 50000 kg y que cada vehículo cuenta con su propio peso (ningún vehículo supera el peso soportado por el puente).
 ```C
 Monitor Puente
 {
 	CARGA_MAX = 50000; // constante
 	cola q;
-	bool libre = true;
 	float pesoEsperando[N];
 	float cargaActual = 0;
-	cond espera[N];
+	cond espera;
 	
 	Procedure Acceder(in int id, in float peso)
 	{	
@@ -392,7 +391,7 @@ Monitor Puente
 		{
 			q.push(id); // entra en la queue.
 			pesoEsperando[id] = peso; // anota su peso.
-			wait(espera[id]);
+			wait(espera);
 		}
 		else
 			cargaActual += peso;
@@ -408,7 +407,7 @@ Monitor Puente
 		{
 			int sig = q.pop();
 			cargaActual += pesoEsperando[sig];
-			signal(espera[sig]);
+			signal(espera);
 		}
 	}
 }
@@ -428,7 +427,7 @@ El problema con usar `while` y el método `signal and continue`, es que puede no
 Solución: **passing the baton**.
 
 ---
-### Ejercicio 5 CORREGIR
+### Ejercicio 5
 En un corralón de materiales se debe atender a N clientes de acuerdo con el orden de llegada. Cuando un cliente es llamado para ser atendido, entrega una lista con los productos que comprará, y espera a que alguno de los empleados le entregue el comprobante de la compra realizada.
 #### a) Resuelva considerando que el corralón tiene un único empleado.
 ```C
@@ -517,6 +516,43 @@ Process Cliente[id 0..N-1]
 }
 ```
 Nota: hago arreglo de comprobantes para que el empleado entregue un comprobante y ya pueda ir a atender a otro cliente, sin esperar a que el cliente anterior le avise que ya retiró su comprobante.
+
+##### otra solución más concurrente con más monitores:
+```C
+Monitor Ingreso
+{
+	cola q;
+	int enQ = 0;
+	
+	
+	Procedure Ingresar(in int id, in list p)
+	{
+		enQ++;
+		q.Push(id, p);
+		wait(espera);
+	}
+}
+
+Monitor Atención
+{
+}
+
+Monitor Salida
+{
+}
+
+Process Empleado
+{
+}
+
+Process Cliente[id 0..N-1]
+{
+	list productos;
+	Comprobante comprobante;
+	
+	Ingreso.Ingresar();
+}
+```
 #### b) Resuelva considerando que el corralón tiene E empleados (E > 1). Los empleados no deben terminar su ejecución.
 ```C
 Monitor Corralón
@@ -704,7 +740,7 @@ Process Cliente[id 0..N-1]
 }
 ```
 ---
-### Ejercicio 6 CORREGIR
+### Ejercicio 6
 Existe una comisión de 50 alumnos que deben realizar tareas de a pares, las cuales son corregidas por un JTP. Cuando los alumnos llegan, forman una fila. Una vez que están todos en fila, el JTP les asigna un número de grupo a cada uno. Para ello, suponga que existe una función AsignarNroGrupo() que retorna un número “aleatorio” del 1 al 25. Cuando un alumno ha recibido su número de grupo, comienza a realizar su tarea. Al terminarla, el alumno le avisa al JTP y espera por su nota. Cuando los dos alumnos del grupo completaron la tarea, el JTP les asigna un puntaje (el primer grupo en terminar tendrá como nota 25, el segundo 24, y así sucesivamente hasta el último que tendrá nota 1).
 Nota: el JTP no guarda el número de grupo que le asigna a cada alumno.
 ```C
@@ -796,7 +832,7 @@ Process Alumno[id 0..49]
 }
 ```
 ---
-### Ejercicio 7 CORREGIR
+### Ejercicio 7
 Se debe simular una maratón con C corredores donde en la llegada hay UNA máquina expendedora de agua con capacidad para 20 botellas. Además, existe un repositor encargado de reponer las botellas de la máquina. Cuando los C corredores han llegado al inicio, comienza la carrera. Cuando un corredor termina la carrera, se dirige a la máquina expendedora, espera su turno (respetando el orden de llegada), saca una botella y se retira. Si encuentra la máquina sin botellas, le avisa al repositor para que cargue nuevamente la máquina con 20 botellas; espera a que se haga la recarga; saca una botella y se retira.
 Nota: mientras se reponen las botellas, se debe permitir que otros corredores se encolen.
 ```C
@@ -884,7 +920,7 @@ Process Corredor[id 0..C-1]
 }
 ```
 ---
-### Ejercicio 8 CORREGIR
+### Ejercicio 8
 En un entrenamiento de fútbol hay 20 jugadores que forman 4 equipos (cada jugador conoce el equipo al cual pertenece llamando a la función DarEquipo()). Cuando un equipo está listo (han llegado los 5 jugadores que lo componen), debe enfrentarse a otro equipo que también esté listo (los dos primeros equipos en juntarse juegan en la cancha 1, y los otros dos equipos juegan en la cancha 2). Una vez que el equipo conoce la cancha en la que juega, sus jugadores se dirigen a ella. Cuando los 10 jugadores del partido llegan a la cancha, comienza el partido; juegan durante 50 minutos y, al terminar, todos los jugadores del partido se retiran (no es necesario que esperen para salir).
 ```C
 Monitor Equipo[id 0..3]
@@ -940,6 +976,8 @@ Monitor Cancha[id 0..1]
 	{
 		if (cant < 10)
 			wait(inicio);
+		signal_all(espera); // esto no va.
+		// el partido se juega mientras los procesos están dormidos.
 	}
 	
 	Procedure Terminar()
@@ -968,7 +1006,7 @@ Process Jugador [id 0..19]
 Consultar: hace falta que los jugadores hagan llegada y salida y queden en wait, mientras un proceso "juega" el partido? (p. ej. un árbitro que comienza el partido, hace el delay y lo termina)
 
 ---
-### Ejercicio 9 CORREGIR
+### Ejercicio 9
 En un examen de la secundaria hay un preceptor y una profesora que deben tomar un examen escrito a 45 alumnos. El preceptor se encarga de darles el enunciado del examen a los alumnos cuando los 45 han llegado (es el mismo enunciado para todos). La profesora se encarga de ir corrigiendo los exámenes de acuerdo con el orden en que los alumnos van entregando. Cada alumno, al llegar, espera a que le den el enunciado, resuelve el examen y, al terminar, lo deja para que la profesora lo corrija y le envíe la nota.
 Nota: maximizar la concurrencia; todos los procesos deben terminar su ejecución; suponga que la profesora tiene una función corregirExamen que recibe un examen y devuelve un entero con la nota.
 ```C
@@ -1059,4 +1097,4 @@ Process Alumno[id 0..44]
 Consultar: técnicamente entiendo que no haría falta separar en dos monitores para maximizar la concurrencia. El ejercicio se desarrolla en dos fases, primero la barrera con el preceptor y después el examen con la profesora. Sin embargo, usando dos monitores quedaría una solución más modularizada (y mínimamente más concurrente?). Se podría hacer con dos monitores? Cómo evalúan estos casos?
 
 ---
-### Ejercicio 10 CORREGIR
+### Ejercicio 10

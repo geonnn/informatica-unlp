@@ -548,3 +548,175 @@ process Empleado
 	}
 }
 ```
+---
+### Ejercicio 12
+Simular la atención en una Terminal de Micros que posee 3 puestos para hisopar a 150 pasajeros. En cada puesto hay una Enfermera que atiende a los pasajeros de acuerdo con el orden de llegada al mismo. Cuando llega un pasajero, se dirige al Recepcionista, quien le indica qué puesto es el que tiene menos gente esperando. Luego se dirige al puesto y espera a que la enfermera correspondiente lo llame para hisoparlo. Finalmente, se retira.
+Nota: suponga que existe una función Hisopar() que simula la atención del pasajero por parte de la enfermera correspondiente.
+#### a) Implemente una solución considerando los procesos Pasajeros, Enfermera y Recepcionista.
+```C
+sem mutexQ = 1;
+cola qP;
+sem esperando = 0;
+sem[150] espera = ([150] 0);
+
+sem[3] mutexQPuesto = ([3] 1);
+cola[3] qsPuestos;
+int[150] puestoAsignado;
+
+sem[3] esperandoHisopado = 0;
+
+Process Pasajero[id 0..149]
+{
+	int puesto;
+	
+	P(mutexQ);
+	qP.push(id);
+	V(mutexQ);
+	
+	V(esperando);
+	P(espera[id]);
+	
+	puesto = puestoAsignado[id];
+	P(mutexArregloQsPuestos);
+	P(mutexQPuesto[puesto]);
+	qsPuestos[puesto].push(id);
+	V(mutexQPuesto[puesto]);
+	V(mutexArregloQsPuestos);
+	
+	V(esperandoHisopado[puesto]);
+	P(espera[id]);
+	// se hace el hisopado
+	P(espera[id]);
+}
+
+Process Recepcionista
+{
+	int id; int puesto;
+	int min; int cant;
+
+	for int i = 1..150
+	{
+		P(esperando);
+		P(mutexQ);
+		qP.pop(id);
+		V(mutexQ);
+		
+		min = 99999;
+		// saca el puesto con menos gente
+		// bloqueo todo el arreglo para sacar una "foto" y poder obtener un mínimo real.
+		P(mutexArregloQsPuestos);
+		for int j in 0..2
+		{
+			cant = qsPuestos[j].size();
+			if (cant < min)
+			{
+				min = cant;
+				puesto = j;
+			}
+		}
+		V(mutexArregloQsPuestos);
+		
+		puestoAsignado[id] = puesto;
+		V(espera[id]);
+	}
+}
+
+Process Enfermera[id 0..2]
+{
+	int idP;
+	
+	while(true)
+	{
+		P(esperandoHisopado[id]);
+		
+		P(mutexQPuesto[id]);
+		qsPuestos.pop(idP);
+		V(mutexQPuesto[id]);
+		
+		V(espera[idP]); // lo hace pasar
+		Hisopado(idP);
+		V(espera[idP]); // le permite retirarse.
+	}
+}
+```
+
+#### b) Modifique la solución anterior para que sólo haya procesos Pasajeros y Enfermera, siendo los pasajeros quienes determinan por su cuenta qué puesto tiene menos personas esperando.
+```C
+sem mutex = 1;
+sem[150] espera = ([150] 0);
+sem[3] mutexQPuesto = ([3] 1);
+sem[3] esperandoHisopado = ([3] 0);
+
+cola[3] qsPuesto;
+bool libre = true;
+cola qP;
+
+process Pasajero[id 0..149]
+{
+	int puesto; int min = 99999;
+	int sig; int cant;
+	
+	P(mutex);
+	if (not libre)
+	{
+		qP.push(id);
+		V(mutex);
+		P(espera[id]);
+	}
+	else
+	{
+		libre = false;
+		V(mutex);
+	}
+	
+	// saca el puesto con menos gente
+	for int i in 0..2
+	{
+		P(mutexQPuesto[i]);
+		cant = qsPuestos[i].size();
+		V(mutexQPuesto[i]);
+		if (cant < min)
+		{
+			min = cant;
+			puesto = i;
+		}
+	}
+	
+	P(mutexQPuesto[puesto]);
+	qsPuestos[puesto].push(id);
+	V(mutexQPuesto[puesto]);
+	
+	P(mutex);
+	if (not qP.IsEmpty())
+	{
+		qP.pop(sig);
+		V(espera[sig]);
+	}
+	else
+		libre = true;
+	V(mutex);
+	
+	V(esperandoHisopado[puesto]);
+	P(espera[id]);
+	// se hace el hisopado
+	P(espera[id]);
+}
+
+process Enfermera[id 0..2]
+{
+	int idP;
+	
+	while(true)
+	{
+		P(esperandoHisopado[id]);
+		
+		P(mutexQPuesto[id]);
+		qsPuestos.pop(idP);
+		V(mutexQPuesto[id]);
+		
+		V(espera[idP]); // lo hace pasar
+		Hisopado(idP);
+		V(espera[idP]); // le permite retirarse.
+	}
+}
+```
