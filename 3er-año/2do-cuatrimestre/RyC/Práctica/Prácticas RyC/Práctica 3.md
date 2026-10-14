@@ -58,6 +58,10 @@ en la C library (libc).
 ---
 ### 7. En Internet, un dominio suele tener más de un servidor DNS, ¿por qué cree que esto es así?
 
+**Disponibilidad, tolerancia a fallos (redundancia):** si el dominio se encuentra en solo servidor se cae, el dominio se vuelve inalcanzable por los usuarios. 
+**Load balancing:** repartir la carga de trabajo ante muchas solicitudes.
+**Reducción de latencia:** varios servidores en distintos lugares para que usuarios de todo el mundo no tengan tiempos de espera largos.
+
 ---
 ### 8. Cuando un dominio cuenta con más de un servidor, uno de ellos es el primario (o maestro) y todos los demás son secundarios (o esclavos). ¿Cuál es la razón de que sea así?
 
