@@ -3,8 +3,50 @@
 
 ### 1. ¿Qué protocolos se utilizan para el envío de mails entre el cliente y su servidor de correo? ¿Y entre servidores de correo?
 
+**1. Entre el cliente y su servidor de correo (MUA $\rightarrow$ MSA / MTA)**
+
+- **SMTP / ESMTP (Simple Mail Transfer Protocol / Extended SMTP)**: Es el protocolo estándar utilizado cuando el cliente emplea una aplicación de correo dedicada (MUA, como Thunderbird, Outlook o Apple Mail). El MUA entrega el mensaje al agente de sumisión (**MSA**) o servidor de correo saliente. Se utiliza sobre los puertos TCP **25**, **587** (_submission_) o **465**.
+- **HTTP / HTTPS**: Se utiliza en esquemas de **Webmail** (como Gmail o Hotmail en el navegador), donde el usuario redacta y envía el correo mediante peticiones web hacia el servidor webmail.
+
+**2. Entre servidores de correo (MTA** $\rightarrow$ **MTA)**
+
+- **SMTP / ESMTP (Simple Mail Transfer Protocol / Extended SMTP)**: Es el único protocolo utilizado para el transporte directo de mensajes entre el servidor de origen (**MTA** emisor) y el servidor de destino (**MTA** receptor) a través de Internet.
+- Funciona sobre el servicio de transferencia confiable de **TCP**, escuchando por defecto en el puerto **25**.
+
 ---
 ### 2. ¿Qué protocolos se utilizan para la recepción de mails? Enumere y explique características y diferencias entre las alternativas posibles.
+
+Para la recepción y lectura de correos desde el servidor de correo (servidor **MAA / MDA**) hacia el cliente de correo (**MUA** o navegador), existen tres alternativas principales: **POP3**, **IMAP** y **HTTP (Webmail)**.
+#### **1. POP3 (Post Office Protocol - Version 3)**
+
+- **Puertos TCP:** **110** (por defecto) y **995** (sobre SSL/TLS).
+- **Modelo de funcionamiento:**
+    - Diseñado originalmente bajo la modalidad **"descargar y eliminar" (** **download-and-delete** **)**. El cliente se conecta, descarga los mensajes a su equipo local y los elimina del servidor.
+    - También puede configurarse en modo **"descargar y mantener" (** **download-and-keep** **)** para conservar una copia en el servidor.
+- **Características clave:**
+    - **Sin mantenimiento de estado:** El servidor POP no guarda el estado de la sesión ni la estructura de carpetas.
+    - **Almacenamiento local:** Ideal para un único dispositivo con espacio de almacenamiento limitado en el servidor.
+    - **Sin sincronización:** Si un correo se lee o se elimina en una computadora, dicho cambio no se refleja en otros dispositivos.
+
+#### **2. IMAP (Internet Mail Access Protocol)**
+
+- **Puertos TCP:** **143** (por defecto) y **993** (sobre SSL/TLS).
+- **Modelo de funcionamiento:**
+    - Funciona bajo un esquema de **almacenamiento centralizado y manipulación remota**. Los mensajes residen permanentemente en el servidor y el cliente solo descarga vistas preliminares o los mensajes que abre.
+- **Características clave:**
+    - **Mantiene el estado:** El servidor guarda información entre sesiones (mensajes leídos, no leídos, respondidos, etc.).
+    - **Sincronización multidispositivo:** Permite crear carpetas en el servidor y acceder a la misma estructura sincronizada desde un celular, una laptop o una PC de escritorio.
+    - **Uso de recursos:** Es más costoso en almacenamiento y procesamiento para el servidor de correo.
+
+#### **3. HTTP / HTTPS (Webmail)**
+
+- **Puertos TCP:** **80** (HTTP) y **443** (HTTPS).
+- **Modelo de funcionamiento:**
+    - El usuario no utiliza un cliente de correo pesado o nativo (como Thunderbird u Outlook), sino un **navegador web**.
+    - El cliente interactúa con la interfaz del servidor web mediante peticiones HTTP(S), y es el servidor webmail quien internamente consulta y gestiona los mensajes en el buzón.
+- **Características clave:**
+    - **Acceso universal:** Accesible desde cualquier dispositivo con navegador e Internet sin necesidad de configurar parámetros de correo.
+    - **Tráfico cifrado por defecto:** Al utilizar HTTPS, la interacción con el buzón viaja cifrada mediante SSL/TLS.
 
 ---
 ### 3. Utilizando la VM y teniendo en cuenta los siguientes datos, abra el cliente de correo (Thunderbird) y configure dos cuentas de correo. Una de las cuentas utilizará `POP` para solicitar al servidor los mails recibidos para la misma mientras que la otra utilizará `IMAP`. Al ingresar a cada una de las cuentas, seleccionar *Manual config* y luego de configurar las mismas según lo indicado, ignorar advertencias por uso de conexión sin cifrado.
