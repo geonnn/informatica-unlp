@@ -36,6 +36,10 @@
     - [(SI307) Orientación a Objetos 2](3er-año/1er-cuatrimestre/OO2/)
     - [(SI308) Matemática 3](3er-año/1er-cuatrimestre/MAT3/)
 - ##### Segundo cuatrimestre
+    - [(SI304) Redes y Comunicaciones](3er-año/2do-cuatrimestre/RyC/)
+    - [(SI301) Programación Concurrente](3er-año/2do-cuatrimestre/PC/)
+    - [(SI305) Proyecto de Software](3er-año/2do-cuatrimestre/PS/)
+    - [(O7301) Taller de Tecnologías de Producción de Software (Ingeniería de Software Aplicada)](3er-año/2do-cuatrimestre/TTPS/)
 
 ---
 
