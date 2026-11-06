@@ -574,6 +574,8 @@ Aunque la conexión sea viable mediante las alternativas mencionadas, prescindir
 ---
 ### 17. Observar el siguiente gráfico y contestar:
 
+![[Pasted image 20261026184809.png]]
+
 **Diagrama de red:**
 - **Red A:** `PC-A` (`192.168.10.5`) y `DNS Server` (`192.168.10.2`), ambos conectados mediante `eth0` a un switch (`Sw2`), que a su vez se conecta a `Router A` (`192.168.10.1`) por `eth0`.
 - `Router A` conecta la Red A hacia Internet.
