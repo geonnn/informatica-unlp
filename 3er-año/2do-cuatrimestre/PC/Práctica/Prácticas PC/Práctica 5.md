@@ -8,7 +8,7 @@
 		```
 	- Especificación de tareas con ENTRY’s (le puede hacer llamados). Los entry’s funcionan de manera semejante los procedimientos: solo pueden recibir o enviar información por medio de los parámetros del entry. NO RETORNAN VALORES COMO LAS FUNCIONES.
 		```ADA
-		TASK [TYPE] Nombre IS
+		TASK TYPE Nombre IS
 			ENTRY e1;
 			ENTRY e2 (p1: IN integer; p2: OUT char; p3: IN OUT float);
 		END Nombre;
@@ -676,15 +676,15 @@ PROCEDURE ej6 IS
 		ENTRY Id(ident: IN integer);
 		ENTRY Llegada;
 		ENTRY Barrera;
-		ENTRY ProcesarMoneda(m: IN integer);
+		ENTRY Parcial(parcial: IN integer);
+		ENTRY EquipoGanador(e: OUT integer);
 	END Equipo;
 	
-	TASK TYPE Persona IS
-		ENTRY EquipoGanador(e: IN integer);
-	END Persona;
+	TASK TYPE Persona;
 	
 	TASK Administrador IS
 		ENTRY RecibirTotal(idE: IN integer; totEquipo: IN integer);
+		ENTRY EquipoGanador(e: OUT integer);
 	END Administrador;
 	
 	TASK BODY Administrador IS
@@ -701,14 +701,17 @@ PROCEDURE ej6 IS
 			END RecibirTotal;
 		end loop;
 		
-		for i in 1..20 loop
-			arrPersonas[i].EquipoGanador(maxId);
+		for i in 1..5 loop
+			ACCEPT EquipoGanador(e: OUT integer) do
+				e := maxId;
+			END EquipoGanador;
 		end loop;
 	END Administrador;
 	
 	TASK BODY Equipo IS
 		id: integer;
 		total: integer;
+		equipoGanador: integer;
 	BEGIN
 		total := 0;
 		
@@ -724,16 +727,19 @@ PROCEDURE ej6 IS
 			ACCEPT Barrera;
 		end loop;
 		
-		for i in 1..60 loop
-			ACCEPT ProcesarMoneda(m: IN integer) do
-				total := total + m;
-			END ProcesarMoneda;
+		for i in 1..4 loop
+			ACCEPT Parcial(parcial: IN integer) do
+				total := total + parcial;
+			END Parcial;
 		end loop;
 		
 		Administrador.RecibirTotal(id, total);
-		Administrador.ObtenerGanador(equipo);
+		Administrador.EquipoGanador(equipoGanador);
+		
 		for i in 1..4 loop
-			ACCEPT EquipoGanador(equipo);
+			ACCEPT EquipoGanador(e: OUT integer) do
+				e := equipoGanador;
+			END EquipoGanador;
 		end loop;
 		
 	END Equipo;
@@ -742,18 +748,23 @@ PROCEDURE ej6 IS
 		id: integer;
 		equipo: integer;
 		m: integer;
-	BEGIN		
+		parcial: integer;
+		equipoGanador: integer;
+	BEGIN
 		equipo := GetMiEquipo; -- 1..4
+		parcial := 0;
 		
-		arrEquipos[equipo].Llegada;
-		arrEquipos[equipo].Barrera;
+		arrEquipos(equipo).Llegada;
+		arrEquipos(equipo).Barrera;
 		
 		for i in 1..15 loop
 			m := Moneda;
-			arrEquipos[equipo].ProcesarMoneda(m);
+			parcial := parcial + m;
 		end loop;
 		
-		ACCEPT EquipoGanador(e: IN integer);
+		arrEquipos(equipo).Parcial(parcial);
+		
+		arrEquipos(equipo).EquipoGanador(equipoGanador);
 		
 	END Persona;
 	
@@ -762,7 +773,7 @@ PROCEDURE ej6 IS
 	
 BEGIN
 	for i in 1..5 loop
-		arrEquipos[i].Id(i);
+		arrEquipos(i).Id(i);
 	end loop;
 END ej6;
 ```
@@ -772,12 +783,218 @@ END ej6;
 Se debe calcular el valor promedio de un vector de 1 millón de números enteros que se encuentra distribuido entre 10 procesos Worker (es decir, cada Worker tiene un vector de 100 mil números). Para ello, existe un Coordinador que determina el momento en que se debe realizar el cálculo de este promedio y que, además, se queda con el resultado.
 **Nota:** maximizar la concurrencia; este cálculo se hace una sola vez.
 
+```Ada
+PROCEDURE ej7 IS
+	
+	TASK Coordinador IS
+		ENTRY Comenzar;
+		ENTRY PromedioParcial(p: IN real);
+	END Coordinador;
+	
+	TASK TYPE Worker;
+	
+	TASK BODY Coordinador IS
+		suma: real;
+		promFinal: real;
+	BEGIN
+		
+		DELAY x; -- el coordinador decide cuándo comenzar.
+		
+		for i in 1..10 loop
+			ACCEPT Comenzar;
+		end loop;
+		
+		suma := 0.0;
+		
+		for i in 1..10 loop
+			ACCEPT PromedioParcial(p: IN real) do
+				suma := suma + p;
+			END PromedioParcial;
+		end loop;
+		
+		promFinal := suma / 10.0;
+		
+	END Coordinador;
+	
+	TASK BODY Worker IS
+		arr: ARRAY(1..100_000) OF integer;
+		suma: integer;
+		promParcial: real;
+	BEGIN
+		suma := 0;
+		Coordinador.Comenzar;
+		
+		for i in 1..100_000 loop
+			suma := suma + arr(i);
+		end loop;
+		
+		promParcial := suma / 100_000.0;
+		Coordinador.PromedioParcial(promParcial);
+		
+	END Worker;
+	
+	arrWorkers: ARRAY(1..10) OF Worker;
+	
+BEGIN
+	null;
+END ej7;
+```
+
 ---
 ## Ejercicio 8
 Hay un sistema de reconocimiento de huellas dactilares de la policía que tiene 8 Servidores para realizar el reconocimiento, cada uno de ellos trabajando con una Base de Datos propia; a su vez hay un Especialista que utiliza indefinidamente. El sistema funciona de la siguiente manera: el Especialista toma una imagen de una huella (TEST) y se la envía a los servidores para que cada uno de ellos le devuelva el código y el valor de similitud de la huella que más se asemeja a TEST en su BD; al final del procesamiento, el especialista debe conocer el código de la huella con mayor valor de similitud entre las devueltas por los 8 servidores. Cuando ha terminado de procesar una huella comienza nuevamente todo el ciclo.
 **Nota:** suponga que existe una función Buscar(test, código, valor) que utiliza cada Servidor donde recibe como parámetro de entrada la huella test, y devuelve como parámetros de salida el código y el valor de similitud de la huella más parecida a test en la BD correspondiente. Maximizar la concurrencia y no generar demora innecesaria.
+```Ada
+PROCEDURE ej8 IS
+	
+	TASK Especialista IS
+		ENTRY Huella(h: OUT Huella);
+		ENTRY Resultado(c: IN integer; sim: IN real);
+		ENTRY Barrera;
+	END Especialista;
+	
+	TASK TYPE Servidor;
+	
+	TASK BODY Especialista IS
+		huella: Huella;
+		codigoMax: integer;
+		simMax: real;
+	BEGIN
+		loop
+			huella := TEST;
+			simMax := -999.0;
+			
+			for i in 1..16 loop
+				SELECT
+					ACCEPT Huella(h: OUT Huella) do
+						h := huella;
+					END Huella;
+				OR
+					ACCEPT Resultado(c: IN integer; sim: IN real) do
+						if (sim > simMax) then
+							codigoMax := c;
+							simMax := sim;
+						end if;
+					END Resultado;
+				END SELECT;
+			end loop;
+			
+			for i in 1..8 loop
+				ACCEPT Barrera;
+			end loop;
+		end loop;
+	END Especialista;
+	
+	TASK BODY Servidor IS
+		huella: Huella;
+		cod: integer;
+		sim: real;
+	BEGIN
+		loop
+			Especialista.Huella(huella);
+			Buscar(huella, cod, sim);
+			Especialista.Resultado(cod, sim);
+			Especialista.Barrera;
+		end loop;
+	END Servidor;
+	
+	arrServidores: ARRAY(1..8) OF Servidor;
+	
+BEGIN
+	null;
+END ej8;
+```
 
 ---
 ## Ejercicio 9
 Una empresa de limpieza se encarga de recolectar residuos en una ciudad por medio de 3 camiones. Hay P personas que hacen reclamos continuamente hasta que uno de los camiones pase por su casa. Cada persona hace un reclamo y espera a lo sumo 15 minutos a que llegue un camión; si no pasa, vuelve a hacer el reclamo y a esperar a lo sumo 15 minutos a que llegue un camión; y así sucesivamente hasta que el camión llegue y recolecte los residuos. Sólo cuando un camión llega, es cuando deja de hacer reclamos y se retira. Cuando un camión está libre la empresa lo envía a la casa de la persona que más reclamos ha hecho sin ser atendido.
 **Nota:** maximizar la concurrencia.
+```Ada
+PROCEDURE ej9 IS
+	
+	TASK Empresa IS
+		ENTRY Reclamo(id: IN integer);
+		ENTRY CamiónLibre(idP: OUT integer);
+	END Empresa;
+	
+	TASK TYPE Camión;
+	
+	TASK TYPE Persona IS
+		ENTRY Id(identificador: IN integer);
+		ENTRY LlegaCamión;
+	END Persona;
+	
+	TASK BODY Empresa IS
+		arrCantReclamos: ARRAY(1..P) OF integer;
+		maxReclamos: integer;
+		idMaxReclamos: integer;
+	BEGIN
+		for i in 1..P loop
+			arrCantReclamos(i) := 0;
+		end loop;
+		
+		loop
+			maxReclamos := 0;
+			idMaxReclamos := -1; -- lo asigno en -1 y si no se modifica es que no hay reclamos.
+			
+			for i in 1..P loop
+				if (arrCantReclamos(i) > maxReclamos) then
+					maxReclamos := arrCantReclamos(i);
+					idMaxReclamos := i;
+				end if;
+			end loop;
+			
+			SELECT
+				WHEN (idMaxReclamos <> -1) =>
+				ACCEPT CamiónLibre(idP: OUT integer) do
+					idP := idMaxReclamos;
+				END CamiónLibre;
+					arrCantReclamos(idMaxReclamos) := 0;
+			OR
+				ACCEPT Reclamo(id: IN integer) do
+					arrCantReclamos(id) := arrCantReclamos(id) + 1;
+				END Reclamo;
+			END SELECT;
+		end loop;
+	END Empresa;
+	
+	TASK BODY Camión IS
+		idP: integer;
+	BEGIN
+		loop
+			Empresa.CamiónLibre(idP);
+			Recolectar(idP); -- va a recolectar a la casa de la persona con id = idP.
+			arrPersonas(idP).LlegaCamión;
+		end loop;
+	END Camión;
+	
+	TASK BODY Persona IS
+		id: integer;
+		atendido: boolean;
+	BEGIN
+		atendido := false;
+		
+		ACCEPT Id(identificador: IN integer) do
+			id := identificador;
+		END Id;
+		
+		while (not atendido) loop
+			Empresa.Reclamo(id);
+			SELECT
+				ACCEPT LlegaCamión;
+				atendido := true;
+			OR DELAY 900.0;
+				null;
+			END SELECT;
+		end loop;
+	END Persona;
+	
+	arrCamiones: ARRAY(1..3) OF Camión;
+	arrPersonas: ARRAY(1..P) OF Persona;
+	
+BEGIN
+	for i in 1..P loop
+		arrPersonas(i).Id(i);
+	end loop;
+END ej9;
+```
