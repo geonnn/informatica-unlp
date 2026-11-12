@@ -120,3 +120,73 @@ BEGIN
 	null;
 END empresa;
 ```
+---
+# Ada
+Resolver el siguiente problema con ADA. Hay un sitio web para identificación genética que resuelve pedidos de N clientes. Cada cliente trabaja continuamente de la siguiente manera: genera la secuencia de ADN, la envía al sitio web para evaluar y espera el resultado; después de esto puede comenzar a generar la siguiente secuencia de ADN. Para resolver estos pedidos el sitio web cuenta con 5 servidores idénticos que atienden los pedidos de acuerdo al orden de llegada (cada pedido es atendido por un único servidor).
+Nota: maximizar la concurrencia. Suponga que los servidores tienen una función ResolverAnálisis() que recibe la secuencia de ADN y devuelve un entero con el resultado.
+```vhdl
+PROCEDURE EjAda IS
+	
+	TASK TYPE Servidor;
+	
+	TASK Admin IS
+		ENTRY Secuencia(idC: IN integer; sec: IN SecuenciaADN);
+		ENTRY PedidoServidor(idCl: OUT integer; secu: OUT SecuenciaADN);
+	END Admin;
+	
+	TASK TYPE Cliente IS
+		ENTRY Identificar(idC: IN integer);
+		ENTRY Resultado(res: IN integer);
+	END Cliente;
+	
+	TASK BODY Servidor IS
+		idC: integer;
+		sec: SecuenciaADN;
+		res: integer;
+	BEGIN
+		loop
+			Admin.PedidoServidor(idC, sec);
+			res := ResolverAnálisis(sec);
+			Cliente(idC).Resultado(res);
+		end loop;
+	END Servidor;
+	
+	TASK BODY Admin IS
+	BEGIN
+		loop
+			ACCEPT Secuencia(idC: IN integer; sec: IN SecuenciaADN) do
+				ACCEPT PedidoServidor(idCl: OUT integer; secu: OUT integer) do
+					secu := sec;
+					idCl := idC;
+				END PedidoServidor;
+			END Secuencia;
+		end loop;
+	END Admin;
+	
+	TASK BODY Cliente IS
+		id: integer
+		sec: SecuenciaADN;
+		result: integer;
+	BEGIN
+		ACCEPT Identificar(idC: IN integer) do
+			id := idC;
+		END Identificar;
+		
+		loop
+			sec := GenerarSecuenciaADN;
+			Admin.Secuencia(id, sec);
+			ACCEPT Resultado(res: OUT integer) do
+				result := res;
+			END Resultado;
+		end loop;
+	END Cliente;
+	
+	arrServidor: ARRAY(1..5) OF Servidor;
+	arrClientes: ARRAY(1..N) OF Cliente;
+	
+BEGIN
+	for i in 1..N loop
+		Cliente(i).Identificar(i);
+	end loop;
+END EjAda;
+```

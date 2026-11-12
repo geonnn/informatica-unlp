@@ -1,4 +1,3 @@
-  
 # 1. PMA
 Las unidades postales (UP) son sucursales de correo que se ocupan habitualmente de recibir y entregar paquetes. En particular, la UP 16 sólo se ocupa de entregar paquetes a las personas que se presentan a retirarlos. Los clientes son atendidos por orden de llegada por el primer empleado que se encuentre libre. Al solicitar atención, el cliente le muestra un código QR al empleado que lo atiende, el cual le entrega el paquete como respuesta. Implemente un programa que permita modelar el funcionamiento de la UP 16 usando PMA, asumiendo que hay N clientes que retiran un único paquete y 3 empleados para atenderlos. Además, asuma que no habrá códigos QR erróneos ni paquetes faltantes.
 Notas: la función obtenerQR(idCliente) retorna el código QR asociado al identificador de cliente recibido como entrada. De forma similar, obtenerPaquete(qr) retorna el paquete asociado al QR recibido como entrada.
