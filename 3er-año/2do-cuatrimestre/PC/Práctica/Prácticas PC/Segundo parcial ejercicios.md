@@ -190,3 +190,32 @@ BEGIN
 	end loop;
 END EjAda;
 ```
+---
+# PMA
+En un estadio de fútbol se dará un recital al que asistirán P personas. Para ello, cada asistente debe retirar su entrada por alguna de las 3 boleterías del estadio presentando su DNI (cada persona retira una única entrada). Los asistentes son atendidos por orden de llegada por alguno de los 3 empleados del club (cada empleado atiende una boletería). Implemente una solución usando PMA, considerando que los empleados atienden infinitamente.  
+Notas: maximizar la concurrencia. La función obtenerEntrada(dni) le retorna al empleado la entrada para el DNI provisto por argumento; la función obtenerDNI() retorna el DNI para la persona que la invoca.
+```csharp
+chan PedirEntrada(int, string);
+chan[P] RecibirEntrada(Entrada);
+
+Process Boletería[id 0..2]
+{
+	int idP;
+	Entrada entrada;
+	
+	while (true)
+	{
+		receive PedirEntrada(idP);
+		entrada = ObtenerEntrada(idP)
+		send RecibirEntrada[idP](entrada);
+	}
+}
+
+Process Persona[id 0..P-1]
+{
+	string dni = obtenerDNI();
+	
+	send PedirEntrada(id, dni);
+	receive RecibirEntrada[idP](entrada);
+}
+```
